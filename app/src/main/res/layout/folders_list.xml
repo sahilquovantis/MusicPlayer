@@ -39,13 +39,12 @@
             android:id="@+id/tv_folder_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
             android:gravity="center_horizontal"
-            android:maxLines="1"
             android:paddingLeft="1dp"
             android:paddingRight="1dp"
             android:text="Dummy Artist"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="12sp"/>
     </LinearLayout>
 
 </RelativeLayout>

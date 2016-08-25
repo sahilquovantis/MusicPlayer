@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.helper;
+package com.quovantis.musicplayer.updated.dialogs;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,7 +12,7 @@ import com.quovantis.musicplayer.R;
 /**
  * Created by sahil-goel on 23/8/16.
  */
-public class DialogHelper {
+public class RefreshListDialog {
 
     private Context mContext;
     private AlertDialog mDialog;
@@ -20,7 +20,7 @@ public class DialogHelper {
     private ProgressBar mProgressBar;
     private TextView mSongsFetchedTV;
 
-    public DialogHelper(Context mContext) {
+    public RefreshListDialog(Context mContext) {
         this.mContext = mContext;
     }
 

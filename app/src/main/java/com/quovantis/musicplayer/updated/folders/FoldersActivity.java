@@ -1,6 +1,5 @@
 package com.quovantis.musicplayer.updated.folders;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,11 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.helper.DialogHelper;
-import com.quovantis.musicplayer.updated.helper.SongOptionsDialog;
+import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
+import com.quovantis.musicplayer.updated.dialogs.SongOptionsDialog;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
@@ -35,7 +33,7 @@ public class FoldersActivity extends AppCompatActivity implements IFolderView, I
     private RecyclerView.Adapter mAdapter;
     private IFoldersPresenter iFoldersPresenter;
     private ArrayList<SongPathModel> mFoldersList;
-    private DialogHelper mDialogHelper;
+    private RefreshListDialog mRefreshListDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,24 +77,24 @@ public class FoldersActivity extends AppCompatActivity implements IFolderView, I
 
     @Override
     public void updateRefreshListProgress(int size, int value) {
-        mDialogHelper.updateProgress(value, size);
+        mRefreshListDialog.updateProgress(value, size);
     }
 
     @Override
     public void updateRefreshListFetchedFolders(int size, int value) {
-        mDialogHelper.updateFetchedSongs(value, size);
+        mRefreshListDialog.updateFetchedSongs(value, size);
     }
 
     @Override
     public void cancelRefreshListDialog() {
-        mDialogHelper.cancelProgressDialog();
-        mDialogHelper = null;
+        mRefreshListDialog.cancelProgressDialog();
+        mRefreshListDialog = null;
     }
 
     @Override
     public void initializeRefreshListDialog() {
-        mDialogHelper = new DialogHelper(FoldersActivity.this);
-        mDialogHelper.showProgressDialog();
+        mRefreshListDialog = new RefreshListDialog(FoldersActivity.this);
+        mRefreshListDialog.showProgressDialog();
     }
 
     @Override

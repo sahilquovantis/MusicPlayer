@@ -11,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.lang.ref.WeakReference;
@@ -27,11 +29,12 @@ import butterknife.ButterKnife;
  */
 public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder> {
     private Context mContext;
-   // private IMusicListClickListener iMusicListClickListener;
+    private IMusicListClickListener iMusicListClickListener;
     private ArrayList<SongDetailsModel> mSongList;
 
-    public SongsListAdapter(Context context, ArrayList<SongDetailsModel> mSongList) {
+    public SongsListAdapter(Context context, IMusicListClickListener iMusicListClickListener, ArrayList<SongDetailsModel> mSongList) {
         mContext = context;
+        this.iMusicListClickListener = iMusicListClickListener;
         this.mSongList = mSongList;
     }
 
@@ -51,11 +54,13 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //MusicHelper.getInstance().addSongToPlaylist(songDetailsModel);
-                /*boolean success = MusicHelper.getInstance().addSongToPlaylist(mSongList, pos);
-                if (success) {
-                    iMusicListClickListener.onClick(mSongList.get(pos).getSongID());
-                }*/
+                iMusicListClickListener.onMusicListClick(songDetailsModel);
+            }
+        });
+        holder.mPopUpMenuLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iMusicListClickListener.onActionOverFlowClick(songDetailsModel);
             }
         });
     }
@@ -77,6 +82,8 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         TextView mSongTV;
         @BindView(R.id.tv_song_artist)
         TextView mSongArtistTV;
+        @BindView(R.id.ll_action)
+        LinearLayout mPopUpMenuLL;
 
         public ViewHolder(View itemView) {
             super(itemView);

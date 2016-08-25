@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.helper;
+package com.quovantis.musicplayer.updated.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;

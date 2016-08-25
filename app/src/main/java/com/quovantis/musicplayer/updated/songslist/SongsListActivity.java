@@ -1,6 +1,5 @@
 package com.quovantis.musicplayer.updated.songslist;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +9,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SongsListActivity extends AppCompatActivity implements ISongsView {
+public class SongsListActivity extends AppCompatActivity implements ISongsView, IMusicListClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -56,7 +58,7 @@ public class SongsListActivity extends AppCompatActivity implements ISongsView {
 
     private void initRecyclerView() {
         mSongsListRV.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-        mAdapter = new SongsListAdapter(this, mSongList);
+        mAdapter = new SongsListAdapter(this, this, mSongList);
         mSongsListRV.setAdapter(mAdapter);
     }
 
@@ -75,5 +77,18 @@ public class SongsListActivity extends AppCompatActivity implements ISongsView {
     @Override
     public void onHideProgres() {
         mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onMusicListClick(SongDetailsModel model) {
+        MusicHelper.getInstance().addSongToPlaylist(model, false);
+        /**
+         * After adding song to queue,  start playing it.
+         */
+    }
+
+    @Override
+    public void onActionOverFlowClick(SongDetailsModel model) {
+        QueueOptionsDialog.showDialog(SongsListActivity.this, model);
     }
 }
