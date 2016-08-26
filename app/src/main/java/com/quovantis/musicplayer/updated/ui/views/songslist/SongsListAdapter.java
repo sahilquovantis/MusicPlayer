@@ -1,30 +1,22 @@
-package com.quovantis.musicplayer.updated.folders;
+package com.quovantis.musicplayer.updated.ui.views.songslist;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaMetadataRetriever;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
-import com.quovantis.musicplayer.updated.models.SongPathModel;
+import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
+import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -33,68 +25,65 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by sahil-goel on 23/8/16.
+ * Created by sahil-goel on 24/8/16.
  */
-public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHolder> {
-
+public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder> {
     private Context mContext;
-    private IFolderClickListener iFolderClickListener;
-    private MediaMetadataRetriever metadataRetriever;
-    private ArrayList<SongPathModel> mSongPathModelArrayList = new ArrayList<>();
+    private IMusicListClickListener iMusicListClickListener;
+    private ArrayList<SongDetailsModel> mSongList;
 
-    public FoldersAdapter(Context context, ArrayList<SongPathModel> songPathModelList,
-                          IFolderClickListener iFolderClickListener) {
+    public SongsListAdapter(Context context, IMusicListClickListener iMusicListClickListener, ArrayList<SongDetailsModel> mSongList) {
         mContext = context;
-        mSongPathModelArrayList = songPathModelList;
-        metadataRetriever = new MediaMetadataRetriever();
-        this.iFolderClickListener = iFolderClickListener;
+        this.iMusicListClickListener = iMusicListClickListener;
+        this.mSongList = mSongList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.folders_list, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.custom_song_list_row, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SongPathModel songPathModel = mSongPathModelArrayList.get(position);
-        final String directory = songPathModel.getSongDirectory();
-        String path = songPathModel.getSongPath();
-        path = path.substring(0, path.lastIndexOf("/"));
-        final long id = songPathModel.getId();
-        holder.mDirectoryNameTV.setText(directory);
-        holder.mDirectoryPathTV.setText(path);
-        loadBitmap(holder.mDirectoryThumbnail, songPathModel.getCompletePath());
+        final int pos = position;
+        final SongDetailsModel songDetailsModel = mSongList.get(pos);
+        holder.mSongTV.setText(songDetailsModel.getSongTitle());
+        holder.mSongArtistTV.setText(songDetailsModel.getSongArtist());
+        loadBitmap(holder.mSongThumbnailIV, songDetailsModel.getSongThumbnailData());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iFolderClickListener.onFoldersSinglePress(id, directory);
+                iMusicListClickListener.onMusicListClick(songDetailsModel);
             }
         });
-
-       holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.mPopUpMenuLL.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
-                iFolderClickListener.onFoldersLongPress();
-               return true;
+            public void onClick(View view) {
+                iMusicListClickListener.onActionOverFlowClick(songDetailsModel);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mSongPathModelArrayList.size();
+        if (mSongList != null && !mSongList.isEmpty()) {
+            return mSongList.size();
+        } else {
+            return 0;
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.tv_folder_name)
-        TextView mDirectoryNameTV;
-        @BindView(R.id.tv_folder_path)
-        TextView mDirectoryPathTV;
         @BindView(R.id.iv_song_thumbnail)
-        ImageView mDirectoryThumbnail;
+        ImageView mSongThumbnailIV;
+        @BindView(R.id.tv_song_name)
+        TextView mSongTV;
+        @BindView(R.id.tv_song_artist)
+        TextView mSongArtistTV;
+        @BindView(R.id.ll_action)
+        LinearLayout mPopUpMenuLL;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -102,7 +91,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
         }
     }
 
-    public void loadBitmap(ImageView imageView, String data) {
+    public void loadBitmap(ImageView imageView, byte[] data) {
         if (cancelPotentialWork(data, imageView)) {
             final DisplayImage task = new DisplayImage(imageView);
             final AsyncDrawable asyncDrawable = new AsyncDrawable(task);
@@ -123,11 +112,11 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
         }
     }
 
-    public static boolean cancelPotentialWork(String data, ImageView imageView) {
+    public static boolean cancelPotentialWork(byte[] data, ImageView imageView) {
         final DisplayImage bitmapWorkerTask = getBitmapWorkerTask(imageView);
 
         if (bitmapWorkerTask != null) {
-            final String bitmapData = bitmapWorkerTask.data;
+            final byte[] bitmapData = bitmapWorkerTask.data;
             if (bitmapData != data) {
                 bitmapWorkerTask.cancel(true);
             } else {
@@ -149,31 +138,24 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
     }
 
 
-    class DisplayImage extends AsyncTask<String, Void, Bitmap> {
+    class DisplayImage extends AsyncTask<byte[], Void, Bitmap> {
 
         private WeakReference<ImageView> imageViewWeakReference;
-        public String data = null;
+        public byte[] data = null;
 
         DisplayImage(ImageView iv) {
             imageViewWeakReference = new WeakReference<ImageView>(iv);
         }
 
         @Override
-        protected Bitmap doInBackground(String... strings) {
+        protected Bitmap doInBackground(byte[]... strings) {
             data = strings[0];
             Bitmap bitmap = null;
-            try {
-                metadataRetriever.setDataSource(data);
-                byte[] imageData = metadataRetriever.getEmbeddedPicture();
-                if (imageData == null) {
-                    bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.music);
-                } else {
-                    bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-                }
-            } catch (IllegalArgumentException e) {
+            if (data == null) {
                 bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.music);
+            } else {
+                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             }
-
             return bitmap;
         }
 

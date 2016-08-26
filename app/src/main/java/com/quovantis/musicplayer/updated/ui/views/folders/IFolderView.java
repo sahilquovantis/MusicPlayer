@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.folders;
+package com.quovantis.musicplayer.updated.ui.views.folders;
 
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 

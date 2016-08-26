@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.quovantis.musicplayer.updated.folders.IFoldersInteractor;
+import com.quovantis.musicplayer.updated.ui.views.folders.IFoldersInteractor;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 

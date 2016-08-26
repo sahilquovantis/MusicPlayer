@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.folders;
+package com.quovantis.musicplayer.updated.ui.views.folders;
 
 import android.content.Context;
 

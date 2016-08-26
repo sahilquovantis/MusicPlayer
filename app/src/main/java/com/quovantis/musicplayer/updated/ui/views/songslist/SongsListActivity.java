@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.songslist;
+package com.quovantis.musicplayer.updated.ui.views.songslist;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

@@ -25,7 +25,7 @@ public class RefreshListDialog {
     }
 
     public void showProgressDialog() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.progress_dialog, null, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.refresh_music_list_progress_dialog, null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setCancelable(false);
         builder.setView(view);

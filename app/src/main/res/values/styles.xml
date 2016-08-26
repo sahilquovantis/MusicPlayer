@@ -22,6 +22,4 @@
         <item name="android:textColorSecondary">@color/black</item>
     </style>
 
-    <dimen name="sp_18">18sp</dimen>
-    <dimen name="dp_10">10dp</dimen>
 </resources>

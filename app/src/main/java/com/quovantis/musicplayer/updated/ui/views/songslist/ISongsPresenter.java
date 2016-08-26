@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.songslist;
+package com.quovantis.musicplayer.updated.ui.views.songslist;
 
 /**
  * Created by sahil-goel on 24/8/16.

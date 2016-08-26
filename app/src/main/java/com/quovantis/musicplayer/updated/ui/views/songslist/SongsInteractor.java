@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.songslist;
+package com.quovantis.musicplayer.updated.ui.views.songslist;
 
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 

@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.folders;
+package com.quovantis.musicplayer.updated.ui.views.folders;
 
 import android.content.Context;
 
@@ -7,4 +7,5 @@ import android.content.Context;
  */
 public interface IFoldersPresenter {
     void updateUI(Context context);
+    void onDestroy();
 }

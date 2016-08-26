@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.folders;
+package com.quovantis.musicplayer.updated.ui.views.folders;
 
 import android.content.Context;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by sahil-goel on 23/8/16.
  */
-public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteractor.Listener{
+public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteractor.Listener {
 
     private IFolderView mFoldersView;
     private IFoldersInteractor iFoldersInteractor;
@@ -21,33 +21,45 @@ public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteracto
 
     @Override
     public void updateUI(Context context) {
-        mFoldersView.showProgress();
+        if (mFoldersView != null)
+            mFoldersView.showProgress();
         iFoldersInteractor.getFoldersList(context);
     }
 
     @Override
+    public void onDestroy() {
+        mFoldersView = null;
+    }
+
+    @Override
     public void onUpdateFoldersList(ArrayList<SongPathModel> list) {
-        mFoldersView.onUpdateFoldersList(list);
-        mFoldersView.hideProgress();
+        if (mFoldersView != null) {
+            mFoldersView.onUpdateFoldersList(list);
+            mFoldersView.hideProgress();
+        }
     }
 
     @Override
     public void onRefreshMusicListProgress(int value, int size) {
-        mFoldersView.updateRefreshListProgress(size, value);
+        if (mFoldersView != null)
+            mFoldersView.updateRefreshListProgress(size, value);
     }
 
     @Override
     public void onRefreshMusicListFetchedSongs(int value, int size) {
-        mFoldersView.updateRefreshListFetchedFolders(size, value);
+        if (mFoldersView != null)
+            mFoldersView.updateRefreshListFetchedFolders(size, value);
     }
 
     @Override
     public void onCancelRefreshMusicListDialog() {
-        mFoldersView.cancelRefreshListDialog();
+        if (mFoldersView != null)
+            mFoldersView.cancelRefreshListDialog();
     }
 
     @Override
     public void onIntitalzeRefreshMusicListDialog() {
-        mFoldersView.initializeRefreshListDialog();
+        if (mFoldersView != null)
+            mFoldersView.initializeRefreshListDialog();
     }
 }
