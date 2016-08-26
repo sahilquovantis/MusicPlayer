@@ -5,4 +5,5 @@ package com.quovantis.musicplayer.updated.ui.views.songslist;
  */
 public interface ISongsPresenter {
     void updateUI(long id);
+    void onDestroy();
 }

@@ -3,7 +3,10 @@ package com.quovantis.musicplayer.updated.ui.views.folders;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +23,7 @@ import com.quovantis.musicplayer.updated.dialogs.SongOptionsDialog;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
+import com.quovantis.musicplayer.updated.services.MusicService;
 import com.quovantis.musicplayer.updated.ui.views.music.IMusicPresenter;
 import com.quovantis.musicplayer.updated.ui.views.music.IMusicView;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
@@ -29,6 +33,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class FoldersActivity extends AppCompatActivity implements IFolderView,
         IFolderClickListener, IMusicView {
@@ -52,10 +57,15 @@ public class FoldersActivity extends AppCompatActivity implements IFolderView,
      */
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigationView;
     @BindView(R.id.rv_folders_list)
     RecyclerView mFoldersListRV;
     @BindView(R.id.pb_progress_bar)
     ProgressBar mProgressBar;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongPathModel> mFoldersList;
     private RefreshListDialog mRefreshListDialog;
@@ -67,9 +77,19 @@ public class FoldersActivity extends AppCompatActivity implements IFolderView,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folders);
         ButterKnife.bind(this);
+        initiToolbar();
         mFoldersList = new ArrayList<>();
         initRecyclerView();
         initPresenters();
+    }
+
+    private void initiToolbar() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Folders");
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
     }
 
     private void initPresenters() {
@@ -91,6 +111,17 @@ public class FoldersActivity extends AppCompatActivity implements IFolderView,
         mFoldersList.clear();
         mFoldersList.addAll(foldersList);
         mAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick({R.id.iv_next_song, R.id.iv_previous_song, R.id.iv_play_pause_button})
+    public void onMusicButtonsClick(ImageView view) {
+        if (view.getId() == R.id.iv_play_pause_button) {
+            iMusicPresenter.onPlayPause();
+        } else if (view.getId() == R.id.iv_previous_song) {
+            iMusicPresenter.onSkipToPrevious();
+        } else if (view.getId() == R.id.iv_next_song) {
+            iMusicPresenter.onSkipToNext();
+        }
     }
 
     @Override
@@ -175,7 +206,15 @@ public class FoldersActivity extends AppCompatActivity implements IFolderView,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        iMusicPresenter.stopService();
         iFoldersPresenter.onDestroy();
         iMusicPresenter.onDestroy();
+        iFoldersPresenter = null;
+        iMusicPresenter = null;
+    }
+
+    @Override
+    public void onStopService() {
+        stopService(new Intent(this, MusicService.class));
     }
 }

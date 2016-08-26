@@ -10,4 +10,5 @@ public interface IMusicView {
     void onUpdateSongState(int state);
     void onHideMusicLayout();
     void onShowMusicLayout();
+    void onStopService();
 }

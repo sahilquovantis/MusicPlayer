@@ -44,19 +44,25 @@ public class MusicHelper {
         }
     }*/
 
-    public void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue) {
+    public void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
         try {
-            if(isClearQueue){
+
+            if (isClearQueue) {
+                mCurrentPosition = 0;
                 mCurrentPlaylist.clear();
-                mCurrentPlaylist.add(0,model);
+                mCurrentPlaylist.add(0, model);
                 return;
             }
 
             if (!mCurrentPlaylist.isEmpty() && mCurrentPlaylist.contains(model)) {
+                mCurrentPosition = mCurrentPlaylist.indexOf(model);
                 return;
             }
             int position = mCurrentPlaylist.isEmpty() ? 0 : mCurrentPlaylist.size();
             mCurrentPlaylist.add(position, model);
+            if (isPlaythisSong) {
+                mCurrentPosition = position;
+            }
         } catch (NullPointerException | IndexOutOfBoundsException e1) {
 
         }
@@ -113,6 +119,7 @@ public class MusicHelper {
                 return builder.build();
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException | NullPointerException e) {
+            return null;
         }
         return null;
     }
@@ -130,10 +137,9 @@ public class MusicHelper {
     /**
      * Used To Get the Previous Song on the Basis of Current Media Id.
      *
-     * @param currentMediaId ID of the current Song.
      * @return Returns the ID of the Previous Song.
      */
-    public String getPreviousSong(String currentMediaId) {
+    public String getPreviousSong() {
         String prevMediaId = null;
         try {
             if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
@@ -153,10 +159,9 @@ public class MusicHelper {
     /**
      * Used To Get the Next Song on the Basis of Current Media Id.
      *
-     * @param currentMediaId ID of the current Song.
      * @return Returns the ID of the Next Song.
      */
-    public String getNextSong(String currentMediaId) {
+    public String getNextSong() {
         String nextMediaId = null;
         try {
             if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {

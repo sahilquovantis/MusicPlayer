@@ -23,6 +23,7 @@ import com.quovantis.musicplayer.updated.services.MusicService;
  */
 public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
 
+    private MediaControllerCompat mMediaController;
     private Context mContext;
     private IMusicView iMusicView;
 
@@ -32,11 +33,18 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     }
 
     @Override
+    public void playSong(String id) {
+        if (mMediaController != null) {
+            Log.d(ICommonKeys.TAG, "Selected Song id : " + id);
+            mMediaController.getTransportControls().playFromMediaId(id, null);
+        }
+    }
+
+    @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         if (iBinder instanceof MusicService.ServiceBinder) {
             MediaMetadataCompat mCurrentMetadata = null;
             PlaybackStateCompat mCurrentState = null;
-            MediaControllerCompat mMediaController;
             Log.d(ICommonKeys.TAG, "Service Binded");
             try {
                 mMediaController = new MediaControllerCompat(mContext,
@@ -88,14 +96,14 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         if (iMusicView != null) {
             if (playbackState != null) {
                 int state = playbackState.getState();
-                if (state == PlaybackStateCompat.STATE_PLAYING || state == PlaybackStateCompat.STATE_STOPPED ||
+                if (state == PlaybackStateCompat.STATE_PLAYING ||
                         state == PlaybackStateCompat.STATE_PAUSED) {
                     iMusicView.onUpdateSongState(state);
                     iMusicView.onShowMusicLayout();
                 } else {
                     iMusicView.onHideMusicLayout();
                 }
-            }else {
+            } else {
                 iMusicView.onHideMusicLayout();
             }
         }
@@ -128,5 +136,36 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         Intent intent = new Intent(mContext, MusicService.class);
         mContext.startService(intent);
         mContext.bindService(intent, this, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onPlayPause() {
+        if (mMediaController != null) {
+            int state = mMediaController.getPlaybackState().getState();
+            if (state == PlaybackStateCompat.STATE_PLAYING) {
+                mMediaController.getTransportControls().pause();
+            } else if (state == PlaybackStateCompat.STATE_PAUSED) {
+                mMediaController.getTransportControls().play();
+            }
+        }
+    }
+
+    @Override
+    public void onSkipToPrevious() {
+        if (mMediaController != null)
+            mMediaController.getTransportControls().skipToPrevious();
+    }
+
+    @Override
+    public void onSkipToNext() {
+        if (mMediaController != null)
+            mMediaController.getTransportControls().skipToNext();
+    }
+
+    public void stopService() {
+        if (mMediaController == null || mMediaController.getPlaybackState() == null || mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE ||
+                mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_STOPPED) {
+            iMusicView.onStopService();
+        }
     }
 }

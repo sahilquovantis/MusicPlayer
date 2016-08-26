@@ -11,4 +11,9 @@ public interface IMusicPresenter {
     void updateState(PlaybackStateCompat playbackState);
     void onDestroy();
     void bindService();
+    void onPlayPause();
+    void onSkipToPrevious();
+    void onSkipToNext();
+    void playSong(String id);
+    void stopService();
 }

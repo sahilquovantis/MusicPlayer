@@ -45,12 +45,13 @@ public class NotificationHelper {
             NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
             style.setMediaSession(token);
 
+
             Intent intent = new Intent(mContext, MusicService.class);
             intent.setAction(Utils.INTENT_ACTION_STOP);
             PendingIntent pendingIntent = PendingIntent.getService(mContext, 1, intent, 0);
 
             Intent showActivityIntent = new Intent(mContext, FoldersActivity.class);
-            intent.setAction(Utils.INTENT_ACTION_SHOW_ACTIVITY);
+            //intent.setAction(Utils.INTENT_ACTION_SHOW_ACTIVITY);
             PendingIntent showActivityPendingIntent = PendingIntent.getActivity(mContext, 1, showActivityIntent, 0);
 
             NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(mContext)
@@ -60,9 +61,7 @@ public class NotificationHelper {
                     .setContentIntent(showActivityPendingIntent)
                     .setLargeIcon(image)
                     .setDeleteIntent(pendingIntent)
-                    .setStyle(new NotificationCompat.MediaStyle()
-                            .setShowActionsInCompactView(0, 1, 2)
-                            .setMediaSession(MediaSessionCompat.Token.fromToken(token)))
+                    .setStyle(style)
                     .setColor(0x000000);
             builder.addAction(createAction(R.drawable.ic_action_previous, "Previous", Utils.INTENT_ACTION_PREVIOUS));
             builder.addAction(createAction(iconForPlayPause, playPause, action));

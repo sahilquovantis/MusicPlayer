@@ -18,8 +18,10 @@ public class SongsPresenter implements ISongsPresenter, ISongsInteractor.Listene
 
     @Override
     public void updateUI(long id) {
-        iSongsView.onShowProgress();
-        iSongsInteractor.getSongsList(id, this);
+        if(iSongsView != null) {
+            iSongsView.onShowProgress();
+            iSongsInteractor.getSongsList(id, this);
+        }
     }
 
     @Override
@@ -28,5 +30,10 @@ public class SongsPresenter implements ISongsPresenter, ISongsInteractor.Listene
             iSongsView.onUpdateUI(list);
             iSongsView.onHideProgres();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        iSongsView = null;
     }
 }
