@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
@@ -27,20 +28,21 @@ public class QueueOptionsDialog {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
+        TextView title = (TextView) view.findViewById(R.id.tv_dialog_title);
+        title.setText(model.getSongTitle());
         LinearLayout clearAndPlay = (LinearLayout) view.findViewById(R.id.ll_play_and_clear);
         LinearLayout addToQueue = (LinearLayout) view.findViewById(R.id.ll_add_to_queue);
         addToQueue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MusicHelper.getInstance().addSongToPlaylist(model, false, false);
+                listener.onClick(model, false, false);
                 dialog.dismiss();
             }
         });
         clearAndPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MusicHelper.getInstance().addSongToPlaylist(model, true, true);
-                listener.onClearAndPlay(model.getSongID());
+                listener.onClick(model, true, true);
                 dialog.dismiss();
             }
         });

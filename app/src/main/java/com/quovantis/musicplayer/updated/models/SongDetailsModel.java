@@ -1,11 +1,15 @@
 package com.quovantis.musicplayer.updated.models;
 
+import android.util.Log;
+
+import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
  * @author sahil-goel
- * Model of the Song or Music and Contains Information of the Songs.
+ *         Model of the Song or Music and Contains Information of the Songs.
  */
 public class SongDetailsModel extends RealmObject {
     @PrimaryKey
@@ -63,5 +67,6 @@ public class SongDetailsModel extends RealmObject {
     public void setSongDuration(long mSongDuration) {
         this.mSongDuration = mSongDuration;
     }
+
 }
 

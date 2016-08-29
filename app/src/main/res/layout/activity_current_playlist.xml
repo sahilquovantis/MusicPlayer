@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.quovantis.musicplayer.updated.ui.views.current_playlist.CurrentPlaylistActivity">
+    tools:context=".updated.ui.views.current_playlist.CurrentPlaylistActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

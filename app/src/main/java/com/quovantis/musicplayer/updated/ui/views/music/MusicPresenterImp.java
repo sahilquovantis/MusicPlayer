@@ -15,7 +15,9 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
 
 /**
@@ -30,14 +32,6 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     public MusicPresenterImp(IMusicView iMusicView, Context mContext) {
         this.iMusicView = iMusicView;
         this.mContext = mContext;
-    }
-
-    @Override
-    public void playSong(String id) {
-        if (mMediaController != null) {
-            Log.d(ICommonKeys.TAG, "Selected Song id : " + id);
-            mMediaController.getTransportControls().playFromMediaId(id, null);
-        }
     }
 
     @Override
@@ -166,6 +160,30 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         if (mMediaController == null || mMediaController.getPlaybackState() == null || mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE ||
                 mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_STOPPED) {
             iMusicView.onStopService();
+        }
+    }
+
+    @Override
+    public void songsMoved(int fromPosition, int toPosition) {
+        MusicHelper.getInstance().songsMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void songRemoved(int position) {
+        MusicHelper.getInstance().songRemove(position);
+    }
+
+    @Override
+    public void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
+        MusicHelper.getInstance().addSongToPlaylist(model, isClearQueue, isPlaythisSong);
+        if (isPlaythisSong)
+            playSong(model.getSongID());
+    }
+
+    private void playSong(String id) {
+        if (mMediaController != null) {
+            Log.d(ICommonKeys.TAG, "Selected Song id : " + id);
+            mMediaController.getTransportControls().playFromMediaId(id, null);
         }
     }
 }

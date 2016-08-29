@@ -9,9 +9,11 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.util.Log;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 
 import io.realm.RealmResults;
@@ -20,7 +22,8 @@ import io.realm.RealmResults;
  * Created by sahil-goel on 25/8/16.
  */
 public class MusicHelper {
-    private int mCurrentPosition = -1;
+    private int mCurrentPosition = 0;
+    private SongDetailsModel mCurrentSong;
     private static MusicHelper sInstance;
     private ArrayList<SongDetailsModel> mCurrentPlaylist;
     private LinkedHashSet<SongDetailsModel> mSongsSet;
@@ -64,7 +67,7 @@ public class MusicHelper {
                 mCurrentPosition = position;
             }
         } catch (NullPointerException | IndexOutOfBoundsException e1) {
-
+            mCurrentPosition = 0;
         }
     }
 
@@ -109,6 +112,7 @@ public class MusicHelper {
             if (!mCurrentPlaylist.isEmpty()) {
                 Log.d("Training", "Current Position : " + mCurrentPosition);
                 SongDetailsModel songDetailsModel = mCurrentPlaylist.get(mCurrentPosition);
+                mCurrentSong = songDetailsModel;
                 MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
                 builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songDetailsModel.getSongID());
                 builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songDetailsModel.getSongArtist());
@@ -119,6 +123,7 @@ public class MusicHelper {
                 return builder.build();
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException | NullPointerException e) {
+            mCurrentSong = null;
             return null;
         }
         return null;
@@ -151,7 +156,7 @@ public class MusicHelper {
                 prevMediaId = mCurrentPlaylist.get(mCurrentPosition).getSongID();
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException | NullPointerException e) {
-            mCurrentPosition = -1;
+            mCurrentPosition = 0;
         }
         return prevMediaId;
     }
@@ -173,7 +178,7 @@ public class MusicHelper {
                 nextMediaId = mCurrentPlaylist.get(mCurrentPosition).getSongID();
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException | NullPointerException e) {
-            mCurrentPosition = -1;
+            mCurrentPosition = 0;
         }
         return nextMediaId;
     }
@@ -195,5 +200,24 @@ public class MusicHelper {
         return bitmap;
     }
 
+    public void songsMoved(int from, int to) {
+        if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
+            Collections.swap(mCurrentPlaylist, from, to);
+            mCurrentPosition = mCurrentSong == null ? 0 : mCurrentPlaylist.indexOf(mCurrentSong);
+            Log.d(ICommonKeys.TAG,"Current Pos : " + mCurrentPosition);
+        }
+    }
+
+    public void songRemove(int pos) {
+        if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
+            try {
+                mCurrentPlaylist.remove(pos);
+                if (mCurrentPosition == pos)
+                    mCurrentPosition = pos - 1;
+            } catch (IndexOutOfBoundsException e) {
+                mCurrentPosition = 0;
+            }
+        }
+    }
 }
 
