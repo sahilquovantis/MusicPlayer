@@ -12,7 +12,6 @@ import io.realm.annotations.PrimaryKey;
  *         Model of the Song or Music and Contains Information of the Songs.
  */
 public class SongDetailsModel extends RealmObject {
-    @PrimaryKey
     private String mSongID;
     private String mSongTitle;
     private String mSongArtist;

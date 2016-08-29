@@ -164,16 +164,6 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     }
 
     @Override
-    public void songsMoved(int fromPosition, int toPosition) {
-        MusicHelper.getInstance().songsMoved(fromPosition, toPosition);
-    }
-
-    @Override
-    public void songRemoved(int position) {
-        MusicHelper.getInstance().songRemove(position);
-    }
-
-    @Override
     public void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
         MusicHelper.getInstance().addSongToPlaylist(model, isClearQueue, isPlaythisSong);
         if (isPlaythisSong)

@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.ui.views.current_playlist;
+package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

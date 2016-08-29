@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.ui.views.current_playlist;
+package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
 
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
@@ -12,4 +12,5 @@ public interface ICurrentPlaylistView {
     void onHideProgress();
     void onUpdateUI(ArrayList<SongDetailsModel> currentPlaylistList);
     void onEmptyList();
+    void onCancelCreatePlaylistProgressDialog();
 }

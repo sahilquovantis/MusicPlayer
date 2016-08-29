@@ -19,7 +19,7 @@ import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
-import com.quovantis.musicplayer.updated.ui.views.current_playlist.CurrentPlaylistActivity;
+import com.quovantis.musicplayer.updated.ui.views.currentplaylist.CurrentPlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;

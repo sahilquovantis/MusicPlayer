@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+import com.quovantis.musicplayer.updated.interfaces.IOnSongRemovedFromQueue;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.ArrayList;
@@ -208,12 +209,16 @@ public class MusicHelper {
         }
     }
 
-    public void songRemove(int pos) {
+    public void songRemove(int pos, IOnSongRemovedFromQueue iOnSongRemovedFromQueue) {
         if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
             try {
                 mCurrentPlaylist.remove(pos);
                 if (mCurrentPosition == pos)
                     mCurrentPosition = pos - 1;
+                if(mCurrentPlaylist == null || mCurrentPlaylist.isEmpty()){
+                    iOnSongRemovedFromQueue.onQueueListEmptyShowEmptyTV();
+                }
+
             } catch (IndexOutOfBoundsException e) {
                 mCurrentPosition = 0;
             }

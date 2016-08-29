@@ -1,7 +1,7 @@
-package com.quovantis.musicplayer.updated.ui.views.current_playlist;
+package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
 
-import android.content.Context;
-
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
+import com.quovantis.musicplayer.updated.interfaces.IOnSongRemovedFromQueue;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Created by sahil-goel on 29/8/16.
  */
 public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter,
-        ICurrentPlaylistInteractor.Listener {
+        ICurrentPlaylistInteractor.Listener, IOnSongRemovedFromQueue {
 
     private ICurrentPlaylistView mView;
     private ICurrentPlaylistInteractor iCurrentPlaylistInteractor;
@@ -42,5 +42,32 @@ public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter,
                 mView.onEmptyList();
             mView.onHideProgress();
         }
+    }
+
+    @Override
+    public void songsMoved(int fromPosition, int toPosition) {
+        MusicHelper.getInstance().songsMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void songRemoved(int position) {
+        MusicHelper.getInstance().songRemove(position, this);
+    }
+
+    @Override
+    public void onQueueListEmptyShowEmptyTV() {
+        if (mView != null)
+            mView.onEmptyList();
+    }
+
+    @Override
+    public void createPlaylist(String name) {
+        iCurrentPlaylistInteractor.createPlaylist(name, this);
+    }
+
+    @Override
+    public void onPlaylistCreated() {
+        if (mView != null)
+            mView.onCancelCreatePlaylistProgressDialog();
     }
 }

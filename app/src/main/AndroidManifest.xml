@@ -25,7 +25,7 @@
             android:name=".updated.services.MusicService"
             android:stopWithTask="false" />
 
-        <activity android:name=".updated.ui.views.current_playlist.CurrentPlaylistActivity" />
+        <activity android:name=".updated.ui.views.currentplaylist.CurrentPlaylistActivity" />
         <activity android:name=".updated.ui.views.music.MusicBaseActivity"></activity>
     </application>
 

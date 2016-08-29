@@ -1,5 +1,6 @@
-package com.quovantis.musicplayer.updated.ui.views.current_playlist;
+package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +12,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.helper.MusicHelper;
+import com.quovantis.musicplayer.updated.dialogs.CreatePlaylistDialog;
+import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
+import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
@@ -22,9 +25,10 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurrentPlaylistView,
-        ICurrentPlaylistClickListener {
+        ICurrentPlaylistClickListener, IOnCreatePlaylistDialog {
 
 
     @BindView(R.id.tv_empty_list)
@@ -38,6 +42,7 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     private CurrentPlaylistAdapter mAdapter;
     private ArrayList<SongDetailsModel> mQueueList;
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
+    private ProgressDialog mCreatePlaylistProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,13 +129,31 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
         iMusicPresenter.addSongToPlaylist(model, false, true);
     }
 
+    @OnClick(R.id.iv_create_playlist)
+    public void createPlaylist() {
+        CreatePlaylistDialog.showDialog(this, this);
+    }
+
     @Override
     public void onSongRemove(int pos) {
-        iMusicPresenter.songRemoved(pos);
+        iCurrentPlaylistPresenter.songRemoved(pos);
     }
 
     @Override
     public void onSongsMoved(int from, int to) {
-        iMusicPresenter.songsMoved(from, to);
+        iCurrentPlaylistPresenter.songsMoved(from, to);
+    }
+
+    @Override
+    public void onCreatePlaylist(String playlistName) {
+        String message = "Creating playlist ...";
+        mCreatePlaylistProgressDialog = ProgresDialog.showProgressDialog(this, message);
+        iCurrentPlaylistPresenter.createPlaylist(playlistName);
+    }
+
+    @Override
+    public void onCancelCreatePlaylistProgressDialog() {
+        if(mCreatePlaylistProgressDialog != null)
+            mCreatePlaylistProgressDialog.cancel();
     }
 }

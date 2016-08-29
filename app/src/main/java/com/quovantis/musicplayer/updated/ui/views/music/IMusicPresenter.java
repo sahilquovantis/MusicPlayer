@@ -26,8 +26,4 @@ public interface IMusicPresenter {
     void onSkipToNext();
 
     void stopService();
-
-    void songsMoved(int fromPosition, int toPosition);
-
-    void songRemoved(int position);
 }
