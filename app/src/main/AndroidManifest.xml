@@ -3,7 +3,7 @@
     package="com.quovantis.musicplayer">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".updated.application.MusicPlayerApplication"
@@ -19,10 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".updated.ui.views.songslist.SongsListActivity"/>
+        <activity android:name=".updated.ui.views.songslist.SongsListActivity" />
+
         <service
             android:name=".updated.services.MusicService"
             android:stopWithTask="false" />
+
+        <activity android:name=".updated.ui.views.current_playlist.CurrentPlaylistActivity"></activity>
     </application>
 
 </manifest>

@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,6 +26,7 @@ import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
+import com.quovantis.musicplayer.updated.ui.views.current_playlist.CurrentPlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.IMusicPresenter;
 import com.quovantis.musicplayer.updated.ui.views.music.IMusicView;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
@@ -36,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class FoldersActivity extends AppCompatActivity implements IFolderView,
-        IFolderClickListener, IMusicView {
+        IFolderClickListener, IMusicView, NavigationView.OnNavigationItemSelectedListener {
 
     /**
      * Music Layout BindViews
@@ -86,10 +89,10 @@ public class FoldersActivity extends AppCompatActivity implements IFolderView,
     private void initiToolbar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Folders");
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+        mNavigationView.setNavigationItemSelectedListener(this);
     }
 
     private void initPresenters() {
@@ -216,5 +219,17 @@ public class FoldersActivity extends AppCompatActivity implements IFolderView,
     @Override
     public void onStopService() {
         stopService(new Intent(this, MusicService.class));
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        mDrawerLayout.closeDrawer(mNavigationView);
+        if (id == R.id.queue) {
+            Intent intent = new Intent(this, CurrentPlaylistActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return false;
     }
 }
