@@ -22,7 +22,7 @@ public class CurrentPlaylistInteractorImp implements ICurrentPlaylistInteractor 
     public void createPlaylist(final String name, final ICurrentPlaylistInteractor.Listener listener) {
         final ArrayList<SongDetailsModel> list = MusicHelper.getInstance().getCurrentPlaylist();
         if (list.isEmpty()) {
-            listener.onPlaylistCreated();
+            listener.onPlaylistCreated(false);
             return;
         }
         Realm realm = Realm.getDefaultInstance();
@@ -37,13 +37,12 @@ public class CurrentPlaylistInteractorImp implements ICurrentPlaylistInteractor 
                     model.setSongArtist(list.get(i).getSongArtist());
                     model.setSongDuration(list.get(i).getSongDuration());
                     model.setSongID(list.get(i).getSongID());
-                    model.setSongPathID(list.get(i).getSongPathID());
                     model.setSongTitle(list.get(i).getSongTitle());
                     model.setSongThumbnailData(list.get(i).getSongThumbnailData());
                     SongDetailsModel detailsModel = realm.copyToRealm(model);
                     userPlaylistModel.getPlaylist().add(detailsModel);
                 }
-                listener.onPlaylistCreated();
+                listener.onPlaylistCreated(true);
             }
         });
     }

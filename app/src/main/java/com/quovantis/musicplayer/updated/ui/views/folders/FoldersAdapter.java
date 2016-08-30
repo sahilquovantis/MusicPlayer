@@ -50,7 +50,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SongPathModel songPathModel = mSongPathModelArrayList.get(position);
+        final SongPathModel songPathModel = mSongPathModelArrayList.get(position);
         final String directory = songPathModel.getSongDirectory();
         String path = songPathModel.getSongPath();
         path = path.substring(0, path.lastIndexOf("/"));
@@ -68,7 +68,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                iFolderClickListener.onFoldersLongPress();
+                iFolderClickListener.onFoldersLongPress(songPathModel);
                return true;
             }
         });

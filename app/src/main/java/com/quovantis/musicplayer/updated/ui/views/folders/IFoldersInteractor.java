@@ -14,6 +14,8 @@ public interface IFoldersInteractor {
 
     void onFetchedSongs();
 
+    void resyncMusic(Context context);
+
     interface RefreshSongsListListener {
         void onRefreshMusicListUpdateProgress(int value, int total);
 

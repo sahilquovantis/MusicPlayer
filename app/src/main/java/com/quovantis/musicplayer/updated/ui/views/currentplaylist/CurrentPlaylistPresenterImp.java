@@ -66,8 +66,8 @@ public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter,
     }
 
     @Override
-    public void onPlaylistCreated() {
+    public void onPlaylistCreated(boolean isCreated) {
         if (mView != null)
-            mView.onCancelCreatePlaylistProgressDialog();
+            mView.onCancelCreatePlaylistProgressDialog(isCreated);
     }
 }

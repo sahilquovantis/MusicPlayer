@@ -62,4 +62,11 @@ public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteracto
         if (mFoldersView != null)
             mFoldersView.initializeRefreshListDialog();
     }
+
+    @Override
+    public void syncMusic(Context context) {
+        if(mFoldersView != null)
+            mFoldersView.showProgress();
+        iFoldersInteractor.resyncMusic(context);
+    }
 }

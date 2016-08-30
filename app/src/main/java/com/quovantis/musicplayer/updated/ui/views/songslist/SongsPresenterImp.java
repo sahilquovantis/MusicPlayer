@@ -7,13 +7,13 @@ import java.util.ArrayList;
 /**
  * Created by sahil-goel on 24/8/16.
  */
-public class SongsPresenter implements ISongsPresenter, ISongsInteractor.Listener {
+public class SongsPresenterImp implements ISongsPresenter, ISongsInteractor.Listener {
     private ISongsView iSongsView;
     private ISongsInteractor iSongsInteractor;
 
-    public SongsPresenter(ISongsView iSongsView) {
+    public SongsPresenterImp(ISongsView iSongsView) {
         this.iSongsView = iSongsView;
-        iSongsInteractor = new SongsInteractor();
+        iSongsInteractor = new SongsInteractorImp();
     }
 
     @Override

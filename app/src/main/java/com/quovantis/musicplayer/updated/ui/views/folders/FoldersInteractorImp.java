@@ -31,10 +31,15 @@ public class FoldersInteractorImp implements IFoldersInteractor,
     public void getFoldersList(Context context) {
         if (SharedPrefrence.getSharedPrefrenceBoolean(context, ICommonKeys.FIRST_TIME_OPEN)) {
             SharedPrefrence.saveSharedPrefrenceBoolean(context, ICommonKeys.FIRST_TIME_OPEN, false);
-            new RefreshMusicAsyncTask(context, this).execute();
+            resyncMusic(context);
         } else {
             onFetchedSongs();
         }
+    }
+
+    @Override
+    public void resyncMusic(Context context) {
+        new RefreshMusicAsyncTask(context, this).execute();
     }
 
     @Override

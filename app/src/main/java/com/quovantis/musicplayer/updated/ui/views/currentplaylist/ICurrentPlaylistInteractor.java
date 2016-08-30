@@ -15,6 +15,6 @@ public interface ICurrentPlaylistInteractor {
     interface Listener {
         void onUpdateUI(ArrayList<SongDetailsModel> list);
 
-        void onPlaylistCreated();
+        void onPlaylistCreated(boolean isCreated);
     }
 }

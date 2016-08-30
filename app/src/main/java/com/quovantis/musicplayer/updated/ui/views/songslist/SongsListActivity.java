@@ -10,7 +10,6 @@ import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
-import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
@@ -24,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SongsListActivity extends MusicBaseActivity implements ISongsView,
-        IMusicListClickListener, IQueueOptionsDialog {
+        IMusicListClickListener, IQueueOptionsDialog.onSongClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -44,22 +43,25 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         mSongList = new ArrayList<>();
         initToolbar();
         initRecyclerView();
-        iSongsPresenter = new SongsPresenter(this);
+        iSongsPresenter = new SongsPresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, SongsListActivity.this);
         iMusicPresenter.bindService();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             long id = bundle.getLong(ICommonKeys.FOLDER_ID_KEY, -1);
             String directory = bundle.getString(ICommonKeys.DIRECTORY_NAME_KEY);
-            getSupportActionBar().setTitle(directory);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(directory);
             iSongsPresenter.updateUI(id);
         }
     }
 
     private void initToolbar() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
     }
 
     private void initRecyclerView() {

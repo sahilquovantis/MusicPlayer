@@ -3,22 +3,22 @@
     <group
         android:id="@+id/group1"
         android:checkableBehavior="single">
-        <item android:title="Music">
+        <item android:title="@string/group_one_title">
             <menu>
                 <item
                     android:id="@+id/home"
                     android:icon="@drawable/ic_folder_white"
-                    android:title="Directories" />
+                    android:title="@string/directories" />
 
                 <item
                     android:id="@+id/playlists"
                     android:icon="@drawable/ic_playlist_add_white"
-                    android:title="Playlists" />
+                    android:title="@string/playlists" />
 
                 <item
                     android:id="@+id/queue"
                     android:icon="@drawable/ic_queue_music_white"
-                    android:title="Current Playlist" />
+                    android:title="@string/now_playing" />
             </menu>
         </item>
 
@@ -26,12 +26,15 @@
     <group
         android:id="@+id/group2"
         android:checkableBehavior="single">
-        <item android:title="Other">
+        <item android:title="@string/group_two_title">
             <menu>
+                <item android:id="@+id/resync_device"
+                    android:icon="@drawable/ic_action_refresh"
+                    android:title="@string/sync_device"/>
                 <item
                     android:id="@+id/music_settings"
                     android:icon="@drawable/ic_action_settings"
-                    android:title="Settings" />
+                    android:title="@string/advanced_settings" />
             </menu>
         </item>
 

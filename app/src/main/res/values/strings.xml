@@ -3,4 +3,11 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="empty_queue">No songs in queue</string>
+    <string name="group_one_title">Music</string>
+    <string name="directories">Directories</string>
+    <string name="playlists">Playlists</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="group_two_title">Settings</string>
+    <string name="sync_device">Sync Device</string>
+    <string name="advanced_settings">Advanced Settings</string>
 </resources>

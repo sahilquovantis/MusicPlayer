@@ -6,15 +6,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.CreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
+import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -22,6 +25,7 @@ import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -136,6 +140,7 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onSongRemove(int pos) {
+        Log.d(ICommonKeys.TAG, "Size : " + mQueueList.size());
         iCurrentPlaylistPresenter.songRemoved(pos);
     }
 
@@ -152,8 +157,12 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     }
 
     @Override
-    public void onCancelCreatePlaylistProgressDialog() {
-        if(mCreatePlaylistProgressDialog != null)
+    public void onCancelCreatePlaylistProgressDialog(boolean isCreated) {
+        if (mCreatePlaylistProgressDialog != null)
             mCreatePlaylistProgressDialog.cancel();
+        if (isCreated)
+            Toast.makeText(this, "Playlist Successfully Created", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
     }
 }

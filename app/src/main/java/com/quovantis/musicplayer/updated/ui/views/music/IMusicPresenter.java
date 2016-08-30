@@ -26,4 +26,6 @@ public interface IMusicPresenter {
     void onSkipToNext();
 
     void stopService();
+
+    void hideMusicLayoutDuringResyncMusic();
 }

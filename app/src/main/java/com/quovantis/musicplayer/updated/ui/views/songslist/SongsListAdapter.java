@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
@@ -50,7 +51,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         final SongDetailsModel songDetailsModel = mSongList.get(pos);
         holder.mSongTV.setText(songDetailsModel.getSongTitle());
         holder.mSongArtistTV.setText(songDetailsModel.getSongArtist());
-        loadBitmap(holder.mSongThumbnailIV, songDetailsModel.getSongThumbnailData());
+        LoadBitmapHelper.loadBitmap(mContext, holder.mSongThumbnailIV, songDetailsModel.getSongThumbnailData());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,91 +89,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-        }
-    }
-
-    public void loadBitmap(ImageView imageView, byte[] data) {
-        if (cancelPotentialWork(data, imageView)) {
-            final DisplayImage task = new DisplayImage(imageView);
-            final AsyncDrawable asyncDrawable = new AsyncDrawable(task);
-            imageView.setImageDrawable(asyncDrawable);
-            task.execute(data);
-        }
-    }
-
-    static class AsyncDrawable extends BitmapDrawable {
-        private final WeakReference<DisplayImage> bitmapWorkerTask;
-
-        public AsyncDrawable(DisplayImage bitmapTask) {
-            bitmapWorkerTask = new WeakReference<DisplayImage>(bitmapTask);
-        }
-
-        public DisplayImage getBitmapWorkerTask() {
-            return bitmapWorkerTask.get();
-        }
-    }
-
-    public static boolean cancelPotentialWork(byte[] data, ImageView imageView) {
-        final DisplayImage bitmapWorkerTask = getBitmapWorkerTask(imageView);
-
-        if (bitmapWorkerTask != null) {
-            final byte[] bitmapData = bitmapWorkerTask.data;
-            if (bitmapData != data) {
-                bitmapWorkerTask.cancel(true);
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static DisplayImage getBitmapWorkerTask(ImageView imageView) {
-        if (imageView != null) {
-            final Drawable drawable = imageView.getDrawable();
-            if (drawable instanceof AsyncDrawable) {
-                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
-                return asyncDrawable.getBitmapWorkerTask();
-            }
-        }
-        return null;
-    }
-
-
-    class DisplayImage extends AsyncTask<byte[], Void, Bitmap> {
-
-        private WeakReference<ImageView> imageViewWeakReference;
-        public byte[] data = null;
-
-        DisplayImage(ImageView iv) {
-            imageViewWeakReference = new WeakReference<ImageView>(iv);
-        }
-
-        @Override
-        protected Bitmap doInBackground(byte[]... strings) {
-            data = strings[0];
-            Bitmap bitmap = null;
-            if (data == null) {
-                bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.music);
-            } else {
-                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            if (isCancelled()) {
-                bitmap = null;
-            }
-            if (bitmap != null && imageViewWeakReference != null) {
-                ImageView imageView = imageViewWeakReference.get();
-                final DisplayImage bitmapWorkerTask =
-                        getBitmapWorkerTask(imageView);
-                if (this == bitmapWorkerTask && imageView != null) {
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
         }
     }
 }

@@ -45,16 +45,18 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final SongDetailsModel model = mQueueList.get(position);
-        String title = model.getSongTitle();
-        String artist = model.getSongArtist();
-        holder.mQueueSOngTitle.setText(title);
-        holder.mQueueSongArtist.setText(artist);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iCurrentPlaylistClickListener.onClick(model);
-            }
-        });
+        if (model != null) {
+            String title = model.getSongTitle();
+            String artist = model.getSongArtist();
+            holder.mQueueSOngTitle.setText(title);
+            holder.mQueueSongArtist.setText(artist);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    iCurrentPlaylistClickListener.onClick(model);
+                }
+            });
+        }
     }
 
     @Override

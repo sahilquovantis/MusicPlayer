@@ -14,14 +14,15 @@ import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
-import com.quovantis.musicplayer.updated.dialogs.SongOptionsDialog;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
+import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
 import com.quovantis.musicplayer.updated.ui.views.currentplaylist.CurrentPlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
+import com.quovantis.musicplayer.updated.ui.views.playlists.PlaylistsActivity;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
 
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FoldersActivity extends MusicBaseActivity implements IFolderView,
-        IFolderClickListener, NavigationView.OnNavigationItemSelectedListener {
+        IFolderClickListener, NavigationView.OnNavigationItemSelectedListener,
+        IQueueOptionsDialog.onFolderClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -128,9 +130,8 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
     }
 
     @Override
-    public void onFoldersLongPress() {
-        SongOptionsDialog dialog = new SongOptionsDialog(FoldersActivity.this);
-        dialog.showDialog();
+    public void onFoldersLongPress(SongPathModel songPathModel) {
+        //  QueueOptionsDialog.showDialog(FoldersActivity.this, songPathModel, this);
     }
 
     @Override
@@ -166,7 +167,20 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
             Intent intent = new Intent(this, CurrentPlaylistActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.playlists) {
+            Intent intent = new Intent(this, PlaylistsActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.resync_device) {
+            iMusicPresenter.hideMusicLayoutDuringResyncMusic();
+            iFoldersPresenter.syncMusic(this);
+            return true;
         }
         return false;
+    }
+
+    @Override
+    public void onClick(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong) {
+
     }
 }

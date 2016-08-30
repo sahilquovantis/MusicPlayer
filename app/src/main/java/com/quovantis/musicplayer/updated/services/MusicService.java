@@ -139,6 +139,9 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         @Override
         public void onCustomAction(String action, Bundle extras) {
             super.onCustomAction(action, extras);
+            if (action.equals("NONE")) {
+                mPlaybackManager.none();
+            }
         }
     };
 

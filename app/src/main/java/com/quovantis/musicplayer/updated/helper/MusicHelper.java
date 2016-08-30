@@ -205,7 +205,7 @@ public class MusicHelper {
         if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
             Collections.swap(mCurrentPlaylist, from, to);
             mCurrentPosition = mCurrentSong == null ? 0 : mCurrentPlaylist.indexOf(mCurrentSong);
-            Log.d(ICommonKeys.TAG,"Current Pos : " + mCurrentPosition);
+            Log.d(ICommonKeys.TAG, "Current Pos : " + mCurrentPosition);
         }
     }
 
@@ -215,7 +215,7 @@ public class MusicHelper {
                 mCurrentPlaylist.remove(pos);
                 if (mCurrentPosition == pos)
                     mCurrentPosition = pos - 1;
-                if(mCurrentPlaylist == null || mCurrentPlaylist.isEmpty()){
+                if (mCurrentPlaylist == null || mCurrentPlaylist.isEmpty()) {
                     iOnSongRemovedFromQueue.onQueueListEmptyShowEmptyTV();
                 }
 
@@ -223,6 +223,11 @@ public class MusicHelper {
                 mCurrentPosition = 0;
             }
         }
+    }
+
+    public void clearCurrentPlaylist() {
+        mCurrentPlaylist.clear();
+        mCurrentPosition = 0;
     }
 }
 

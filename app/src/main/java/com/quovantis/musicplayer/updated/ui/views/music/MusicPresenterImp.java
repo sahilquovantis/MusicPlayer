@@ -176,4 +176,11 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
             mMediaController.getTransportControls().playFromMediaId(id, null);
         }
     }
+
+    @Override
+    public void hideMusicLayoutDuringResyncMusic() {
+        if (mMediaController != null)
+            mMediaController.getTransportControls().sendCustomAction("NONE", null);
+        MusicHelper.getInstance().clearCurrentPlaylist();
+    }
 }

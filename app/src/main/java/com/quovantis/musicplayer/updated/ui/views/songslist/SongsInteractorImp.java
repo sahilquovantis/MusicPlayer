@@ -6,16 +6,17 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by sahil-goel on 24/8/16.
  */
-public class SongsInteractor implements ISongsInteractor {
+public class SongsInteractorImp implements ISongsInteractor {
 
     @Override
     public void getSongsList(long id, ISongsInteractor.Listener listener) {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<SongDetailsModel> list = realm.where(SongDetailsModel.class).equalTo("mSongPathID", id).findAll();
+        RealmResults<SongDetailsModel> list = realm.where(SongDetailsModel.class).equalTo("mSongPathID", id).findAll().sort("mSongTitle", Sort.ASCENDING);
         ArrayList<SongDetailsModel> lists = new ArrayList<>();
         lists.addAll(list);
         listener.onUpdateSongsList(lists);
