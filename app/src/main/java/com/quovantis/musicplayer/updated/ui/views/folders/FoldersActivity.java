@@ -142,6 +142,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         Intent intent = new Intent(FoldersActivity.this, SongsListActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+        overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
     }
 
     @Override
@@ -161,15 +162,17 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
         mDrawerLayout.closeDrawer(mNavigationView);
+        int id = item.getItemId();
         if (id == R.id.queue) {
             Intent intent = new Intent(this, CurrentPlaylistActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
             return true;
         } else if (id == R.id.playlists) {
             Intent intent = new Intent(this, PlaylistsActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
             return true;
         } else if (id == R.id.resync_device) {
             iMusicPresenter.hideMusicLayoutDuringResyncMusic();

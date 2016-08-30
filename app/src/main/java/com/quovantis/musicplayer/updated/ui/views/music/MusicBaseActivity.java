@@ -71,4 +71,10 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
         mMusicLayout.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
+    }
 }
