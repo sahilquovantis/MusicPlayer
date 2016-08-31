@@ -131,7 +131,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
      * Try to get the system audio focus.
      */
     private boolean tryToGetAudioFocus() {
-        if(mAudioManager == null)
+        if (mAudioManager == null)
             mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
         int result = mAudioManager.requestAudioFocus(
@@ -229,6 +229,13 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             } else {
                 mPlayOnFocusGain = true;
             }
+        }
+    }
+
+    public void seekTo(long pos) {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.seekTo((int) pos);
+            updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
         }
     }
 

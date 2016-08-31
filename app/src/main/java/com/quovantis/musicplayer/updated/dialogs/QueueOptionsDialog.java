@@ -36,15 +36,15 @@ public class QueueOptionsDialog {
         addToQueue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClick(model, false, false);
                 dialog.dismiss();
+                listener.onClick(model, false, false);
             }
         });
         clearAndPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClick(model, true, true);
                 dialog.dismiss();
+                listener.onClick(model, true, true);
             }
         });
     }
@@ -64,15 +64,15 @@ public class QueueOptionsDialog {
         addToQueue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClick(model, false, false);
                 dialog.dismiss();
+                listener.onClick(model, false, false);
             }
         });
         clearAndPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClick(model, true, true);
                 dialog.dismiss();
+                listener.onClick(model, true, true);
             }
         });
     }

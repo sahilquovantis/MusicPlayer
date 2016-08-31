@@ -1,8 +1,8 @@
 package com.quovantis.musicplayer.updated.ui.views.playlistsongs;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+import com.quovantis.musicplayer.updated.interfaces.IPlaylistSongsClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
-import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 
@@ -23,7 +23,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylistSongsView {
+public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylistSongsView,
+        IPlaylistSongsClickListener {
 
     @BindView(R.id.tv_no_playlist_songs)
     TextView mEmptyPlaylistTV;
@@ -46,7 +47,7 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylis
         initToolbar();
         initRecyclerView();
         Bundle bundle = getIntent().getExtras();
-        long id  = -1;
+        long id = -1;
         if (bundle != null) {
             id = bundle.getLong(ICommonKeys.FOLDER_ID_KEY, -1);
             String directory = bundle.getString(ICommonKeys.DIRECTORY_NAME_KEY);
@@ -58,14 +59,14 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylis
 
     private void initPresenters(long id) {
         iPlaylistSongsPresenter = new PlaylistSongsPresenterImp(this);
-        iMusicPresenter = new MusicPresenterImp(this,this);
+        iMusicPresenter = new MusicPresenterImp(this, this);
         iMusicPresenter.bindService();
         iPlaylistSongsPresenter.updateUI(id);
     }
 
     private void initRecyclerView() {
         mPlaylistsListRV.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new PlaylistSongsAdapter(mPlaylistsList, this);
+        mAdapter = new PlaylistSongsAdapter(mPlaylistsList, this, this);
         mPlaylistsListRV.setAdapter(mAdapter);
     }
 
@@ -110,7 +111,23 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylis
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        iPlaylistSongsPresenter.onDestroy();
         iMusicPresenter.onDestroy();
         iMusicPresenter = null;
+        iPlaylistSongsPresenter = null;
+    }
+
+    @Override
+    public void onClick(SongDetailsModel model) {
+
+    }
+
+    @Override
+    public void updateMusicProgress(PlaybackStateCompat playbackState) {
+
+    }
+    @Override
+    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
+
     }
 }

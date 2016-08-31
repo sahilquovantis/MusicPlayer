@@ -1,25 +1,22 @@
 package com.quovantis.musicplayer.updated.ui.views.songslist;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
+import com.quovantis.musicplayer.updated.utility.CircleImageView;
 import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -64,6 +61,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
                 iMusicListClickListener.onActionOverFlowClick(songDetailsModel);
             }
         });
+        RecyclerViewAnimationHelper.animate(mContext, holder);
     }
 
     @Override
@@ -78,7 +76,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_song_thumbnail)
-        ImageView mSongThumbnailIV;
+        CircleImageView mSongThumbnailIV;
         @BindView(R.id.tv_song_name)
         TextView mSongTV;
         @BindView(R.id.tv_song_artist)

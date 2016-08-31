@@ -1,6 +1,9 @@
 package com.quovantis.musicplayer.updated.ui.views.songslist;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +17,7 @@ import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         IMusicListClickListener, IQueueOptionsDialog.onSongClickListener {
@@ -122,6 +127,15 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
 
     @Override
     public void onStopService() {
+
+    }
+
+    @Override
+    public void updateMusicProgress(PlaybackStateCompat playbackState) {
+
+    }
+    @Override
+    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
 
     }
 }

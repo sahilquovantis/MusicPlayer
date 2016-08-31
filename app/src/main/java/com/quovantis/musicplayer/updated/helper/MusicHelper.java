@@ -16,6 +16,7 @@ import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import io.realm.RealmResults;
 
@@ -66,6 +67,21 @@ public class MusicHelper {
             mCurrentPlaylist.add(position, model);
             if (isPlaythisSong) {
                 mCurrentPosition = position;
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException e1) {
+            mCurrentPosition = 0;
+        }
+    }
+
+    public void addSongToPlaylist(List<SongDetailsModel> list, boolean isClearQueue, boolean isPlaythisSong) {
+        try {
+
+            if (mCurrentPlaylist != null) {
+                if (isClearQueue) {
+                    mCurrentPosition = 0;
+                    mCurrentPlaylist.clear();
+                }
+                mCurrentPlaylist.addAll(list);
             }
         } catch (NullPointerException | IndexOutOfBoundsException e1) {
             mCurrentPosition = 0;
@@ -149,7 +165,7 @@ public class MusicHelper {
         String prevMediaId = null;
         try {
             if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
-                if (mCurrentPosition == 0) {
+                if (mCurrentPosition == 0 || mCurrentPosition < 0) {
                     mCurrentPosition = mCurrentPlaylist.size() - 1;
                 } else {
                     mCurrentPosition -= 1;
@@ -171,7 +187,7 @@ public class MusicHelper {
         String nextMediaId = null;
         try {
             if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
-                if (mCurrentPosition == mCurrentPlaylist.size() - 1) {
+                if (mCurrentPosition == mCurrentPlaylist.size() - 1 || mCurrentPosition >= mCurrentPlaylist.size()) {
                     mCurrentPosition = 0;
                 } else {
                     mCurrentPosition += 1;

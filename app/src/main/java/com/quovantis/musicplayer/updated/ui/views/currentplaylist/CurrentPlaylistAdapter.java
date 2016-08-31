@@ -9,9 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IItemTouchHelperAdapter;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.utility.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,6 +58,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
                     iCurrentPlaylistClickListener.onClick(model);
                 }
             });
+            LoadBitmapHelper.loadBitmap(mContext, holder.mImage, model.getSongThumbnailData());
         }
     }
 
@@ -81,6 +84,8 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_queue_song_title)
         TextView mQueueSOngTitle;
+        @BindView(R.id.iv_song_thumbnail)
+        CircleImageView mImage;
         @BindView(R.id.tv_queue_song_artist)
         TextView mQueueSongArtist;
         @BindView(R.id.ll_drag_icon)

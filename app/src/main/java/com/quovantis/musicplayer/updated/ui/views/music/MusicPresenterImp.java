@@ -20,6 +20,12 @@ import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
 
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
+
 /**
  * Created by sahil-goel on 26/8/16.
  */
@@ -67,6 +73,7 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     @Override
     public void updateUI(MediaMetadataCompat mediaMetadata) {
         if (iMusicView != null) {
+            iMusicView.updateMusicDurationInitial(mediaMetadata);
             boolean canHide = true;
             MediaDescriptionCompat mediaDescription = mediaMetadata == null ? null :
                     mediaMetadata.getDescription();
@@ -100,6 +107,7 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
             } else {
                 iMusicView.onHideMusicLayout();
             }
+            iMusicView.updateMusicProgress(playbackState);
         }
     }
 
@@ -170,6 +178,19 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
             playSong(model.getSongID());
     }
 
+    @Override
+    public void addSongToPlaylist(long id, boolean isClearQueue, boolean isPlaythisSong) {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<SongDetailsModel> list = realm.where(SongDetailsModel.class).equalTo("mSongPathID", id).findAll().sort("mSongTitle", Sort.ASCENDING);
+        if (!list.isEmpty()) {
+            MusicHelper.getInstance().addSongToPlaylist(list, isClearQueue, isPlaythisSong);
+            if (isPlaythisSong)
+                playSong(list.get(0).getSongID());
+            if(iMusicView != null)
+                iMusicView.cancelDialog();
+        }
+    }
+
     private void playSong(String id) {
         if (mMediaController != null) {
             Log.d(ICommonKeys.TAG, "Selected Song id : " + id);
@@ -182,5 +203,11 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         if (mMediaController != null)
             mMediaController.getTransportControls().sendCustomAction("NONE", null);
         MusicHelper.getInstance().clearCurrentPlaylist();
+    }
+
+    @Override
+    public void seekTo(long pos) {
+        if (mMediaController != null)
+            mMediaController.getTransportControls().seekTo(pos);
     }
 }

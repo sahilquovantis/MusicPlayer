@@ -5,11 +5,15 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
+import java.util.List;
+
 /**
  * Created by sahil-goel on 26/8/16.
  */
 public interface IMusicPresenter {
     void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong);
+
+    void addSongToPlaylist(long id, boolean isClearQueue, boolean isPlaythisSong);
 
     void updateUI(MediaMetadataCompat mediaMetadata);
 
@@ -28,4 +32,6 @@ public interface IMusicPresenter {
     void stopService();
 
     void hideMusicLayoutDuringResyncMusic();
+
+    void seekTo(long pos);
 }

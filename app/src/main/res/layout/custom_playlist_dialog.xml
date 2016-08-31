@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_10"
-            android:text="Create Playlist"
+            android:text="@string/create_playlist"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20" />
 
@@ -28,8 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
-            android:hint="Playlist"
-            android:inputType="text"
+            android:hint="@string/playlist"
+            android:inputType="textCapWords"
             android:textColor="@color/black" />
 
         <RelativeLayout
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/sp_18" />
 
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/tv_cancel"
                 android:padding="@dimen/dp_10"
-                android:text="Create"
+                android:text="@string/create"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/sp_18" />
 

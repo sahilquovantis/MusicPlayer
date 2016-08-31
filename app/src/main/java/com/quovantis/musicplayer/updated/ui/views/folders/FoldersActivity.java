@@ -1,8 +1,11 @@
 package com.quovantis.musicplayer.updated.ui.views.folders;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,6 +16,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
+import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
@@ -49,6 +54,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
     private ArrayList<SongPathModel> mFoldersList;
     private RefreshListDialog mRefreshListDialog;
     private IFoldersPresenter iFoldersPresenter;
+    private Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +137,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     @Override
     public void onFoldersLongPress(SongPathModel songPathModel) {
-        //  QueueOptionsDialog.showDialog(FoldersActivity.this, songPathModel, this);
+        QueueOptionsDialog.showDialog(FoldersActivity.this, songPathModel, this);
     }
 
     @Override
@@ -184,6 +190,24 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     @Override
     public void onClick(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong) {
+        mDialog = ProgresDialog.showProgressDialog(this);
+        iMusicPresenter.addSongToPlaylist(model.getId(), isClearQueue, isPlaythisSong);
+    }
+
+    @Override
+    public void cancelDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void updateMusicProgress(PlaybackStateCompat playbackState) {
+
+    }
+
+    @Override
+    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
 
     }
 }

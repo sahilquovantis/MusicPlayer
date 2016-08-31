@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.ui.views.music;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,14 +11,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public abstract class MusicBaseActivity extends AppCompatActivity implements IMusicView{
+public abstract class MusicBaseActivity extends AppCompatActivity implements IMusicView {
 
     @BindView(R.id.rl_music_layout)
-    RelativeLayout mMusicLayout;
+    public RelativeLayout mMusicLayout;
     @BindView(R.id.iv_selected_song_thumbnail)
     ImageView mSelectedSongThumbnailIV;
     @BindView(R.id.tv_selected_song)
@@ -76,5 +78,17 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
         super.onBackPressed();
         finish();
         overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
+    }
+
+    @OnClick(R.id.rl_music_layout)
+    public void onClick() {
+        Intent intent = new Intent(this, FullScreenMusic.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
+    }
+
+    @Override
+    public void cancelDialog() {
+
     }
 }

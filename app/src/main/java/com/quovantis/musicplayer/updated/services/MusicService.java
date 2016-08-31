@@ -137,6 +137,12 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         }
 
         @Override
+        public void onSeekTo(long pos) {
+            super.onSeekTo(pos);
+            mPlaybackManager.seekTo(pos);
+        }
+
+        @Override
         public void onCustomAction(String action, Bundle extras) {
             super.onCustomAction(action, extras);
             if (action.equals("NONE")) {

@@ -11,4 +11,10 @@
     <string name="sync_device">Sync Device</string>
     <string name="advanced_settings">Advanced Settings</string>
     <string name="empty">Empty</string>
+    <string name="playlist">Playlist</string>
+    <string name="create_playlist">Create Playlist</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="dummy_song">Dummy Song</string>
+    <string name="dummy_artist">Dummy Artist</string>
 </resources>

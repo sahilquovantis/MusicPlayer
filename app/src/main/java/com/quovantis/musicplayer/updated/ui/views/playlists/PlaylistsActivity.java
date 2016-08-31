@@ -2,6 +2,8 @@ package com.quovantis.musicplayer.updated.ui.views.playlists;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -129,5 +131,14 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
         intent.putExtras(bundle);
         startActivity(intent);
         overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
+    }
+
+    @Override
+    public void updateMusicProgress(PlaybackStateCompat playbackState) {
+
+    }
+    @Override
+    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
+
     }
 }

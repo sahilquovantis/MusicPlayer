@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
+import com.quovantis.musicplayer.updated.interfaces.IPlaylistSongsClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.ArrayList;
@@ -24,10 +25,12 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
 
     private ArrayList<SongDetailsModel> mList;
     private Context mContext;
+    private IPlaylistSongsClickListener iPlaylistSongsClickListener;
 
-    public PlaylistSongsAdapter(ArrayList<SongDetailsModel> mList, Context mContext) {
+    public PlaylistSongsAdapter(ArrayList<SongDetailsModel> mList, Context mContext, IPlaylistSongsClickListener iPlaylistSongsClickListener) {
         this.mList = mList;
         this.mContext = mContext;
+        this.iPlaylistSongsClickListener = iPlaylistSongsClickListener;
     }
 
     @Override
@@ -37,11 +40,16 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final int pos = position;
-        final SongDetailsModel songDetailsModel = mList.get(pos);
+        final SongDetailsModel songDetailsModel = mList.get(position);
         holder.mSongTV.setText(songDetailsModel.getSongTitle());
         holder.mSongArtistTV.setText(songDetailsModel.getSongArtist());
         LoadBitmapHelper.loadBitmap(mContext, holder.mSongThumbnailIV, songDetailsModel.getSongThumbnailData());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iPlaylistSongsClickListener.onClick(songDetailsModel);
+            }
+        });
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -129,6 +131,11 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     }
 
     @Override
+    public void updateMusicProgress(PlaybackStateCompat playbackState) {
+
+    }
+
+    @Override
     public void onClick(SongDetailsModel model) {
         iMusicPresenter.addSongToPlaylist(model, false, true);
     }
@@ -164,5 +171,10 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
             Toast.makeText(this, "Playlist Successfully Created", Toast.LENGTH_LONG).show();
         else
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
+
     }
 }
