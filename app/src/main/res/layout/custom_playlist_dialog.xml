@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
-            android:gravity="right">
+            android:gravity="end">
 
             <TextView
                 android:id="@+id/tv_cancel"
@@ -51,6 +51,7 @@
                 android:id="@+id/tv_create_playlist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/tv_cancel"
                 android:layout_toRightOf="@id/tv_cancel"
                 android:padding="@dimen/dp_10"
                 android:text="@string/create"

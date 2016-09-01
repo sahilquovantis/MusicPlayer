@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -69,7 +70,8 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     private void initiToolbar() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Folders");
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(" ");
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();

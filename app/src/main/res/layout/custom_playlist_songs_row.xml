@@ -23,7 +23,7 @@
 
         <RelativeLayout
             android:layout_weight="1"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -35,7 +35,7 @@
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
-                android:text="Dummy Song"
+                android:text="@string/dummy_song"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_16" />
 
@@ -49,7 +49,7 @@
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
-                android:text="Dummy Artist" />
+                android:text="@string/dummy_artist" />
         </RelativeLayout>
     </LinearLayout>
 

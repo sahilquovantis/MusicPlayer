@@ -18,6 +18,7 @@
         android:background="@color/colorPrimary">
 
         <ImageView
+            android:contentDescription="@string/thumbnail"
             android:id="@+id/iv_selected_song_thumbnail"
             android:layout_width="@dimen/music_player_height"
             android:layout_height="match_parent"
@@ -27,6 +28,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_toEndOf="@id/iv_selected_song_thumbnail"
             android:layout_toRightOf="@id/iv_selected_song_thumbnail"
             android:padding="@dimen/dp_10">
 
@@ -36,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Dummy Song"
+                android:text="@string/dummy_song"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_16" />
 
@@ -47,10 +49,11 @@
                 android:layout_below="@id/tv_selected_song"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Dummy Artist"
+                android:text="@string/dummy_artist"
                 android:textColor="@color/white" />
 
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_selected_song_artist"
@@ -58,28 +61,33 @@
                 android:gravity="center_horizontal">
 
                 <ImageView
+                    android:contentDescription="@string/previous_song"
                     android:id="@+id/iv_previous_song"
                     android:layout_width="@dimen/play_pause_size"
                     android:layout_height="@dimen/play_pause_size"
                     android:clickable="true"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:src="@drawable/ic_action_previous" />
 
                 <ImageView
+                    android:contentDescription="@string/play_and_pause"
                     android:id="@+id/iv_play_pause_button"
                     android:layout_width="@dimen/play_pause_size"
                     android:layout_height="@dimen/play_pause_size"
-                    android:layout_toRightOf="@id/iv_previous_song"
                     android:clickable="true"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:src="@drawable/ic_action_pause" />
 
                 <ImageView
+                    android:contentDescription="@string/next_song"
                     android:id="@+id/iv_next_song"
                     android:layout_width="@dimen/play_pause_size"
                     android:layout_height="@dimen/play_pause_size"
-                    android:layout_toRightOf="@id/iv_play_pause_button"
                     android:clickable="true"
                     android:src="@drawable/ic_action_next" />
-            </RelativeLayout>
+            </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

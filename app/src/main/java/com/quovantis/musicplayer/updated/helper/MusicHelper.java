@@ -28,29 +28,17 @@ public class MusicHelper {
     private SongDetailsModel mCurrentSong;
     private static MusicHelper sInstance;
     private ArrayList<SongDetailsModel> mCurrentPlaylist;
-    private LinkedHashSet<SongDetailsModel> mSongsSet;
 
     private MusicHelper() {
-        mSongsSet = new LinkedHashSet<>();
-        mCurrentPlaylist = new ArrayList<>(mSongsSet);
+        mCurrentPlaylist = new ArrayList<>();
     }
-
-   /* public void addSongToPlaylist(SongDetailsModel songDetailsModel) {
-        try {
-            if (mCurrentPlaylist != null &&
-                    !mCurrentPlaylist.isEmpty() &&
-                    mCurrentPlaylist.contains(songDetailsModel)) {
-                mCurrentPosition = mCurrentPlaylist.indexOf(songDetailsModel);
-            } else {
-                mCurrentPosition += 1;
-                mCurrentPlaylist.add(mCurrentPosition, songDetailsModel);
-            }
-        } catch (NullPointerException e) {
-        }
-    }*/
 
     public void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
         try {
+
+            if (mCurrentPlaylist == null) {
+                mCurrentPlaylist = new ArrayList<>();
+            }
 
             if (isClearQueue) {
                 mCurrentPosition = 0;
@@ -76,40 +64,35 @@ public class MusicHelper {
     public void addSongToPlaylist(List<SongDetailsModel> list, boolean isClearQueue, boolean isPlaythisSong) {
         try {
 
-            if (mCurrentPlaylist != null) {
-                if (isClearQueue) {
-                    mCurrentPosition = 0;
-                    mCurrentPlaylist.clear();
-                }
-                mCurrentPlaylist.addAll(list);
+            if (mCurrentPlaylist == null) {
+                mCurrentPlaylist = new ArrayList<>();
             }
+            if (isClearQueue) {
+                mCurrentPosition = 0;
+                mCurrentPlaylist.clear();
+            }
+            mCurrentPlaylist.addAll(list);
         } catch (NullPointerException | IndexOutOfBoundsException e1) {
             mCurrentPosition = 0;
         }
-    }
-
-    public boolean addSongToPlaylist(RealmResults<SongDetailsModel> list) {
-        boolean isAdded;
-        mSongsSet.addAll(list);
-        mCurrentPlaylist.clear();
-        isAdded = mCurrentPlaylist.addAll(mSongsSet);
-        return isAdded;
-    }
-
-    public boolean addSongToPlaylist(ArrayList<SongDetailsModel> list, int pos) {
-        mCurrentPosition = pos;
-        boolean isAdded;
-        mSongsSet.clear();
-        mSongsSet.addAll(list);
-        mCurrentPlaylist.clear();
-        isAdded = mCurrentPlaylist.addAll(mSongsSet);
-        return isAdded;
     }
 
     public ArrayList<SongDetailsModel> getCurrentPlaylist() {
         return mCurrentPlaylist;
     }
 
+    public boolean setCurrentPlaylist(ArrayList<SongDetailsModel> list, int playingPos){
+        if(mCurrentPlaylist == null)
+            mCurrentPlaylist = new ArrayList<>();
+        mCurrentPlaylist.clear();
+        mCurrentPlaylist.addAll(list);
+        mCurrentPosition = playingPos;
+        return true;
+    }
+
+    public void setCurrentPosition(int pos){
+        mCurrentPosition = pos;
+    }
     public static synchronized MusicHelper getInstance() {
         if (sInstance == null) {
             sInstance = new MusicHelper();

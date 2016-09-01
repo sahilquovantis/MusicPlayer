@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Fetching Songs"
+        android:text="@string/fetching_songs"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Songs Fetched : 0/0" />
+        android:text="@string/songs_fetched_0_0" />
 
     <ProgressBar
         android:id="@+id/pb_update_progress"

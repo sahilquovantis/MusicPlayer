@@ -55,6 +55,13 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
                 iMusicListClickListener.onMusicListClick(songDetailsModel);
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                iMusicListClickListener.onActionOverFlowClick(songDetailsModel);
+                return true;
+            }
+        });
         holder.mPopUpMenuLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

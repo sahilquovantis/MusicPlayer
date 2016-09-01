@@ -191,7 +191,8 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         }
     }
 
-    private void playSong(String id) {
+    @Override
+    public void playSong(String id) {
         if (mMediaController != null) {
             Log.d(ICommonKeys.TAG, "Selected Song id : " + id);
             mMediaController.getTransportControls().playFromMediaId(id, null);

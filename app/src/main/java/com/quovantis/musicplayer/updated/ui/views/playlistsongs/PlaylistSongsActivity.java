@@ -6,11 +6,13 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IPlaylistSongsClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -37,6 +39,7 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylis
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongDetailsModel> mPlaylistsList;
     private IPlaylistSongsPresenter iPlaylistSongsPresenter;
+    private boolean isListAdded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,16 +121,33 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylis
     }
 
     @Override
-    public void onClick(SongDetailsModel model) {
-
+    public void onClick(int pos, String id) {
+        if (mPlaylistsList != null) {
+            if (!isListAdded)
+                isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mPlaylistsList, pos);
+            if (isListAdded) {
+                MusicHelper.getInstance().setCurrentPosition(pos);
+                iMusicPresenter.playSong(id);
+            }
+        }
     }
 
     @Override
     public void updateMusicProgress(PlaybackStateCompat playbackState) {
 
     }
+
     @Override
     public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -83,44 +83,47 @@ public class RefreshMusicAsyncTask extends AsyncTask<Void, Integer, Void> {
                 MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
-                    final String songName = cursor.getString(2);
-                    final String songId = cursor.getString(0);
-                    final String songArtist = cursor.getString(3);
                     final String songPath = cursor.getString(1);
+                    metadataRetriever.setDataSource(songPath);
+                    if (metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) != null) {
+                        final long duration = Long.parseLong(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
 
-                    final String path = songPath.substring(0, songPath.lastIndexOf("/"));
-                    Log.d("Training",path);
-                    final int[] id = {getPathStoredID(path)};
-                    if (id[0] == -1) {
-                        final String directory = path.substring(path.lastIndexOf("/") + 1);
+                        final String songName = cursor.getString(2);
+                        final String songId = cursor.getString(0);
+                        final String songArtist = cursor.getString(3);
+
+                        final String path = songPath.substring(0, songPath.lastIndexOf("/"));
+                        Log.d("Training", path);
+                        final int[] id = {getPathStoredID(path)};
+                        if (id[0] == -1) {
+                            final String directory = path.substring(path.lastIndexOf("/") + 1);
+                            mRealm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    SongPathModel songPathModel = realm.createObject(SongPathModel.class);
+                                    songPathModel.setSongDirectory(directory);
+                                    songPathModel.setSongPath(path);
+                                    songPathModel.setCompletePath(songPath);
+                                    id[0] = getKey();
+                                    songPathModel.setId(id[0]);
+                                }
+                            });
+                        }
+
+                        final byte[] data = metadataRetriever.getEmbeddedPicture();
                         mRealm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
-                                SongPathModel songPathModel = realm.createObject(SongPathModel.class);
-                                songPathModel.setSongDirectory(directory);
-                                songPathModel.setSongPath(path);
-                                songPathModel.setCompletePath(songPath);
-                                id[0] = getKey();
-                                songPathModel.setId(id[0]);
+                                SongDetailsModel songDetailsModel = realm.createObject(SongDetailsModel.class);
+                                songDetailsModel.setSongID(songId);
+                                songDetailsModel.setSongArtist(songArtist);
+                                songDetailsModel.setSongTitle(songName);
+                                songDetailsModel.setSongDuration(duration);
+                                songDetailsModel.setSongThumbnailData(data);
+                                songDetailsModel.setSongPathID(id[0]);
                             }
                         });
                     }
-
-                    metadataRetriever.setDataSource(songPath);
-                    final byte[] data = metadataRetriever.getEmbeddedPicture();
-                    final long duration = Long.parseLong(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                    mRealm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            SongDetailsModel songDetailsModel = realm.createObject(SongDetailsModel.class);
-                            songDetailsModel.setSongID(songId);
-                            songDetailsModel.setSongArtist(songArtist);
-                            songDetailsModel.setSongTitle(songName);
-                            songDetailsModel.setSongDuration(duration);
-                            songDetailsModel.setSongThumbnailData(data);
-                            songDetailsModel.setSongPathID(id[0]);
-                        }
-                    });
                     publishProgress(cursor.getPosition() + 1);
                     cursor.moveToNext();
                 }
@@ -133,7 +136,7 @@ public class RefreshMusicAsyncTask extends AsyncTask<Void, Integer, Void> {
     private int getPathStoredID(String path) {
         int songPathID = -1;
         RealmResults<SongPathModel> list = mRealm.where(SongPathModel.class).contains("mSongPath", path).findAll();
-        if (list != null && list.size() == 1) {
+        if (!list.isEmpty() && list.size() == 1) {
             songPathID = list.get(0).getId();
         }
         return songPathID;

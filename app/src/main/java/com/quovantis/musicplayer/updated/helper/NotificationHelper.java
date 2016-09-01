@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.helper;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -12,11 +13,12 @@ import android.support.v7.app.NotificationCompat;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.services.MusicService;
 import com.quovantis.musicplayer.updated.ui.views.folders.FoldersActivity;
+import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 import com.quovantis.musicplayer.updated.utility.Utils;
 
 /**
  * @author sahil-goel
- * This class creates and cancels the Notification {@link MusicService}
+ *         This class creates and cancels the Notification {@link MusicService}
  */
 public class NotificationHelper {
 
@@ -29,14 +31,15 @@ public class NotificationHelper {
 
     /**
      * Create the Notification for Current Song
+     *
      * @param mCurrentMetaData Current Song MEdiaMetaData
-     * @param token MediaSession Token
+     * @param token            MediaSession Token
      * @param iconForPlayPause
      * @param playPause
      * @param action
      */
-    public void createNotification(MediaMetadataCompat mCurrentMetaData, MediaSessionCompat.Token token,
-                                   int iconForPlayPause, String playPause, String action) {
+    public Notification createNotification(MediaMetadataCompat mCurrentMetaData, MediaSessionCompat.Token token,
+                                           int iconForPlayPause, String playPause, String action) {
         if (mCurrentMetaData != null && token != null) {
             String title = mCurrentMetaData.getDescription().getTitle().toString();
             String artist = mCurrentMetaData.getDescription().getSubtitle().toString();
@@ -45,13 +48,8 @@ public class NotificationHelper {
             NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
             style.setMediaSession(token);
 
-
-            Intent intent = new Intent(mContext, MusicService.class);
-            intent.setAction(Utils.INTENT_ACTION_STOP);
-            PendingIntent pendingIntent = PendingIntent.getService(mContext, 1, intent, 0);
-
-            Intent showActivityIntent = new Intent(mContext, FoldersActivity.class);
-            //intent.setAction(Utils.INTENT_ACTION_SHOW_ACTIVITY);
+            Intent showActivityIntent = new Intent(mContext, FullScreenMusic.class);
+            showActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent showActivityPendingIntent = PendingIntent.getActivity(mContext, 1, showActivityIntent, 0);
 
             NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(mContext)
@@ -60,16 +58,20 @@ public class NotificationHelper {
                     .setContentText(artist)
                     .setContentIntent(showActivityPendingIntent)
                     .setLargeIcon(image)
-                    .setDeleteIntent(pendingIntent)
-                    .setStyle(style)
-                    .setColor(0x000000);
+                    .setStyle(new NotificationCompat.MediaStyle()
+                            .setShowActionsInCompactView(0, 1, 2)
+                            .setMediaSession(token))
+                    .setColor(0x3f51b5);
             builder.addAction(createAction(R.drawable.ic_action_previous, "Previous", Utils.INTENT_ACTION_PREVIOUS));
             builder.addAction(createAction(iconForPlayPause, playPause, action));
             builder.addAction(createAction(R.drawable.ic_action_next, "Next", Utils.INTENT_ACTION_NEXT));
+            builder.addAction(createAction(R.drawable.ic_action_remove, "Close", Utils.INTENT_ACTION_STOP));
             style.setShowActionsInCompactView(0, 1, 2);
-            mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, builder.build());
+            return builder.build();
+            /*mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(1, builder.build());*/
         }
+        return null;
     }
 
     /**
@@ -83,8 +85,9 @@ public class NotificationHelper {
 
     /**
      * Create Pending Actions For Notification and Used When Icons Clicked from Notification
-     * @param icon Icon For Action
-     * @param title Title For Action
+     *
+     * @param icon         Icon For Action
+     * @param title        Title For Action
      * @param intentAction IntentAction used to Differentiate Intents
      * @return Returns Notification Action
      */

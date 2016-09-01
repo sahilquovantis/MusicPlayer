@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
@@ -34,6 +35,7 @@ import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -167,7 +169,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @Override
     public void updateMusicProgress(PlaybackStateCompat playbackState) {
         mPlaybackState = playbackState;
-        if (mMusicLayout.getVisibility() != View.VISIBLE) {
+        List<SongDetailsModel> list = MusicHelper.getInstance().getCurrentPlaylist();
+        if (list == null || list.isEmpty()) {
             onBackPressed();
             return;
         }

@@ -39,7 +39,7 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
         return new ViewHolder(view);    }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final SongDetailsModel songDetailsModel = mList.get(position);
         holder.mSongTV.setText(songDetailsModel.getSongTitle());
         holder.mSongArtistTV.setText(songDetailsModel.getSongArtist());
@@ -47,7 +47,7 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iPlaylistSongsClickListener.onClick(songDetailsModel);
+                iPlaylistSongsClickListener.onClick(position, songDetailsModel.getSongID());
             }
         });
     }

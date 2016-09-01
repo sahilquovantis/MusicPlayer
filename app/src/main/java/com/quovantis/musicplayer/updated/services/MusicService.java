@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaMetadata;
@@ -25,11 +26,13 @@ import com.quovantis.musicplayer.updated.utility.Utils;
  * Created by sahil-goel on 25/8/16.
  */
 public class MusicService extends Service implements PlayBackManager.ICallback {
+    private static final int NOTIFICATION_ID = 1;
     private Binder mBinder = new ServiceBinder();
     private MediaSessionCompat mMediaSession;
     private MediaControllerCompat mMediaController;
     private NotificationHelper mNotificationHelper;
     private PlayBackManager mPlaybackManager;
+    private Notification mNotification;
 
     @Override
     public void onCreate() {
@@ -167,6 +170,8 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
             mMediaSession = null;
         }
         mMediaController = null;
+        if (mNotification != null)
+            stopForeground(true);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
@@ -175,26 +180,29 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         if (mMediaSession != null)
             mMediaSession.setPlaybackState(state);
         if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
-            mNotificationHelper.createNotification(
+            mNotification = mNotificationHelper.createNotification(
                     mPlaybackManager.getMediaMetaData(),
                     getMediaSessionToken(),
                     R.drawable.ic_action_pause, "Pause",
                     Utils.INTENT_ACTION_PAUSE);
+            if (mNotification != null)
+                startForeground(NOTIFICATION_ID, mNotification);
         } else if (state.getState() == PlaybackStateCompat.STATE_PAUSED) {
-            mNotificationHelper.createNotification(
+            mNotification = mNotificationHelper.createNotification(
                     mPlaybackManager.getMediaMetaData(),
                     getMediaSessionToken(),
                     R.drawable.ic_action_play, "Play",
                     Utils.INTENT_ACTION_PLAY);
+            if (mNotification != null)
+                startForeground(NOTIFICATION_ID, mNotification);
         } else {
             if (state.getState() == PlaybackStateCompat.STATE_STOPPED) {
                 stopSelf();
-                /*Intent intent = new Intent(Utils.INTENT_ACTION_STOP);
-                sendBroadcast(intent);*/
             }
-            mNotificationHelper.cancelNotification();
+            stopForeground(true);
+            mNotification = null;
+            //mNotificationHelper.cancelNotification();
         }
-
     }
 
     @Override

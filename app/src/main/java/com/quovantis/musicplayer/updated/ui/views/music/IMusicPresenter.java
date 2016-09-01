@@ -34,4 +34,6 @@ public interface IMusicPresenter {
     void hideMusicLayoutDuringResyncMusic();
 
     void seekTo(long pos);
+
+    void playSong(String id);
 }
