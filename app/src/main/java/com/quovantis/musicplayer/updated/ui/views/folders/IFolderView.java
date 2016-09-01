@@ -2,13 +2,13 @@ package com.quovantis.musicplayer.updated.ui.views.folders;
 
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sahil-goel on 23/8/16.
  */
 public interface IFolderView {
-    void onUpdateFoldersList(ArrayList<SongPathModel> foldersList);
+    void onUpdateFoldersList(List<SongPathModel> foldersList);
 
     void showProgress();
 

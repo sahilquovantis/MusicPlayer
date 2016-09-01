@@ -11,4 +11,5 @@ public interface ISongsView {
     void onUpdateUI(ArrayList<SongDetailsModel> list);
     void onShowProgress();
     void onHideProgres();
+    void onEmptyList();
 }

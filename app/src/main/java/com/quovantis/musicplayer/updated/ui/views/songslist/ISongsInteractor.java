@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by sahil-goel on 24/8/16.
  */
 public interface ISongsInteractor {
-    void getSongsList(long id, ISongsInteractor.Listener listener);
+    void getSongsList(long id,String action, ISongsInteractor.Listener listener);
 
     interface Listener {
         void onUpdateSongsList(ArrayList<SongDetailsModel> list);

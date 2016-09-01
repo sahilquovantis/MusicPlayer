@@ -45,8 +45,9 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final SongDetailsModel model = mQueueList.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int position1) {
+        int pos = position1;
+        final SongDetailsModel model = mQueueList.get(holder.getAdapterPosition());
         if (model != null) {
             String title = model.getSongTitle();
             String artist = model.getSongArtist();
@@ -55,7 +56,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    iCurrentPlaylistClickListener.onClick(model);
+                    iCurrentPlaylistClickListener.onClick(holder.getAdapterPosition());
                 }
             });
             LoadBitmapHelper.loadBitmap(mContext, holder.mImage, model.getSongThumbnailData());
@@ -69,16 +70,12 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(mQueueList, fromPosition, toPosition);
         iCurrentPlaylistClickListener.onSongsMoved(fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
     }
 
     @Override
     public void onItemDismiss(int position) {
-        mQueueList.remove(position);
         iCurrentPlaylistClickListener.onSongRemove(position);
-        notifyItemRemoved(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
@@ -40,6 +41,7 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongDetailsModel> mSongList;
     private ISongsPresenter iSongsPresenter;
+    private String mAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +56,20 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         iMusicPresenter.bindService();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            if (getIntent().getAction() != null)
+                mAction = getIntent().getAction();
             long id = bundle.getLong(ICommonKeys.FOLDER_ID_KEY, -1);
             String directory = bundle.getString(ICommonKeys.DIRECTORY_NAME_KEY);
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(directory);
-            iSongsPresenter.updateUI(id);
+            iSongsPresenter.updateUI(id, mAction);
         }
+    }
+
+    @Override
+    public void onEmptyList() {
+        Toast.makeText(this, "There are no tracks", Toast.LENGTH_LONG).show();
+        onBackPressed();
     }
 
     private void initToolbar() {
@@ -140,6 +150,7 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     public void updateMusicProgress(PlaybackStateCompat playbackState) {
 
     }
+
     @Override
     public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
 

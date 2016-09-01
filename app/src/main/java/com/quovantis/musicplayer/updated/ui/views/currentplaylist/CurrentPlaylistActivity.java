@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.CreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
@@ -79,9 +80,11 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     private void initToolbar() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Current Playlist");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Now Playing");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
     }
 
     @Override
@@ -138,8 +141,14 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     }
 
     @Override
-    public void onClick(SongDetailsModel model) {
-        iMusicPresenter.addSongToPlaylist(model, false, true);
+    public void onClick(int pos) {
+        if (mQueueList != null) {
+            boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mQueueList, pos);
+            if (isListAdded) {
+                iMusicPresenter.playSong();
+            }
+        }
+        //iMusicPresenter.addSongToPlaylist(model, false, true);
     }
 
     @OnClick(R.id.iv_create_playlist)
@@ -149,6 +158,8 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onSongRemove(int pos) {
+        mQueueList.remove(pos);
+        mAdapter.notifyItemRemoved(pos);
         iCurrentPlaylistPresenter.songRemoved(pos);
     }
 
@@ -159,7 +170,9 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onSongsMoved(int from, int to) {
+        Collections.swap(mQueueList, from, to);
         iCurrentPlaylistPresenter.songsMoved(from, to);
+        mAdapter.notifyItemMoved(from, to);
     }
 
     @Override

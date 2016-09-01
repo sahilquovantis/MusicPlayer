@@ -35,6 +35,7 @@ import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -102,12 +103,20 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     }
 
     @Override
-    public void onClick(SongDetailsModel model) {
-        iMusicPresenter.addSongToPlaylist(model, false, true);
+    public void onClick(int pos) {
+        if (mQueueList != null) {
+            boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mQueueList, pos);
+            if (isListAdded) {
+                iMusicPresenter.playSong();
+            }
+        }
+        //iMusicPresenter.addSongToPlaylist(model, false, true);
     }
 
     @Override
     public void onSongRemove(int pos) {
+        mQueueList.remove(pos);
+        mAdapter.notifyItemRemoved(pos);
         iCurrentPlaylistPresenter.songRemoved(pos);
     }
 
@@ -118,7 +127,9 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onSongsMoved(int from, int to) {
+        Collections.swap(mQueueList, from, to);
         iCurrentPlaylistPresenter.songsMoved(from, to);
+        mAdapter.notifyItemMoved(from, to);
     }
 
 

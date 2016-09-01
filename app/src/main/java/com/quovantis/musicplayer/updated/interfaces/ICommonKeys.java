@@ -9,4 +9,6 @@ public interface ICommonKeys {
     String USER_INFO = "com.musicplayer.shared.preferences.file.name";
     String FOLDER_ID_KEY = "com.musicplayer.id.key";
     String DIRECTORY_NAME_KEY = "com.musicplayer.directory.key";
+    String PLAYLIST_ACTION = "com.musicplayer.playlist";
+    String FOLDERS_ACTION = "com.musicplayer.songlist";
 }

@@ -183,12 +183,12 @@ public class MusicHelper {
         if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
             try {
                 mCurrentPlaylist.remove(pos);
+                if (mCurrentPlaylist == null || mCurrentPlaylist.isEmpty()) {
+                    iOnSongRemovedFromQueue.onQueueListEmptyShowEmptyTV();
+                }
                 if (mCurrentPosition == pos) {
                     mCurrentPosition = pos - 1;
                     iOnSongRemovedFromQueue.onCurrentPlayingSongRemoved();
-                }
-                if (mCurrentPlaylist == null || mCurrentPlaylist.isEmpty()) {
-                    iOnSongRemovedFromQueue.onQueueListEmptyShowEmptyTV();
                 }
 
             } catch (IndexOutOfBoundsException e) {

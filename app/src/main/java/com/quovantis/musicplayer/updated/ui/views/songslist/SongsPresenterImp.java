@@ -17,17 +17,20 @@ public class SongsPresenterImp implements ISongsPresenter, ISongsInteractor.List
     }
 
     @Override
-    public void updateUI(long id) {
-        if(iSongsView != null) {
+    public void updateUI(long id, String action) {
+        if (iSongsView != null) {
             iSongsView.onShowProgress();
-            iSongsInteractor.getSongsList(id, this);
+            iSongsInteractor.getSongsList(id, action, this);
         }
     }
 
     @Override
     public void onUpdateSongsList(ArrayList<SongDetailsModel> list) {
         if (iSongsView != null) {
-            iSongsView.onUpdateUI(list);
+            if (list == null || list.isEmpty())
+                iSongsView.onEmptyList();
+            else
+                iSongsView.onUpdateUI(list);
             iSongsView.onHideProgres();
         }
     }

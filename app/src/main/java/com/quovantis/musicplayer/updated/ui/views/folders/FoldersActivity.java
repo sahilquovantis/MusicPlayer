@@ -32,6 +32,7 @@ import com.quovantis.musicplayer.updated.ui.views.playlists.PlaylistsActivity;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +69,9 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         initPresenters();
     }
 
+    /**
+     * Initialize Toolbar
+     */
     private void initiToolbar() {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null)
@@ -78,6 +82,9 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         mNavigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Initialize Presenters
+     */
     private void initPresenters() {
         iFoldersPresenter = new FoldersPresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, FoldersActivity.this);
@@ -85,6 +92,9 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         iMusicPresenter.bindService();
     }
 
+    /**
+     * Initialize RecyclerView
+     */
     private void initRecyclerView() {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(FoldersActivity.this, 2);
         mFoldersListRV.setLayoutManager(layoutManager);
@@ -92,19 +102,28 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         mFoldersListRV.setAdapter(mAdapter);
     }
 
+    /**
+     * Update UI and show Folders List
+     * @param foldersList List of Folders
+     */
     @Override
-    public void onUpdateFoldersList(ArrayList<SongPathModel> foldersList) {
+    public void onUpdateFoldersList(List<SongPathModel> foldersList) {
         mFoldersList.clear();
         mFoldersList.addAll(foldersList);
         mAdapter.notifyDataSetChanged();
     }
 
-
+    /**
+     * Show Progress Bar while Getting list of Folders
+     */
     @Override
     public void showProgress() {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Hide Progress Bar after Getting list of Folders
+     */
     @Override
     public void hideProgress() {
         mProgressBar.setVisibility(View.GONE);
@@ -115,44 +134,74 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     }
 
+    /**
+     * Update Progress Bar in Dialog {@link RefreshListDialog} while Fetching Songs from the Storage.
+     * @param size Total Number of Songs
+     * @param value Number of Fetched Songs
+     */
     @Override
     public void updateRefreshListProgress(int size, int value) {
         mRefreshListDialog.updateProgress(value, size);
     }
 
+    /**
+     * Update Dialog {@link RefreshListDialog} and Shows Number of fetched songs.
+     * @param size Total Number of Songs
+     * @param value Number of Fetched Songs
+     */
     @Override
     public void updateRefreshListFetchedFolders(int size, int value) {
         mRefreshListDialog.updateFetchedSongs(value, size);
     }
 
+    /**
+     * Cancel the Dialog {@link RefreshListDialog} after getting songs.
+     */
     @Override
     public void cancelRefreshListDialog() {
         mRefreshListDialog.cancelProgressDialog();
         mRefreshListDialog = null;
     }
 
+    /**
+     * Initialize the Dialog {@link RefreshListDialog}
+     */
     @Override
     public void initializeRefreshListDialog() {
         mRefreshListDialog = new RefreshListDialog(FoldersActivity.this);
         mRefreshListDialog.showProgressDialog();
     }
 
+    /**
+     * Shows the options Dialog on Long Press {@link QueueOptionsDialog}
+     * @param songPathModel Song Model on which event happened
+     */
     @Override
     public void onFoldersLongPress(SongPathModel songPathModel) {
         QueueOptionsDialog.showDialog(FoldersActivity.this, songPathModel, this);
     }
 
+    /**
+     * On Clicking Folder , it starts activity {@link SongsListActivity} and shows
+     * all the songs list in that folder
+     * @param id Id of the folder
+     * @param directoryName Folder Name
+     */
     @Override
     public void onFoldersSinglePress(long id, String directoryName) {
         Bundle bundle = new Bundle();
         bundle.putLong(ICommonKeys.FOLDER_ID_KEY, id);
         bundle.putString(ICommonKeys.DIRECTORY_NAME_KEY, directoryName);
         Intent intent = new Intent(FoldersActivity.this, SongsListActivity.class);
+        intent.setAction(ICommonKeys.FOLDERS_ACTION);
         intent.putExtras(bundle);
         startActivity(intent);
         overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
     }
 
+    /**
+     * On Destroy activity Remove all the presenters
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -163,11 +212,19 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         iMusicPresenter = null;
     }
 
+    /**
+     * Stop the Service
+     */
     @Override
     public void onStopService() {
         stopService(new Intent(this, MusicService.class));
     }
 
+    /**
+     * Navigation View Item Selection
+     * @param item Item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         mDrawerLayout.closeDrawer(mNavigationView);
@@ -190,12 +247,21 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         return false;
     }
 
+    /**
+     * On Click Event on Options Dialog {@link QueueOptionsDialog}
+     * @param model Folders Model
+     * @param isClearQueue Whether clear current queue or not. If not all songs are added at the end of the queue.
+     * @param isPlaythisSong Whether Play this song or not.
+     */
     @Override
     public void onClick(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong) {
         mDialog = ProgresDialog.showProgressDialog(this);
         iMusicPresenter.addSongToPlaylist(model.getId(), isClearQueue, isPlaythisSong);
     }
 
+    /**
+     * Cancels the Dialog {@link QueueOptionsDialog}
+     */
     @Override
     public void cancelDialog() {
         if (mDialog != null) {

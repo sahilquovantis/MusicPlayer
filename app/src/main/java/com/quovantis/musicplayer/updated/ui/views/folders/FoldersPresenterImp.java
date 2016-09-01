@@ -19,6 +19,10 @@ public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteracto
         iFoldersInteractor = new FoldersInteractorImp(this);
     }
 
+    /**
+     * Call Interactor for Folders List {@link FoldersInteractorImp}
+     * @param context
+     */
     @Override
     public void updateUI(Context context) {
         if (mFoldersView != null)
@@ -31,6 +35,10 @@ public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteracto
         mFoldersView = null;
     }
 
+    /**
+     * Update the Folders Activity after getting songs {@link FoldersActivity}
+     * @param list List of Folders
+     */
     @Override
     public void onUpdateFoldersList(ArrayList<SongPathModel> list) {
         if (mFoldersView != null) {
@@ -63,6 +71,10 @@ public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteracto
             mFoldersView.initializeRefreshListDialog();
     }
 
+    /**
+     * Sync Music From the Storage
+     * @param context
+     */
     @Override
     public void syncMusic(Context context) {
         if(mFoldersView != null)

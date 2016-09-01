@@ -18,7 +18,7 @@ import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
-import com.quovantis.musicplayer.updated.ui.views.playlistsongs.PlaylistSongsActivity;
+import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
 
 
 import java.util.ArrayList;
@@ -127,7 +127,8 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
         Bundle bundle = new Bundle();
         bundle.putLong(ICommonKeys.FOLDER_ID_KEY, id);
         bundle.putString(ICommonKeys.DIRECTORY_NAME_KEY, name);
-        Intent intent = new Intent(this, PlaylistSongsActivity.class);
+        Intent intent = new Intent(this, SongsListActivity.class);
+        intent.setAction(ICommonKeys.PLAYLIST_ACTION);
         intent.putExtras(bundle);
         startActivity(intent);
         overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
