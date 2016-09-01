@@ -12,5 +12,6 @@ public interface ICurrentPlaylistView {
     void onHideProgress();
     void onUpdateUI(ArrayList<SongDetailsModel> currentPlaylistList);
     void onEmptyList();
+    void onCurrentPlayingSongRemoved();
     void onCancelCreatePlaylistProgressDialog(boolean isCreated);
 }

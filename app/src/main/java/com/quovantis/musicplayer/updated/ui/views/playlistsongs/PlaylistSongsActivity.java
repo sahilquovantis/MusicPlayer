@@ -39,7 +39,6 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylis
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongDetailsModel> mPlaylistsList;
     private IPlaylistSongsPresenter iPlaylistSongsPresenter;
-    private boolean isListAdded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,13 +120,11 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IPlaylis
     }
 
     @Override
-    public void onClick(int pos, String id) {
+    public void onClick(int pos) {
         if (mPlaylistsList != null) {
-            if (!isListAdded)
-                isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mPlaylistsList, pos);
+            boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mPlaylistsList, pos);
             if (isListAdded) {
-                MusicHelper.getInstance().setCurrentPosition(pos);
-                iMusicPresenter.playSong(id);
+                iMusicPresenter.playSong();
             }
         }
     }

@@ -47,7 +47,7 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iPlaylistSongsClickListener.onClick(position, songDetailsModel.getSongID());
+                iPlaylistSongsClickListener.onClick(position);
             }
         });
     }

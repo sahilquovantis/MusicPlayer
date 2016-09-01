@@ -175,7 +175,7 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     public void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
         MusicHelper.getInstance().addSongToPlaylist(model, isClearQueue, isPlaythisSong);
         if (isPlaythisSong)
-            playSong(model.getSongID());
+            playSong();
     }
 
     @Override
@@ -183,19 +183,18 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<SongDetailsModel> list = realm.where(SongDetailsModel.class).equalTo("mSongPathID", id).findAll().sort("mSongTitle", Sort.ASCENDING);
         if (!list.isEmpty()) {
-            MusicHelper.getInstance().addSongToPlaylist(list, isClearQueue, isPlaythisSong);
+            MusicHelper.getInstance().addSongToPlaylist(list, isClearQueue);
             if (isPlaythisSong)
-                playSong(list.get(0).getSongID());
+                playSong();
             if(iMusicView != null)
                 iMusicView.cancelDialog();
         }
     }
 
     @Override
-    public void playSong(String id) {
+    public void playSong() {
         if (mMediaController != null) {
-            Log.d(ICommonKeys.TAG, "Selected Song id : " + id);
-            mMediaController.getTransportControls().playFromMediaId(id, null);
+            mMediaController.getTransportControls().playFromMediaId("1", null);
         }
     }
 

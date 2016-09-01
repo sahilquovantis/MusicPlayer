@@ -109,6 +109,10 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @Override
     public void onSongRemove(int pos) {
         iCurrentPlaylistPresenter.songRemoved(pos);
+    }
+
+    @Override
+    public void onCurrentPlayingSongRemoved() {
         iMusicPresenter.onSkipToNext();
     }
 

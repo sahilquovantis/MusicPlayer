@@ -105,6 +105,8 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     @Override
     public void onEmptyList() {
         mEmptyTV.setVisibility(View.VISIBLE);
+        Toast.makeText(this, "There are no songs in queue", Toast.LENGTH_LONG).show();
+        onBackPressed();
     }
 
     @Override
@@ -147,8 +149,12 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onSongRemove(int pos) {
-        Log.d(ICommonKeys.TAG, "Size : " + mQueueList.size());
         iCurrentPlaylistPresenter.songRemoved(pos);
+    }
+
+    @Override
+    public void onCurrentPlayingSongRemoved() {
+        iMusicPresenter.onSkipToNext();
     }
 
     @Override

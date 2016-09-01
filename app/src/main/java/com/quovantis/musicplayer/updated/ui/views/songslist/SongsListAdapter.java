@@ -44,7 +44,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final int pos = position;
+        final  int pos = position;
         final SongDetailsModel songDetailsModel = mSongList.get(pos);
         holder.mSongTV.setText(songDetailsModel.getSongTitle());
         holder.mSongArtistTV.setText(songDetailsModel.getSongArtist());
@@ -52,7 +52,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iMusicListClickListener.onMusicListClick(songDetailsModel);
+                iMusicListClickListener.onMusicListClick(pos);
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {

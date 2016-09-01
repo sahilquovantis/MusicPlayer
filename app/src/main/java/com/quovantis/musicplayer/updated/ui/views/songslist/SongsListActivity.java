@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
@@ -93,8 +94,13 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     }
 
     @Override
-    public void onMusicListClick(SongDetailsModel model) {
-        iMusicPresenter.addSongToPlaylist(model, false, true);
+    public void onMusicListClick(int pos) {
+        if (mSongList != null) {
+            boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mSongList, pos);
+            if (isListAdded) {
+                iMusicPresenter.playSong();
+            }
+        }
     }
 
     @Override

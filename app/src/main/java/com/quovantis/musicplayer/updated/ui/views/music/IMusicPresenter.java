@@ -35,5 +35,5 @@ public interface IMusicPresenter {
 
     void seekTo(long pos);
 
-    void playSong(String id);
+    void playSong();
 }

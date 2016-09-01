@@ -88,18 +88,14 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             super.onPlayFromMediaId(mediaId, extras);
-            if (mediaId != null) {
-                MediaMetadataCompat mediaMetadata = MusicHelper.getInstance().
-                        getMetadata(getApplicationContext(), mediaId);
-                if (mediaMetadata == null) {
-                    mPlaybackManager.setMediaData(null);
-                } else {
-                    mMediaSession.setActive(true);
-                    mMediaSession.setMetadata(mediaMetadata);
-                    mPlaybackManager.playFromMetaData(mediaMetadata);
-                }
-            } else {
+            MediaMetadataCompat mediaMetadata = MusicHelper.getInstance().
+                    getMetadata(getApplicationContext());
+            if (mediaMetadata == null) {
                 mPlaybackManager.setMediaData(null);
+            } else {
+                mMediaSession.setActive(true);
+                mMediaSession.setMetadata(mediaMetadata);
+                mPlaybackManager.playFromMetaData(mediaMetadata);
             }
         }
 
@@ -112,24 +108,22 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
-            String mediaID = null;
-            try {
-                mediaID = MusicHelper.getInstance().getNextSong();
-                onPlayFromMediaId(mediaID, null);
-            } catch (NullPointerException e) {
+            String mediaId = MusicHelper.getInstance().getNextSong();
+            if (mediaId == null) {
                 mPlaybackManager.setMediaData(null);
+            } else {
+                onPlayFromMediaId(mediaId, null);
             }
         }
 
         @Override
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
-            String mediaID = null;
-            try {
-                mediaID = MusicHelper.getInstance().getPreviousSong();
-                onPlayFromMediaId(mediaID, null);
-            } catch (NullPointerException e) {
+            String mediaId = MusicHelper.getInstance().getPreviousSong();
+            if (mediaId == null) {
                 mPlaybackManager.setMediaData(null);
+            } else {
+                onPlayFromMediaId(mediaId, null);
             }
         }
 

@@ -34,55 +34,41 @@ public class MusicHelper {
     }
 
     public void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
-        try {
+        if (mCurrentPlaylist == null) {
+            mCurrentPlaylist = new ArrayList<>();
+        }
 
-            if (mCurrentPlaylist == null) {
-                mCurrentPlaylist = new ArrayList<>();
-            }
-
-            if (isClearQueue) {
-                mCurrentPosition = 0;
-                mCurrentPlaylist.clear();
-                mCurrentPlaylist.add(0, model);
-                return;
-            }
-
-            if (!mCurrentPlaylist.isEmpty() && mCurrentPlaylist.contains(model)) {
-                mCurrentPosition = mCurrentPlaylist.indexOf(model);
-                return;
-            }
-            int position = mCurrentPlaylist.isEmpty() ? 0 : mCurrentPlaylist.size();
-            mCurrentPlaylist.add(position, model);
-            if (isPlaythisSong) {
-                mCurrentPosition = position;
-            }
-        } catch (NullPointerException | IndexOutOfBoundsException e1) {
+        if (isClearQueue) {
             mCurrentPosition = 0;
+            mCurrentPlaylist.clear();
+            mCurrentPlaylist.add(0, model);
+            return;
+        }
+
+        int position = mCurrentPlaylist.isEmpty() ? 0 : mCurrentPlaylist.size();
+        mCurrentPlaylist.add(position, model);
+        if (isPlaythisSong) {
+            mCurrentPosition = position;
         }
     }
 
-    public void addSongToPlaylist(List<SongDetailsModel> list, boolean isClearQueue, boolean isPlaythisSong) {
-        try {
-
-            if (mCurrentPlaylist == null) {
-                mCurrentPlaylist = new ArrayList<>();
-            }
-            if (isClearQueue) {
-                mCurrentPosition = 0;
-                mCurrentPlaylist.clear();
-            }
-            mCurrentPlaylist.addAll(list);
-        } catch (NullPointerException | IndexOutOfBoundsException e1) {
-            mCurrentPosition = 0;
+    public void addSongToPlaylist(List<SongDetailsModel> list, boolean isClearQueue) {
+        if (mCurrentPlaylist == null) {
+            mCurrentPlaylist = new ArrayList<>();
         }
+        if (isClearQueue) {
+            mCurrentPosition = 0;
+            mCurrentPlaylist.clear();
+        }
+        mCurrentPlaylist.addAll(list);
     }
 
     public ArrayList<SongDetailsModel> getCurrentPlaylist() {
         return mCurrentPlaylist;
     }
 
-    public boolean setCurrentPlaylist(ArrayList<SongDetailsModel> list, int playingPos){
-        if(mCurrentPlaylist == null)
+    public boolean setCurrentPlaylist(ArrayList<SongDetailsModel> list, int playingPos) {
+        if (mCurrentPlaylist == null)
             mCurrentPlaylist = new ArrayList<>();
         mCurrentPlaylist.clear();
         mCurrentPlaylist.addAll(list);
@@ -90,9 +76,6 @@ public class MusicHelper {
         return true;
     }
 
-    public void setCurrentPosition(int pos){
-        mCurrentPosition = pos;
-    }
     public static synchronized MusicHelper getInstance() {
         if (sInstance == null) {
             sInstance = new MusicHelper();
@@ -104,27 +87,21 @@ public class MusicHelper {
      * Used To create MediaMetaData for Selected Song or Current Song.
      *
      * @param context
-     * @param mediaId ID of the Current Song whose MetaData is Needed.
      * @return Returns MediaMetaData.
      */
-    public MediaMetadataCompat getMetadata(Context context, String mediaId) {
-        try {
-            if (!mCurrentPlaylist.isEmpty()) {
-                Log.d("Training", "Current Position : " + mCurrentPosition);
-                SongDetailsModel songDetailsModel = mCurrentPlaylist.get(mCurrentPosition);
-                mCurrentSong = songDetailsModel;
-                MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
-                builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songDetailsModel.getSongID());
-                builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songDetailsModel.getSongArtist());
-                builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, songDetailsModel.getSongTitle());
-                builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, songDetailsModel.getSongDuration());
-                builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, getAlbumBitmap(context,
-                        songDetailsModel.getSongThumbnailData()));
-                return builder.build();
-            }
-        } catch (IllegalArgumentException | IndexOutOfBoundsException | NullPointerException e) {
-            mCurrentSong = null;
-            return null;
+    public MediaMetadataCompat getMetadata(Context context) {
+        mCurrentSong = null;
+        if (isValidIndex(mCurrentPosition)) {
+            SongDetailsModel songDetailsModel = mCurrentPlaylist.get(mCurrentPosition);
+            mCurrentSong = songDetailsModel;
+            MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+            builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songDetailsModel.getSongID());
+            builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songDetailsModel.getSongArtist());
+            builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, songDetailsModel.getSongTitle());
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, songDetailsModel.getSongDuration());
+            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, getAlbumBitmap(context,
+                    songDetailsModel.getSongThumbnailData()));
+            return builder.build();
         }
         return null;
     }
@@ -146,18 +123,15 @@ public class MusicHelper {
      */
     public String getPreviousSong() {
         String prevMediaId = null;
-        try {
-            if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
-                if (mCurrentPosition == 0 || mCurrentPosition < 0) {
-                    mCurrentPosition = mCurrentPlaylist.size() - 1;
-                } else {
-                    mCurrentPosition -= 1;
-                }
-                prevMediaId = mCurrentPlaylist.get(mCurrentPosition).getSongID();
-            }
-        } catch (IllegalArgumentException | IndexOutOfBoundsException | NullPointerException e) {
+        int size = mCurrentPlaylist.size();
+        if (mCurrentPosition == 0 || mCurrentPosition < 0)
+            mCurrentPosition = size - 1;
+        else
+            mCurrentPosition -= 1;
+        if (isValidIndex(mCurrentPosition))
+            prevMediaId = mCurrentPlaylist.get(mCurrentPosition).getSongID();
+        else
             mCurrentPosition = 0;
-        }
         return prevMediaId;
     }
 
@@ -168,18 +142,15 @@ public class MusicHelper {
      */
     public String getNextSong() {
         String nextMediaId = null;
-        try {
-            if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
-                if (mCurrentPosition == mCurrentPlaylist.size() - 1 || mCurrentPosition >= mCurrentPlaylist.size()) {
-                    mCurrentPosition = 0;
-                } else {
-                    mCurrentPosition += 1;
-                }
-                nextMediaId = mCurrentPlaylist.get(mCurrentPosition).getSongID();
-            }
-        } catch (IllegalArgumentException | IndexOutOfBoundsException | NullPointerException e) {
+        int size = mCurrentPlaylist.size();
+        if (mCurrentPosition == size - 1 || mCurrentPosition >= size)
             mCurrentPosition = 0;
-        }
+        else
+            mCurrentPosition += 1;
+        if (isValidIndex(mCurrentPosition))
+            nextMediaId = mCurrentPlaylist.get(mCurrentPosition).getSongID();
+        else
+            mCurrentPosition = 0;
         return nextMediaId;
     }
 
@@ -212,8 +183,10 @@ public class MusicHelper {
         if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
             try {
                 mCurrentPlaylist.remove(pos);
-                if (mCurrentPosition == pos)
+                if (mCurrentPosition == pos) {
                     mCurrentPosition = pos - 1;
+                    iOnSongRemovedFromQueue.onCurrentPlayingSongRemoved();
+                }
                 if (mCurrentPlaylist == null || mCurrentPlaylist.isEmpty()) {
                     iOnSongRemovedFromQueue.onQueueListEmptyShowEmptyTV();
                 }
@@ -227,6 +200,13 @@ public class MusicHelper {
     public void clearCurrentPlaylist() {
         mCurrentPlaylist.clear();
         mCurrentPosition = 0;
+    }
+
+    private boolean isValidIndex(int index) {
+        if (0 <= index && index < mCurrentPlaylist.size()) {
+            return true;
+        }
+        return false;
     }
 }
 

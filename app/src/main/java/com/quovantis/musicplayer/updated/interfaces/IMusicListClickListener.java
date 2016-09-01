@@ -6,6 +6,6 @@ import com.quovantis.musicplayer.updated.models.SongDetailsModel;
  * Created by sahil-goel on 25/8/16.
  */
 public interface IMusicListClickListener {
-    void onMusicListClick(SongDetailsModel model);
+    void onMusicListClick(int pos);
     void onActionOverFlowClick(SongDetailsModel model);
 }

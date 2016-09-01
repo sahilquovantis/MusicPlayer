@@ -50,10 +50,6 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         updatePlaybackState(PlaybackStateCompat.STATE_NONE);
     }
 
-    public String getCurrentMediaId() {
-        return mCurrentMedia == null ? null : mCurrentMedia.getDescription().getMediaId();
-    }
-
     public void stop() {
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
@@ -64,7 +60,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             mAudioManager = null;
         }
         mCurrentMedia = null;
-        updatePlaybackState(PlaybackState.STATE_STOPPED);
+        updatePlaybackState(PlaybackStateCompat.STATE_STOPPED);
     }
 
     public void none() {
@@ -123,7 +119,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         } catch (IOException e) {
             mCurrentMedia = null;
             Toast.makeText(mContext, "File not found", Toast.LENGTH_LONG).show();
-            updatePlaybackState(PlaybackState.STATE_NONE);
+            updatePlaybackState(PlaybackStateCompat.STATE_NONE);
         }
     }
 
@@ -183,7 +179,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         } else if (focus == AudioManager.AUDIOFOCUS_LOSS || focus == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
             if (mCurrentState == PlaybackState.STATE_PLAYING && isPlaying()) {
                 mMediaPlayer.pause();
-                updatePlaybackState(PlaybackState.STATE_PAUSED);
+                updatePlaybackState(PlaybackStateCompat.STATE_PAUSED);
             }
         } else if (focus == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
             canDuck = true;
@@ -204,7 +200,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         if (mMediaPlayer != null) {
             mMediaPlayer.start();
             mMediaPlayer.setOnCompletionListener(this);
-            updatePlaybackState(PlaybackState.STATE_PLAYING);
+            updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
         }
     }
 

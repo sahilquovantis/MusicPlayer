@@ -55,6 +55,12 @@ public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter,
     }
 
     @Override
+    public void onCurrentPlayingSongRemoved() {
+        if (mView != null)
+            mView.onCurrentPlayingSongRemoved();
+    }
+
+    @Override
     public void onQueueListEmptyShowEmptyTV() {
         if (mView != null)
             mView.onEmptyList();
