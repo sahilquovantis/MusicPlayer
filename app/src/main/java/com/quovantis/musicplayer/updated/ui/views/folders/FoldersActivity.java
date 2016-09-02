@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -25,6 +24,7 @@ import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
+import com.quovantis.musicplayer.updated.ui.views.search.SearchActivity;
 import com.quovantis.musicplayer.updated.ui.views.currentplaylist.CurrentPlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
@@ -36,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         IFolderClickListener, NavigationView.OnNavigationItemSelectedListener,
@@ -104,6 +105,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     /**
      * Update UI and show Folders List
+     *
      * @param foldersList List of Folders
      */
     @Override
@@ -136,7 +138,8 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     /**
      * Update Progress Bar in Dialog {@link RefreshListDialog} while Fetching Songs from the Storage.
-     * @param size Total Number of Songs
+     *
+     * @param size  Total Number of Songs
      * @param value Number of Fetched Songs
      */
     @Override
@@ -146,7 +149,8 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     /**
      * Update Dialog {@link RefreshListDialog} and Shows Number of fetched songs.
-     * @param size Total Number of Songs
+     *
+     * @param size  Total Number of Songs
      * @param value Number of Fetched Songs
      */
     @Override
@@ -174,6 +178,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     /**
      * Shows the options Dialog on Long Press {@link QueueOptionsDialog}
+     *
      * @param songPathModel Song Model on which event happened
      */
     @Override
@@ -184,7 +189,8 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
     /**
      * On Clicking Folder , it starts activity {@link SongsListActivity} and shows
      * all the songs list in that folder
-     * @param id Id of the folder
+     *
+     * @param id            Id of the folder
      * @param directoryName Folder Name
      */
     @Override
@@ -222,6 +228,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     /**
      * Navigation View Item Selection
+     *
      * @param item Item
      * @return
      */
@@ -249,8 +256,9 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
 
     /**
      * On Click Event on Options Dialog {@link QueueOptionsDialog}
-     * @param model Folders Model
-     * @param isClearQueue Whether clear current queue or not. If not all songs are added at the end of the queue.
+     *
+     * @param model          Folders Model
+     * @param isClearQueue   Whether clear current queue or not. If not all songs are added at the end of the queue.
      * @param isPlaythisSong Whether Play this song or not.
      */
     @Override
@@ -267,6 +275,13 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         if (mDialog != null) {
             mDialog.dismiss();
         }
+    }
+
+    @OnClick(R.id.iv_search_view)
+    public void onSearchCick() {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
     }
 
     @Override

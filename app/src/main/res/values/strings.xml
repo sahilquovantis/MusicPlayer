@@ -27,4 +27,6 @@
     <string name="clear_now_playing_list_and_play">Clear now playing list and play</string>
     <string name="fetching_songs">Fetching Songs</string>
     <string name="songs_fetched_0_0">Songs Fetched : 0/0</string>
+    <string name="search_songs">Search Songs</string>
+    <string name="search_music">Search Music</string>
 </resources>

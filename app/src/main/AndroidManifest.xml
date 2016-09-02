@@ -28,10 +28,12 @@
         <activity android:name=".updated.ui.views.currentplaylist.CurrentPlaylistActivity" />
         <activity android:name=".updated.ui.views.music.MusicBaseActivity" />
         <activity android:name=".updated.ui.views.playlists.PlaylistsActivity" />
-        <activity android:name=".updated.ui.views.playlistsongs.PlaylistSongsActivity" />
         <activity
             android:name=".updated.ui.views.fullscreenmusiccontrols.FullScreenMusic"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".updated.ui.views.search.SearchActivity"
+            android:windowSoftInputMode="adjustNothing" />
     </application>
 
 </manifest>

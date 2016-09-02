@@ -2,20 +2,23 @@ package com.quovantis.musicplayer.updated.ui.views.songslist;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
-import com.quovantis.musicplayer.updated.utility.CircleImageView;
 import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
+import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.ui.views.search.SearchPresenterImp;
+import com.quovantis.musicplayer.updated.utility.CircleImageView;
 
 import java.util.ArrayList;
 
@@ -29,6 +32,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
     private Context mContext;
     private IMusicListClickListener iMusicListClickListener;
     private ArrayList<SongDetailsModel> mSongList;
+    private String mQuery;
 
     public SongsListAdapter(Context context, IMusicListClickListener iMusicListClickListener, ArrayList<SongDetailsModel> mSongList) {
         mContext = context;
@@ -44,9 +48,11 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final  int pos = position;
+        final int pos = position;
         final SongDetailsModel songDetailsModel = mSongList.get(pos);
-        holder.mSongTV.setText(songDetailsModel.getSongTitle());
+        String title = songDetailsModel.getSongTitle();
+        String query = mQuery;
+        setSpan(title,query, holder.mSongTV);
         holder.mSongArtistTV.setText(songDetailsModel.getSongArtist());
         LoadBitmapHelper.loadBitmap(mContext, holder.mSongThumbnailIV, songDetailsModel.getSongThumbnailData());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +77,23 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         RecyclerViewAnimationHelper.animate(mContext, holder);
     }
 
+    private void setSpan(String title, String query, TextView mSongTV) {
+        mSongTV.setMaxLines(1);
+        if (query != null && query.trim().length() > 0) {
+            Spannable spannable = new SpannableString(title);
+            int start = title.toLowerCase().indexOf(query.toLowerCase());
+            int end = start + query.length();
+            spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mSongTV.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            mSongTV.setText(spannable);
+            mSongTV.setSelected(true);
+            mSongTV.setSingleLine();
+        } else {
+            mSongTV.setText(title);
+            mSongTV.setEllipsize(TextUtils.TruncateAt.END);
+        }
+    }
+
     @Override
     public int getItemCount() {
         if (mSongList != null && !mSongList.isEmpty()) {
@@ -78,6 +101,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         } else {
             return 0;
         }
+    }
+
+    public void setQuery(String query) {
+        mQuery = query;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
