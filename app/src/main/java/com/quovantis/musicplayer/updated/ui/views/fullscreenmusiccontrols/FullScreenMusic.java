@@ -115,6 +115,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onSongRemove(int pos) {
+        Toast.makeText(this, "Song removed " + mQueueList.get(pos).getSongTitle(), Toast.LENGTH_SHORT).show();
         mQueueList.remove(pos);
         mAdapter.notifyItemRemoved(pos);
         iCurrentPlaylistPresenter.songRemoved(pos);

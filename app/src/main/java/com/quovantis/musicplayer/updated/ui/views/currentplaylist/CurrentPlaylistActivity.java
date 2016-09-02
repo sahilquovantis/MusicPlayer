@@ -158,6 +158,7 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onSongRemove(int pos) {
+        Toast.makeText(this, "Song removed " + mQueueList.get(pos).getSongTitle(), Toast.LENGTH_SHORT).show();
         mQueueList.remove(pos);
         mAdapter.notifyItemRemoved(pos);
         iCurrentPlaylistPresenter.songRemoved(pos);

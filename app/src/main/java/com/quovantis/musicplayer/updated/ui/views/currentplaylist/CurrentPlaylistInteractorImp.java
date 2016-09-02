@@ -32,16 +32,7 @@ public class CurrentPlaylistInteractorImp implements ICurrentPlaylistInteractor 
                 UserPlaylistModel userPlaylistModel = realm.createObject(UserPlaylistModel.class);
                 userPlaylistModel.setPlaylistName(name);
                 userPlaylistModel.setPlaylistId(getKey(realm));
-                for (int i = 0; i<list.size();i++){
-                    SongDetailsModel model = new SongDetailsModel();
-                    model.setSongArtist(list.get(i).getSongArtist());
-                    model.setSongDuration(list.get(i).getSongDuration());
-                    model.setSongID(list.get(i).getSongID());
-                    model.setSongTitle(list.get(i).getSongTitle());
-                    model.setSongThumbnailData(list.get(i).getSongThumbnailData());
-                    SongDetailsModel detailsModel = realm.copyToRealm(model);
-                    userPlaylistModel.getPlaylist().add(detailsModel);
-                }
+                userPlaylistModel.getPlaylist().addAll(list);
                 listener.onPlaylistCreated(true);
             }
         });

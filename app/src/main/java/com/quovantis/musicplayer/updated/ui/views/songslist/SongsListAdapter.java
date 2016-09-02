@@ -1,10 +1,12 @@
 package com.quovantis.musicplayer.updated.ui.views.songslist;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +54,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         final SongDetailsModel songDetailsModel = mSongList.get(pos);
         String title = songDetailsModel.getSongTitle();
         String query = mQuery;
-        setSpan(title,query, holder.mSongTV);
+        setSpan(title, query, holder.mSongTV);
         holder.mSongArtistTV.setText(songDetailsModel.getSongArtist());
         LoadBitmapHelper.loadBitmap(mContext, holder.mSongThumbnailIV, songDetailsModel.getSongThumbnailData());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +85,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
             Spannable spannable = new SpannableString(title);
             int start = title.toLowerCase().indexOf(query.toLowerCase());
             int end = start + query.length();
-            spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new ForegroundColorSpan(Color.BLUE), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mSongTV.setEllipsize(TextUtils.TruncateAt.MARQUEE);
             mSongTV.setText(spannable);
             mSongTV.setSelected(true);
