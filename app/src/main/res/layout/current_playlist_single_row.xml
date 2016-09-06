@@ -3,12 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     android:orientation="vertical"
-    android:layout_marginBottom="@dimen/dp_5"
-    android:layout_marginLeft="@dimen/dp_10"
-    android:layout_marginRight="@dimen/dp_10"
-    android:layout_marginTop="@dimen/dp_5">
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_10"
+    android:background="@drawable/selector">
 
     <LinearLayout
         android:id="@+id/ll_upper_layout"
@@ -34,7 +33,6 @@
                 android:id="@+id/tv_queue_song_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dp_10"
@@ -47,7 +45,6 @@
                 android:id="@+id/tv_queue_song_artist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:layout_below="@id/tv_queue_song_title"

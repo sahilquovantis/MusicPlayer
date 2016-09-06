@@ -157,7 +157,6 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.d(ICommonKeys.TAG, "Service Destroying");
         if (mMediaSession != null) {
             mMediaSession.release();
@@ -166,6 +165,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         mMediaController = null;
         if (mNotification != null)
             stopForeground(true);
+        super.onDestroy();
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 

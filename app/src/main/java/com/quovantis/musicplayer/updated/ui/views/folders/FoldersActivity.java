@@ -210,12 +210,12 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
      */
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         iMusicPresenter.stopService();
         iFoldersPresenter.onDestroy();
         iMusicPresenter.onDestroy();
         iFoldersPresenter = null;
         iMusicPresenter = null;
+        super.onDestroy();
     }
 
     /**

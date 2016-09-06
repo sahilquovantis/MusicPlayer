@@ -50,6 +50,12 @@ public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter,
     }
 
     @Override
+    public void onSongRemovedSuccessfully(int curPos) {
+        if (mView != null)
+            mView.onSuccessfullyRemovedSong(curPos);
+    }
+
+    @Override
     public void songRemoved(int position) {
         MusicHelper.getInstance().songRemove(position, this);
     }

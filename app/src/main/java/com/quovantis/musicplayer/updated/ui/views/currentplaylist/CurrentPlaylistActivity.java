@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
@@ -50,6 +51,7 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     private ArrayList<SongDetailsModel> mQueueList;
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
     private ProgressDialog mCreatePlaylistProgressDialog;
+    private Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +116,11 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         iCurrentPlaylistPresenter.onDestroy();
         iMusicPresenter.onDestroy();
         iCurrentPlaylistPresenter = null;
         iMusicPresenter = null;
+        super.onDestroy();
     }
 
     @Override
@@ -158,10 +160,18 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onSongRemove(int pos) {
-        Toast.makeText(this, "Song removed " + mQueueList.get(pos).getSongTitle(), Toast.LENGTH_SHORT).show();
+        mDialog = ProgresDialog.showProgressDialog(this);
         mQueueList.remove(pos);
         mAdapter.notifyItemRemoved(pos);
         iCurrentPlaylistPresenter.songRemoved(pos);
+    }
+
+    @Override
+    public void onSuccessfullyRemovedSong(int currentPos) {
+        if(mDialog != null){
+            mDialog.dismiss();
+            mDialog = null;
+        }
     }
 
     @Override

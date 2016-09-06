@@ -191,7 +191,7 @@ public class MusicHelper {
                     mCurrentPosition = pos - 1;
                     iOnSongRemovedFromQueue.onCurrentPlayingSongRemoved();
                 }
-
+                iOnSongRemovedFromQueue.onSongRemovedSuccessfully(mCurrentPosition);
             } catch (IndexOutOfBoundsException e) {
                 mCurrentPosition = 0;
             }
@@ -204,10 +204,7 @@ public class MusicHelper {
     }
 
     private boolean isValidIndex(int index) {
-        if (0 <= index && index < mCurrentPlaylist.size()) {
-            return true;
-        }
-        return false;
+        return 0 <= index && index < mCurrentPlaylist.size();
     }
 }
 

@@ -106,11 +106,11 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         iPlaylistPresenter.onDestroy();
         iMusicPresenter.onDestroy();
         iMusicPresenter = null;
         iPlaylistPresenter = null;
+        super.onDestroy();
     }
 
     @Override

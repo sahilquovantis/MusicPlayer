@@ -13,5 +13,4 @@ public interface ICurrentPlaylistPresenter {
     void songRemoved(int position);
 
     void createPlaylist(String name);
-
 }

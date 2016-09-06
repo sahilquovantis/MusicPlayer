@@ -120,11 +120,11 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         iSongsPresenter.onDestroy();
         iMusicPresenter.onDestroy();
         iSongsPresenter = null;
         iMusicPresenter = null;
+        super.onDestroy();
     }
 
     @Override

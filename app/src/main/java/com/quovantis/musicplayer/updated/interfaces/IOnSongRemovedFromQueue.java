@@ -6,4 +6,5 @@ package com.quovantis.musicplayer.updated.interfaces;
 public interface IOnSongRemovedFromQueue {
     void onQueueListEmptyShowEmptyTV();
     void onCurrentPlayingSongRemoved();
+    void onSongRemovedSuccessfully(int curPos);
 }

@@ -14,4 +14,5 @@ public interface ICurrentPlaylistView {
     void onEmptyList();
     void onCurrentPlayingSongRemoved();
     void onCancelCreatePlaylistProgressDialog(boolean isCreated);
+    void onSuccessfullyRemovedSong(int currentPos);
 }

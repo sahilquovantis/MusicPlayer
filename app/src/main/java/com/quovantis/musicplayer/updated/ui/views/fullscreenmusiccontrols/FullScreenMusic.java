@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols;
 
+import android.app.Dialog;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
@@ -63,6 +65,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
     private PlaybackStateCompat mPlaybackState;
     private Timer mTimer;
+    private Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,15 +113,22 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
                 iMusicPresenter.playSong();
             }
         }
-        //iMusicPresenter.addSongToPlaylist(model, false, true);
     }
 
     @Override
     public void onSongRemove(int pos) {
-        Toast.makeText(this, "Song removed " + mQueueList.get(pos).getSongTitle(), Toast.LENGTH_SHORT).show();
+        mDialog = ProgresDialog.showProgressDialog(this);
         mQueueList.remove(pos);
         mAdapter.notifyItemRemoved(pos);
         iCurrentPlaylistPresenter.songRemoved(pos);
+    }
+
+    @Override
+    public void onSuccessfullyRemovedSong(int currentPos) {
+        if(mDialog != null){
+            mDialog.dismiss();
+            mDialog = null;
+        }
     }
 
     @Override
@@ -128,6 +138,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onSongsMoved(int from, int to) {
+
         Collections.swap(mQueueList, from, to);
         iCurrentPlaylistPresenter.songsMoved(from, to);
         mAdapter.notifyItemMoved(from, to);
@@ -153,7 +164,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         iMusicPresenter.onDestroy();
         iCurrentPlaylistPresenter.onDestroy();
         iMusicPresenter = null;
@@ -164,6 +174,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
             mTimer = null;
         }
         mPlaybackState = null;
+        super.onDestroy();
     }
 
     @Override
