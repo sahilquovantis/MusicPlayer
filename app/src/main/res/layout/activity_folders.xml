@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".updated.ui.views.folders.FoldersActivity">
 
     <RelativeLayout
@@ -24,15 +24,15 @@
                 android:background="@color/colorPrimary" />
 
             <ImageView
-                android:contentDescription="@string/search_songs"
                 android:id="@+id/iv_search_view"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
+                android:background="@drawable/btn_selector"
+                android:contentDescription="@string/search_songs"
+                android:padding="@dimen/dp_10"
                 android:src="@drawable/ic_action_search" />
         </RelativeLayout>
 
