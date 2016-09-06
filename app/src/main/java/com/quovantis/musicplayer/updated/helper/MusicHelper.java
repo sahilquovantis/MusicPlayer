@@ -26,7 +26,6 @@ import io.realm.RealmResults;
  */
 public class MusicHelper {
     private CurrentPositionHelper mCurrentPositionHelper;
-    private int mCurrentPosition = 0;
     private SongDetailsModel mCurrentSong;
     private static MusicHelper sInstance;
     private ArrayList<SongDetailsModel> mCurrentPlaylist;
@@ -49,7 +48,7 @@ public class MusicHelper {
         }
 
         if (isClearQueue) {
-            mCurrentPosition = 0;
+            mCurrentPositionHelper.setCurrentPosition(0);
             mCurrentPlaylist.clear();
             mCurrentPlaylist.add(0, model);
             return;
@@ -58,7 +57,7 @@ public class MusicHelper {
         int position = mCurrentPlaylist.isEmpty() ? 0 : mCurrentPlaylist.size();
         mCurrentPlaylist.add(position, model);
         if (isPlaythisSong) {
-            mCurrentPosition = position;
+            mCurrentPositionHelper.setCurrentPosition(position);
         }
     }
 
@@ -67,7 +66,7 @@ public class MusicHelper {
             mCurrentPlaylist = new ArrayList<>();
         }
         if (isClearQueue) {
-            mCurrentPosition = 0;
+            mCurrentPositionHelper.setCurrentPosition(0);
             mCurrentPlaylist.clear();
         }
         mCurrentPlaylist.addAll(list);
@@ -82,7 +81,7 @@ public class MusicHelper {
             mCurrentPlaylist = new ArrayList<>();
         mCurrentPlaylist.clear();
         mCurrentPlaylist.addAll(list);
-        mCurrentPosition = playingPos;
+        mCurrentPositionHelper.setCurrentPosition(playingPos);
         return true;
     }
 
@@ -94,8 +93,9 @@ public class MusicHelper {
      */
     public MediaMetadataCompat getMetadata(Context context) {
         mCurrentSong = null;
-        if (isValidIndex(mCurrentPosition)) {
-            SongDetailsModel songDetailsModel = mCurrentPlaylist.get(mCurrentPosition);
+        int pos = mCurrentPositionHelper.getCurrentPosition();
+        if (isValidIndex(pos)) {
+            SongDetailsModel songDetailsModel = mCurrentPlaylist.get(pos);
             mCurrentSong = songDetailsModel;
             MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
             builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songDetailsModel.getSongID());
@@ -126,15 +126,11 @@ public class MusicHelper {
      */
     public String getPreviousSong() {
         String prevMediaId = null;
-        int size = mCurrentPlaylist.size();
-        if (mCurrentPosition == 0 || mCurrentPosition < 0)
-            mCurrentPosition = size - 1;
+        int pos = mCurrentPositionHelper.getPreviousSong(mCurrentPlaylist.size());
+        if (isValidIndex(pos))
+            prevMediaId = mCurrentPlaylist.get(pos).getSongID();
         else
-            mCurrentPosition -= 1;
-        if (isValidIndex(mCurrentPosition))
-            prevMediaId = mCurrentPlaylist.get(mCurrentPosition).getSongID();
-        else
-            mCurrentPosition = 0;
+            mCurrentPositionHelper.setCurrentPosition(0);
         return prevMediaId;
     }
 
@@ -145,15 +141,11 @@ public class MusicHelper {
      */
     public String getNextSong() {
         String nextMediaId = null;
-        int size = mCurrentPlaylist.size();
-        if (mCurrentPosition == size - 1 || mCurrentPosition >= size)
-            mCurrentPosition = 0;
+        int pos = mCurrentPositionHelper.getNextSong(mCurrentPlaylist.size());
+        if (isValidIndex(pos))
+            nextMediaId = mCurrentPlaylist.get(pos).getSongID();
         else
-            mCurrentPosition += 1;
-        if (isValidIndex(mCurrentPosition))
-            nextMediaId = mCurrentPlaylist.get(mCurrentPosition).getSongID();
-        else
-            mCurrentPosition = 0;
+            mCurrentPositionHelper.setCurrentPosition(0);
         return nextMediaId;
     }
 
@@ -175,46 +167,47 @@ public class MusicHelper {
     }
 
     public void songsMoved(int from, int to) {
+        int pos = mCurrentPositionHelper.getCurrentPosition();
         if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
             Collections.swap(mCurrentPlaylist, from, to);
-            if (mCurrentPosition == to)
-                mCurrentPosition = from;
-            else if (mCurrentPosition == from)
-                mCurrentPosition = to;
-            Log.d("Training", "Current Pos : " + mCurrentPosition);
+            if (pos == to)
+                pos = from;
+            else if (pos == from)
+                pos = to;
+            mCurrentPositionHelper.setCurrentPosition(pos);
         }
     }
 
     public void songRemove(int pos, IOnSongRemovedFromQueue iOnSongRemovedFromQueue) {
+        int position = mCurrentPositionHelper.getCurrentPosition();
         if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
             try {
                 mCurrentPlaylist.remove(pos);
                 if (mCurrentPlaylist == null || mCurrentPlaylist.isEmpty()) {
                     iOnSongRemovedFromQueue.onQueueListEmptyShowEmptyTV();
                 }
-                if (mCurrentPosition == pos) {
-                    mCurrentPosition = pos - 1;
+                if (position == pos) {
+                    mCurrentPositionHelper.setCurrentPosition(pos - 1);
                     iOnSongRemovedFromQueue.onCurrentPlayingSongRemoved();
                 }
-                iOnSongRemovedFromQueue.onSongRemovedSuccessfully(mCurrentPosition);
+                iOnSongRemovedFromQueue.onSongRemovedSuccessfully(mCurrentPositionHelper.getCurrentPosition());
             } catch (IndexOutOfBoundsException e) {
-                mCurrentPosition = 0;
+                mCurrentPositionHelper.setCurrentPosition(0);
             }
         }
     }
 
     public void clearCurrentPlaylist() {
         mCurrentPlaylist.clear();
-        mCurrentPosition = 0;
+        mCurrentPositionHelper.setCurrentPosition(0);
     }
 
     private boolean isValidIndex(int index) {
         return 0 <= index && index < mCurrentPlaylist.size();
     }
 
-    public boolean setCurrentPosition(int pos) {
-        mCurrentPosition = pos;
-        return true;
+    public void setCurrentPosition(int pos) {
+        mCurrentPositionHelper.setCurrentPosition(pos);
     }
 }
 

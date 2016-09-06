@@ -105,10 +105,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onClick(int pos) {
-        boolean isListAdded = MusicHelper.getInstance().setCurrentPosition(pos);
-        if (isListAdded) {
-            iMusicPresenter.playSong();
-        }
+        MusicHelper.getInstance().setCurrentPosition(pos);
+        iMusicPresenter.playSong();
     }
 
     @Override

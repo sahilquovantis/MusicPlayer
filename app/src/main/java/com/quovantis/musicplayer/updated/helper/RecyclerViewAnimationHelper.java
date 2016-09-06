@@ -12,7 +12,7 @@ import com.quovantis.musicplayer.R;
  */
 public class RecyclerViewAnimationHelper {
     public static void animate(Context mContext, RecyclerView.ViewHolder viewHolder) {
-        /*final Animation animAnticipateOvershoot = AnimationUtils.loadAnimation(mContext, R.anim.recycler_view_scrool_animation);
-        viewHolder.itemView.setAnimation(animAnticipateOvershoot);*/
+        final Animation animAnticipateOvershoot = AnimationUtils.loadAnimation(mContext, R.anim.recycler_view_scrool_animation);
+        viewHolder.itemView.setAnimation(animAnticipateOvershoot);
     }
 }

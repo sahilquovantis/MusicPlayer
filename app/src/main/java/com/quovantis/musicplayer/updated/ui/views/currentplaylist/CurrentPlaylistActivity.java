@@ -139,10 +139,8 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onClick(int pos) {
-        boolean isListAdded = MusicHelper.getInstance().setCurrentPosition(pos);
-        if (isListAdded) {
-            iMusicPresenter.playSong();
-        }
+        MusicHelper.getInstance().setCurrentPosition(pos);
+        iMusicPresenter.playSong();
     }
 
     @OnClick(R.id.iv_create_playlist)
