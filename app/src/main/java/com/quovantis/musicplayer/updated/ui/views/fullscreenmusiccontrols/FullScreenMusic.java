@@ -61,7 +61,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @BindView(R.id.seekbar)
     SeekBar mSeekbar;
     private CurrentPlaylistAdapter mAdapter;
-    private ArrayList<SongDetailsModel> mQueueList;
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
     private PlaybackStateCompat mPlaybackState;
     private Timer mTimer;
@@ -72,7 +71,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen_music);
         ButterKnife.bind(this);
-        mQueueList = new ArrayList<>();
         mSeekbar.setOnSeekBarChangeListener(this);
         initToolbar();
         initRecyclerView();
@@ -92,13 +90,13 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     private void initPresenters() {
         iCurrentPlaylistPresenter = new CurrentPlaylistPresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, this);
-        iCurrentPlaylistPresenter.updateUI();
         iMusicPresenter.bindService();
     }
 
     private void initRecyclerView() {
+        mProgressBar.setVisibility(View.GONE);
         mCurrentPlaylistRV.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new CurrentPlaylistAdapter(mQueueList, this, this);
+        mAdapter = new CurrentPlaylistAdapter(MusicHelper.getInstance().getCurrentPlaylist(), this, this);
         mCurrentPlaylistRV.setAdapter(mAdapter);
         ItemTouchHelper.Callback callback = new QueueItemTouchHelper(mAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -107,25 +105,22 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onClick(int pos) {
-        if (mQueueList != null) {
-            boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mQueueList, pos);
-            if (isListAdded) {
-                iMusicPresenter.playSong();
-            }
+        boolean isListAdded = MusicHelper.getInstance().setCurrentPosition(pos);
+        if (isListAdded) {
+            iMusicPresenter.playSong();
         }
     }
 
     @Override
     public void onSongRemove(int pos) {
         mDialog = ProgresDialog.showProgressDialog(this);
-        mQueueList.remove(pos);
-        mAdapter.notifyItemRemoved(pos);
         iCurrentPlaylistPresenter.songRemoved(pos);
+        mAdapter.notifyItemRemoved(pos);
     }
 
     @Override
     public void onSuccessfullyRemovedSong(int currentPos) {
-        if(mDialog != null){
+        if (mDialog != null) {
             mDialog.dismiss();
             mDialog = null;
         }
@@ -138,8 +133,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onSongsMoved(int from, int to) {
-
-        Collections.swap(mQueueList, from, to);
         iCurrentPlaylistPresenter.songsMoved(from, to);
         mAdapter.notifyItemMoved(from, to);
     }
@@ -157,8 +150,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onUpdateUI(ArrayList<SongDetailsModel> currentPlaylistList) {
-        mQueueList.clear();
-        mQueueList.addAll(currentPlaylistList);
         mAdapter.notifyDataSetChanged();
     }
 

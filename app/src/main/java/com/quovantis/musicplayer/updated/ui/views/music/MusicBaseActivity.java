@@ -77,7 +77,6 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
     }
 
     @OnClick(R.id.rl_music_layout)

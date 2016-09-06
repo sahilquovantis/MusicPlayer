@@ -48,7 +48,6 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
     private CurrentPlaylistAdapter mAdapter;
-    private ArrayList<SongDetailsModel> mQueueList;
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
     private ProgressDialog mCreatePlaylistProgressDialog;
     private Dialog mDialog;
@@ -58,7 +57,6 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_playlist);
         ButterKnife.bind(this);
-        mQueueList = new ArrayList<>();
         initToolbar();
         initRecyclerView();
         initPresenters();
@@ -68,12 +66,11 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
         iCurrentPlaylistPresenter = new CurrentPlaylistPresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, CurrentPlaylistActivity.this);
         iMusicPresenter.bindService();
-        iCurrentPlaylistPresenter.updateUI();
     }
 
     private void initRecyclerView() {
         mCurrentPlaylistRV.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new CurrentPlaylistAdapter(mQueueList, this, this);
+        mAdapter = new CurrentPlaylistAdapter(MusicHelper.getInstance().getCurrentPlaylist(), this, this);
         mCurrentPlaylistRV.setAdapter(mAdapter);
         ItemTouchHelper.Callback callback = new QueueItemTouchHelper(mAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -102,8 +99,6 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     @Override
     public void onUpdateUI(ArrayList<SongDetailsModel> currentPlaylistList) {
         mEmptyTV.setVisibility(View.GONE);
-        mQueueList.clear();
-        mQueueList.addAll(currentPlaylistList);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -144,13 +139,10 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onClick(int pos) {
-        if (mQueueList != null) {
-            boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mQueueList, pos);
-            if (isListAdded) {
-                iMusicPresenter.playSong();
-            }
+        boolean isListAdded = MusicHelper.getInstance().setCurrentPosition(pos);
+        if (isListAdded) {
+            iMusicPresenter.playSong();
         }
-        //iMusicPresenter.addSongToPlaylist(model, false, true);
     }
 
     @OnClick(R.id.iv_create_playlist)
@@ -161,9 +153,8 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     @Override
     public void onSongRemove(int pos) {
         mDialog = ProgresDialog.showProgressDialog(this);
-        mQueueList.remove(pos);
-        mAdapter.notifyItemRemoved(pos);
         iCurrentPlaylistPresenter.songRemoved(pos);
+        mAdapter.notifyItemRemoved(pos);
     }
 
     @Override
@@ -181,7 +172,6 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onSongsMoved(int from, int to) {
-        Collections.swap(mQueueList, from, to);
         iCurrentPlaylistPresenter.songsMoved(from, to);
         mAdapter.notifyItemMoved(from, to);
     }

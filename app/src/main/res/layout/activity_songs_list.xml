@@ -5,11 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".updated.ui.views.songslist.SongsListActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <RelativeLayout
+        android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary" />
+    </RelativeLayout>
 
     <include
         android:id="@+id/rl_music_layout"
@@ -22,8 +28,8 @@
         android:id="@+id/rv_songs_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         android:layout_above="@id/rl_music_layout"
+        android:layout_below="@id/toolbar_layout"
         android:background="@color/white"
         android:scrollbars="vertical" />
 

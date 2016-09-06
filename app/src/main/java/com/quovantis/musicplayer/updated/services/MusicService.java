@@ -38,6 +38,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
     public void onCreate() {
         super.onCreate();
         Log.d(ICommonKeys.TAG, "Service Created");
+        MusicHelper.getInstance();
         mMediaSession = new MediaSessionCompat(this, ICommonKeys.TAG);
         mMediaSession.setCallback(mMediaCallback);
         mMediaSession.setActive(true);

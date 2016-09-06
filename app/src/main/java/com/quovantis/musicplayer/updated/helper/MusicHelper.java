@@ -25,6 +25,7 @@ import io.realm.RealmResults;
  * Created by sahil-goel on 25/8/16.
  */
 public class MusicHelper {
+    private CurrentPositionHelper mCurrentPositionHelper;
     private int mCurrentPosition = 0;
     private SongDetailsModel mCurrentSong;
     private static MusicHelper sInstance;
@@ -32,6 +33,14 @@ public class MusicHelper {
 
     private MusicHelper() {
         mCurrentPlaylist = new ArrayList<>();
+        mCurrentPositionHelper = new CurrentPositionHelper();
+    }
+
+    public static synchronized MusicHelper getInstance() {
+        if (sInstance == null) {
+            sInstance = new MusicHelper();
+        }
+        return sInstance;
     }
 
     public void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
@@ -75,13 +84,6 @@ public class MusicHelper {
         mCurrentPlaylist.addAll(list);
         mCurrentPosition = playingPos;
         return true;
-    }
-
-    public static synchronized MusicHelper getInstance() {
-        if (sInstance == null) {
-            sInstance = new MusicHelper();
-        }
-        return sInstance;
     }
 
     /**
@@ -175,8 +177,11 @@ public class MusicHelper {
     public void songsMoved(int from, int to) {
         if (mCurrentPlaylist != null && !mCurrentPlaylist.isEmpty()) {
             Collections.swap(mCurrentPlaylist, from, to);
-            mCurrentPosition = mCurrentSong == null ? 0 : mCurrentPlaylist.indexOf(mCurrentSong);
-            Log.d(ICommonKeys.TAG, "Current Pos : " + mCurrentPosition);
+            if (mCurrentPosition == to)
+                mCurrentPosition = from;
+            else if (mCurrentPosition == from)
+                mCurrentPosition = to;
+            Log.d("Training", "Current Pos : " + mCurrentPosition);
         }
     }
 
@@ -205,6 +210,11 @@ public class MusicHelper {
 
     private boolean isValidIndex(int index) {
         return 0 <= index && index < mCurrentPlaylist.size();
+    }
+
+    public boolean setCurrentPosition(int pos) {
+        mCurrentPosition = pos;
+        return true;
     }
 }
 

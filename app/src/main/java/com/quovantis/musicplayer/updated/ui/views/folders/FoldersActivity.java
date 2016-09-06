@@ -1,7 +1,9 @@
 package com.quovantis.musicplayer.updated.ui.views.folders;
 
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.media.MediaMetadataCompat;
@@ -11,8 +13,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
@@ -201,8 +205,11 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         Intent intent = new Intent(FoldersActivity.this, SongsListActivity.class);
         intent.setAction(ICommonKeys.FOLDERS_ACTION);
         intent.putExtras(bundle);
-        startActivity(intent);
-        overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        } else {
+            startActivity(intent);
+        }
     }
 
     /**
@@ -238,13 +245,19 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         int id = item.getItemId();
         if (id == R.id.queue) {
             Intent intent = new Intent(this, CurrentPlaylistActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            } else {
+                startActivity(intent);
+            }
             return true;
         } else if (id == R.id.playlists) {
             Intent intent = new Intent(this, PlaylistsActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            } else {
+                startActivity(intent);
+            }
             return true;
         } else if (id == R.id.resync_device) {
             iMusicPresenter.hideMusicLayoutDuringResyncMusic();
