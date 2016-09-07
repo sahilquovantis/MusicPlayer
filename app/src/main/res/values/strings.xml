@@ -23,10 +23,13 @@
     <string name="play_and_pause">Play and Pause</string>
     <string name="previous_song">Previous Song</string>
     <string name="thumbnail">Thumbnail</string>
-    <string name="add_to_now_playing_list">Add to now playing list</string>
-    <string name="clear_now_playing_list_and_play">Clear now playing list and play</string>
+    <string name="add_to_now_playing_list">Add to queue</string>
+    <string name="clear_now_playing_list_and_play">Clear queue and play</string>
     <string name="fetching_songs">Fetching Songs</string>
     <string name="songs_fetched_0_0">Songs Fetched : 0/0</string>
     <string name="search_songs">Search Songs</string>
     <string name="search_music">Search Music</string>
+    <string name="add_to_playlist">Add to Playlist</string>
+    <string name="create_new_playlist">Create New Playlist</string>
+    <string name="already_created">Already Created</string>
 </resources>

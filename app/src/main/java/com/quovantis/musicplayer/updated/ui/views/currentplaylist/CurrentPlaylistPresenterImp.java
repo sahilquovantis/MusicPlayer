@@ -9,39 +9,17 @@ import java.util.ArrayList;
 /**
  * Created by sahil-goel on 29/8/16.
  */
-public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter,
-        ICurrentPlaylistInteractor.Listener, IOnSongRemovedFromQueue {
+public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter, IOnSongRemovedFromQueue {
 
     private ICurrentPlaylistView mView;
-    private ICurrentPlaylistInteractor iCurrentPlaylistInteractor;
 
     public CurrentPlaylistPresenterImp(ICurrentPlaylistView mView) {
         this.mView = mView;
-        iCurrentPlaylistInteractor = new CurrentPlaylistInteractorImp();
-    }
-
-    @Override
-    public void updateUI() {
-        if (mView != null) {
-            mView.onShowProgress();
-            iCurrentPlaylistInteractor.getCurrentPlaylist(this);
-        }
     }
 
     @Override
     public void onDestroy() {
         mView = null;
-    }
-
-    @Override
-    public void onUpdateUI(ArrayList<SongDetailsModel> list) {
-        if (mView != null) {
-            if (list != null && !list.isEmpty())
-                mView.onUpdateUI(list);
-            else
-                mView.onEmptyList();
-            mView.onHideProgress();
-        }
     }
 
     @Override
@@ -70,16 +48,5 @@ public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter,
     public void onQueueListEmptyShowEmptyTV() {
         if (mView != null)
             mView.onEmptyList();
-    }
-
-    @Override
-    public void createPlaylist(String name) {
-        iCurrentPlaylistInteractor.createPlaylist(name, this);
-    }
-
-    @Override
-    public void onPlaylistCreated(boolean isCreated) {
-        if (mView != null)
-            mView.onCancelCreatePlaylistProgressDialog(isCreated);
     }
 }

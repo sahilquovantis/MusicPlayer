@@ -9,8 +9,10 @@ import com.quovantis.musicplayer.updated.models.SongPathModel;
 public interface IQueueOptionsDialog {
     interface onSongClickListener{
         void onClick (SongDetailsModel model,boolean isClearQueue, boolean isPlaythisSong);
+        void onAddToPlaylist(SongDetailsModel model);
     }
     interface onFolderClickListener{
         void onClick (SongPathModel model, boolean isClearQueue, boolean isPlaythisSong);
+        void onAddToPlaylist(SongPathModel model);
     }
 }

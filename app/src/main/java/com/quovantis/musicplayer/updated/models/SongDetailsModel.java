@@ -1,11 +1,9 @@
 package com.quovantis.musicplayer.updated.models;
 
-import android.util.Log;
-
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+import org.parceler.Parcel;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import io.realm.SongDetailsModelRealmProxy;
 
 /**
  * @author sahil-goel

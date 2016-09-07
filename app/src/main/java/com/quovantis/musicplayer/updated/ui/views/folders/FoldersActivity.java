@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -26,14 +27,19 @@ import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
+import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
+import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.search.SearchActivity;
 import com.quovantis.musicplayer.updated.ui.views.currentplaylist.CurrentPlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.playlists.PlaylistsActivity;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
+import com.quovantis.musicplayer.updated.utility.Utils;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +47,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         IFolderClickListener, NavigationView.OnNavigationItemSelectedListener,
@@ -295,6 +304,16 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
         overridePendingTransition(0, 0);
+    }
+
+    @Override
+    public void onAddToPlaylist(SongPathModel model) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Id", String.valueOf(model.getId()));
+        Intent intent = new Intent(FoldersActivity.this, CreatePlaylistActivity.class);
+        intent.setAction(Utils.FOLDER_LIST);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

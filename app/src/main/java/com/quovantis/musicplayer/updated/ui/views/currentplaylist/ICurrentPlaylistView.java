@@ -10,9 +10,7 @@ import java.util.ArrayList;
 public interface ICurrentPlaylistView {
     void onShowProgress();
     void onHideProgress();
-    void onUpdateUI(ArrayList<SongDetailsModel> currentPlaylistList);
     void onEmptyList();
     void onCurrentPlayingSongRemoved();
-    void onCancelCreatePlaylistProgressDialog(boolean isCreated);
     void onSuccessfullyRemovedSong(int currentPos);
 }

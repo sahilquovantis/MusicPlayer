@@ -147,11 +147,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     }
 
     @Override
-    public void onUpdateUI(ArrayList<SongDetailsModel> currentPlaylistList) {
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     protected void onDestroy() {
         iMusicPresenter.onDestroy();
         iCurrentPlaylistPresenter.onDestroy();
@@ -170,11 +165,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     public void onEmptyList() {
         Toast.makeText(this, "There are no songs in queue", Toast.LENGTH_LONG).show();
         onBackPressed();
-    }
-
-    @Override
-    public void onCancelCreatePlaylistProgressDialog(boolean isCreated) {
-
     }
 
     @Override

@@ -178,4 +178,9 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
     public void onClick(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
         iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
     }
+
+    @Override
+    public void onAddToPlaylist(SongDetailsModel model) {
+
+    }
 }

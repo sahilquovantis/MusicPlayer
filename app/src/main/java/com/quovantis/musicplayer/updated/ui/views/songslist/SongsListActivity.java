@@ -2,6 +2,7 @@ package com.quovantis.musicplayer.updated.ui.views.songslist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,9 +22,14 @@ import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
+import com.quovantis.musicplayer.updated.utility.Utils;
+
+import org.parceler.Parcel;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -132,6 +138,20 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     @Override
     public void onClick(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
         iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
+    }
+
+    @Override
+    public void onAddToPlaylist(SongDetailsModel model) {
+       /* ArrayList<SongDetailsModel> list = new ArrayList<>();
+        list.add(model);
+        Parcelable parcelable = Parcels.wrap(list);*/
+        Bundle bundle = new Bundle();
+        bundle.putString("Id", model.getSongID());
+        //  bundle.putParcelable("demo", parcelable);
+        Intent intent = new Intent(this, CreatePlaylistActivity.class);
+        intent.setAction(Utils.SONG_LIST);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

@@ -20,7 +20,9 @@ import com.quovantis.musicplayer.updated.models.SongPathModel;
  * Created by sahil-goel on 25/8/16.
  */
 public class QueueOptionsDialog {
-    public static void showDialog(Context context, final SongDetailsModel model, final IQueueOptionsDialog.onSongClickListener listener) {
+
+    public static void showDialog(Context context, final SongDetailsModel model,
+                                  final IQueueOptionsDialog.onSongClickListener listener) {
         View view = LayoutInflater.from(context).inflate(R.layout.queue_options_dialog, null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(true);
@@ -33,6 +35,7 @@ public class QueueOptionsDialog {
         title.setText(model.getSongTitle());
         LinearLayout clearAndPlay = (LinearLayout) view.findViewById(R.id.ll_play_and_clear);
         LinearLayout addToQueue = (LinearLayout) view.findViewById(R.id.ll_add_to_queue);
+        LinearLayout addToPlaylist = (LinearLayout) view.findViewById(R.id.ll_add_to_playlist);
         addToQueue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,8 +50,17 @@ public class QueueOptionsDialog {
                 listener.onClick(model, true, true);
             }
         });
+        addToPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                listener.onAddToPlaylist(model);
+            }
+        });
     }
-    public static void showDialog(Context context, final SongPathModel model, final IQueueOptionsDialog.onFolderClickListener listener) {
+
+    public static void showDialog(Context context, final SongPathModel model,
+                                  final IQueueOptionsDialog.onFolderClickListener listener) {
         View view = LayoutInflater.from(context).inflate(R.layout.queue_options_dialog, null, false);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(true);
@@ -59,6 +71,7 @@ public class QueueOptionsDialog {
         dialog.show();
         TextView title = (TextView) view.findViewById(R.id.tv_dialog_title);
         title.setText(model.getSongDirectory());
+        LinearLayout addToPlaylist = (LinearLayout) view.findViewById(R.id.ll_add_to_playlist);
         LinearLayout clearAndPlay = (LinearLayout) view.findViewById(R.id.ll_play_and_clear);
         LinearLayout addToQueue = (LinearLayout) view.findViewById(R.id.ll_add_to_queue);
         addToQueue.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +86,13 @@ public class QueueOptionsDialog {
             public void onClick(View view) {
                 dialog.dismiss();
                 listener.onClick(model, true, true);
+            }
+        });
+        addToPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                listener.onAddToPlaylist(model);
             }
         });
     }

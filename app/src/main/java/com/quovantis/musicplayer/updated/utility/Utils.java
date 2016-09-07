@@ -9,4 +9,6 @@ public class Utils {
     public static final String INTENT_ACTION_STOP = "com.music.action.stop";
     public static final String INTENT_ACTION_NEXT = "com.music.action.next";
     public static final String INTENT_ACTION_PREVIOUS = "com.music.action.previous";
+    public static final String SONG_LIST = "com.music.song.list";
+    public static final String FOLDER_LIST= "com.music.folder.list";
 }

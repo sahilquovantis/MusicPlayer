@@ -2,6 +2,7 @@ package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -25,6 +26,7 @@ import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 
@@ -36,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurrentPlaylistView,
-        ICurrentPlaylistClickListener, IOnCreatePlaylistDialog {
+        ICurrentPlaylistClickListener {
 
 
     @BindView(R.id.tv_empty_list)
@@ -49,7 +51,6 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     ProgressBar mProgressBar;
     private CurrentPlaylistAdapter mAdapter;
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
-    private ProgressDialog mCreatePlaylistProgressDialog;
     private Dialog mDialog;
 
     @Override
@@ -97,12 +98,6 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     }
 
     @Override
-    public void onUpdateUI(ArrayList<SongDetailsModel> currentPlaylistList) {
-        mEmptyTV.setVisibility(View.GONE);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void onEmptyList() {
         mEmptyTV.setVisibility(View.VISIBLE);
         Toast.makeText(this, "There are no songs in queue", Toast.LENGTH_LONG).show();
@@ -145,7 +140,8 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @OnClick(R.id.iv_create_playlist)
     public void createPlaylist() {
-        CreatePlaylistDialog.showDialog(this, this);
+        Intent intent = new Intent(this, CreatePlaylistActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -157,7 +153,7 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onSuccessfullyRemovedSong(int currentPos) {
-        if(mDialog != null){
+        if (mDialog != null) {
             mDialog.dismiss();
             mDialog = null;
         }
@@ -172,23 +168,6 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     public void onSongsMoved(int from, int to) {
         iCurrentPlaylistPresenter.songsMoved(from, to);
         mAdapter.notifyItemMoved(from, to);
-    }
-
-    @Override
-    public void onCreatePlaylist(String playlistName) {
-        String message = "Creating playlist ...";
-        mCreatePlaylistProgressDialog = ProgresDialog.showProgressDialog(this, message);
-        iCurrentPlaylistPresenter.createPlaylist(playlistName);
-    }
-
-    @Override
-    public void onCancelCreatePlaylistProgressDialog(boolean isCreated) {
-        if (mCreatePlaylistProgressDialog != null)
-            mCreatePlaylistProgressDialog.cancel();
-        if (isCreated)
-            Toast.makeText(this, "Playlist Successfully Created", Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
     }
 
     @Override
