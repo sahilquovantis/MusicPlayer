@@ -11,4 +11,5 @@ public interface ICommonKeys {
     String DIRECTORY_NAME_KEY = "com.musicplayer.directory.key";
     String PLAYLIST_ACTION = "com.musicplayer.playlist";
     String FOLDERS_ACTION = "com.musicplayer.songlist";
+    String CURRENT_POSITION = "com.musicplayer.current.position";
 }

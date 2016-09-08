@@ -28,14 +28,13 @@
         <activity android:name=".updated.ui.views.currentplaylist.CurrentPlaylistActivity" />
         <activity android:name=".updated.ui.views.music.MusicBaseActivity" />
         <activity android:name=".updated.ui.views.playlists.PlaylistsActivity" />
-        <activity
-            android:name=".updated.ui.views.fullscreenmusiccontrols.FullScreenMusic"
-            android:launchMode="singleInstance"
-            android:parentActivityName=".updated.ui.views.folders.FoldersActivity"/>
+        <activity android:name=".updated.ui.views.fullscreenmusiccontrols.FullScreenMusic" />
         <activity
             android:name=".updated.ui.views.search.SearchActivity"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".updated.ui.views.createplaylist.CreatePlaylistActivity"/>
+        <activity
+            android:name=".updated.ui.views.createplaylist.CreatePlaylistActivity"
+            android:windowSoftInputMode="adjustNothing" />
     </application>
 
 </manifest>

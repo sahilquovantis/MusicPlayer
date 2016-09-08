@@ -25,7 +25,7 @@ public class CreatePlaylistInteractorImp implements ICreatePlaylistInteractor {
 
     @Override
     public void getPlaylists(ICreatePlaylistInteractor.Listener listener) {
-        RealmResults<UserPlaylistModel> list = realm.where(UserPlaylistModel.class).findAll();
+        RealmResults<UserPlaylistModel> list = realm.where(UserPlaylistModel.class).greaterThan("mPlaylistId",0).findAll();
         ArrayList<UserPlaylistModel> lists = new ArrayList<>();
         lists.addAll(list);
         listener.onGettingPlaylists(lists);
@@ -48,10 +48,11 @@ public class CreatePlaylistInteractorImp implements ICreatePlaylistInteractor {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                UserPlaylistModel userPlaylistModel = realm.createObject(UserPlaylistModel.class);
+                UserPlaylistModel userPlaylistModel = new UserPlaylistModel();
                 userPlaylistModel.setPlaylistName(name);
                 userPlaylistModel.setPlaylistId(getKey(realm));
                 userPlaylistModel.getPlaylist().addAll(list);
+                realm.copyToRealm(userPlaylistModel);
                 listener.onPlaylistCreated(true);
             }
         });

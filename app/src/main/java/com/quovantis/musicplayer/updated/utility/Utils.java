@@ -13,5 +13,6 @@ public class Utils {
     public static final String FOLDER_LIST= "com.music.folder.list";
     public static final int SHUFFLE_ON = 1;
     public static final int SHUFFLE_OFF = 0;
+    public static final String LAUNCHED_FROM_NOTIFICATION = "com.musicplayer.launched";
     public static int SHUFFLE_STATE = SHUFFLE_OFF;
 }

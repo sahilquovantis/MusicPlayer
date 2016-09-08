@@ -29,6 +29,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
     private int mCurrentState;
+    private boolean isPauseWithMetaDataCalled = false;
 
     public PlayBackManager(Context context, ICallback callback) {
         mContext = context;
@@ -81,12 +82,18 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
 
     public void play() {
         if (mCurrentState == PlaybackStateCompat.STATE_PAUSED) {
+            if (isPauseWithMetaDataCalled) {
+                playFromMetaData(mCurrentMedia);
+                isPauseWithMetaDataCalled = false;
+                return;
+            }
             if (tryToGetAudioFocus()) {
                 mMediaPlayer.start();
                 updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
             } else {
                 mPlayOnFocusGain = true;
             }
+            isPauseWithMetaDataCalled = false;
         }
     }
 
@@ -116,6 +123,23 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mCurrentMedia = metadata;
             mMediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            mCurrentMedia = null;
+            Toast.makeText(mContext, "File not found", Toast.LENGTH_LONG).show();
+            updatePlaybackState(PlaybackStateCompat.STATE_NONE);
+        }
+    }
+
+    public void pauseWithMetaData(MediaMetadataCompat metadata) {
+        String mediaId = metadata.getDescription().getMediaId();
+        createMediaPlayerIfNeeded();
+        try {
+            mMediaPlayer.setDataSource(mContext, MusicHelper.getInstance().getSongURI(mediaId));
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mCurrentMedia = metadata;
+            mMediaPlayer.pause();
+            updatePlaybackState(PlaybackStateCompat.STATE_PAUSED);
+            isPauseWithMetaDataCalled = true;
         } catch (IOException e) {
             mCurrentMedia = null;
             Toast.makeText(mContext, "File not found", Toast.LENGTH_LONG).show();

@@ -99,7 +99,6 @@ public class MusicBaseActivity extends AppCompatActivity implements IMusicView {
     public void onClick() {
         Intent intent = new Intent(this, FullScreenMusic.class);
         startActivity(intent);
-        overridePendingTransition(R.anim.enter_in_animation, R.anim.enter_out_animation);
     }
 
     @Override

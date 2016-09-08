@@ -21,4 +21,16 @@ public class SharedPrefrence implements ICommonKeys {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_INFO, Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(key, true);
     }
+
+    public static void saveCurrentPosition(Context context, String key, int value) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_INFO, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, value);
+        editor.commit();
+    }
+
+    public static int getCurrentPosition(Context context, String key) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_INFO, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(key, 0);
+    }
 }

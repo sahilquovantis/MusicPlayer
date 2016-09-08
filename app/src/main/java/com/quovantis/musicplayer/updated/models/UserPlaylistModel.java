@@ -16,7 +16,7 @@ public class UserPlaylistModel extends RealmObject {
     private String mPlaylistName;
     @Ignore
     private Date mPlaylistCreatedDate;
-    private RealmList<SongDetailsModel> mPlaylist;
+    private RealmList<SongDetailsModel> mPlaylist = new RealmList<>();
 
     public long getPlaylistId() {
         return mPlaylistId;

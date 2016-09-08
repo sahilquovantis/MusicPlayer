@@ -14,7 +14,8 @@ public class PlaylistInteractorImp implements IPlaylistInteractor {
     @Override
     public void getPlaylists(IPlaylistInteractor.Listener listener) {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<UserPlaylistModel> list = realm.where(UserPlaylistModel.class).findAll();
+        RealmResults<UserPlaylistModel> list = realm.where(UserPlaylistModel.class).
+                greaterThan("mPlaylistId",0).findAll();
         ArrayList<UserPlaylistModel> lists = new ArrayList<>();
         lists.addAll(list);
         listener.onGettingPlaylists(lists);

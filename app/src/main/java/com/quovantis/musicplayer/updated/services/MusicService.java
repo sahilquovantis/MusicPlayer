@@ -20,7 +20,16 @@ import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.NotificationHelper;
 import com.quovantis.musicplayer.updated.helper.PlayBackManager;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
+import com.quovantis.musicplayer.updated.utility.SharedPrefrence;
 import com.quovantis.musicplayer.updated.utility.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by sahil-goel on 25/8/16.
@@ -55,6 +64,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         }
         mPlaybackManager = new PlayBackManager(getApplicationContext(), this);
         mNotificationHelper = new NotificationHelper(getApplicationContext());
+        initCurrentPlaylist();
     }
 
     @Override
@@ -158,6 +168,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
 
     @Override
     public void onDestroy() {
+        updateDefaultPlaylist();
         Log.d(ICommonKeys.TAG, "Service Destroying");
         if (mMediaSession != null) {
             mMediaSession.release();
@@ -168,6 +179,48 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
             stopForeground(true);
         super.onDestroy();
         android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    private void initCurrentPlaylist() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<UserPlaylistModel> realmResults = realm.where(UserPlaylistModel.class).
+                        equalTo("mPlaylistId", 0).findAll();
+                if (realmResults.size() > 0) {
+                    ArrayList<SongDetailsModel> list = new ArrayList<>(realmResults.get(0).getPlaylist());
+                    int pos = SharedPrefrence.getCurrentPosition(MusicService.this, ICommonKeys.CURRENT_POSITION);
+                    MusicHelper.getInstance().setCurrentPlaylist(list, pos);
+                }
+            }
+        });
+        MediaMetadataCompat metadata = MusicHelper.getInstance().getMetadata(this);
+        if (metadata != null) {
+            mMediaSession.setActive(true);
+            mMediaSession.setMetadata(metadata);
+            mPlaybackManager.pauseWithMetaData(metadata);
+        }
+    }
+
+    private void updateDefaultPlaylist() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                List<SongDetailsModel> list = MusicHelper.getInstance().getCurrentPlaylist();
+                UserPlaylistModel userPlaylistModel = new UserPlaylistModel();
+                userPlaylistModel.setPlaylistName("Default");
+                userPlaylistModel.setPlaylistId(0);
+                userPlaylistModel.getPlaylist().addAll(list);
+                realm.copyToRealmOrUpdate(userPlaylistModel);
+                int pos = 0;
+                if (list != null && !list.isEmpty()) {
+                    pos = MusicHelper.getInstance().getCurrentPosition();
+                }
+                SharedPrefrence.saveCurrentPosition(MusicService.this, ICommonKeys.CURRENT_POSITION, pos);
+            }
+        });
     }
 
     @Override

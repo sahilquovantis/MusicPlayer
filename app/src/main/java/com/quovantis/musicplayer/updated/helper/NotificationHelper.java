@@ -48,7 +48,8 @@ public class NotificationHelper {
             NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
             style.setMediaSession(token);
 
-            Intent showActivityIntent = new Intent(mContext, FullScreenMusic.class);
+            Intent showActivityIntent = new Intent(mContext, FoldersActivity.class);
+          //  showActivityIntent.setAction(Utils.LAUNCHED_FROM_NOTIFICATION);
             showActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent showActivityPendingIntent = PendingIntent.getActivity(mContext, 1, showActivityIntent, 0);
 

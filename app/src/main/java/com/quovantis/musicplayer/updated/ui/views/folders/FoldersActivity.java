@@ -24,13 +24,16 @@ import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
+import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
+import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 import com.quovantis.musicplayer.updated.ui.views.search.SearchActivity;
 import com.quovantis.musicplayer.updated.ui.views.currentplaylist.CurrentPlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
@@ -80,6 +83,15 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         mFoldersList = new ArrayList<>();
         initRecyclerView();
         initPresenters();
+        checkLaunchedFrom();
+    }
+
+    private void checkLaunchedFrom() {
+        Intent intent = getIntent();
+        if (intent != null && intent.getAction() != null &&
+                intent.getAction().equalsIgnoreCase(Utils.LAUNCHED_FROM_NOTIFICATION)) {
+            startActivity(new Intent(this, FullScreenMusic.class));
+        }
     }
 
     /**

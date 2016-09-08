@@ -13,12 +13,14 @@ import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IOnSongRemovedFromQueue;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -208,6 +210,11 @@ public class MusicHelper {
 
     public void setCurrentPosition(int pos) {
         mCurrentPositionHelper.setCurrentPosition(pos);
+    }
+
+
+    public int getCurrentPosition() {
+        return mCurrentPositionHelper.getCurrentPosition();
     }
 }
 
