@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.ui.views.search;
 
+import android.content.Intent;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.os.Bundle;
@@ -18,10 +19,12 @@ import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.IMusicPresenter;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListAdapter;
+import com.quovantis.musicplayer.updated.utility.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +90,7 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
             if (mFilteredList != null) {
                 boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mFilteredList, pos);
                 if (isListAdded) {
+                    if(iMusicPresenter != null)
                     iMusicPresenter.playSong();
                 }
             }
@@ -103,21 +107,6 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
         super.onDestroy();
         iMusicPresenter.onDestroy();
         iMusicPresenter = null;
-    }
-
-    @Override
-    public void onStopService() {
-
-    }
-
-    @Override
-    public void updateMusicProgress(PlaybackStateCompat playbackState) {
-
-    }
-
-    @Override
-    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
-
     }
 
     @OnClick(R.id.iv_back)
@@ -176,11 +165,17 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
 
     @Override
     public void onClick(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
+        if(iMusicPresenter != null)
         iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
     }
 
     @Override
     public void onAddToPlaylist(SongDetailsModel model) {
-
+        Bundle bundle = new Bundle();
+        bundle.putString("Id", model.getSongID());
+        Intent intent = new Intent(this, CreatePlaylistActivity.class);
+        intent.setAction(Utils.SONG_LIST);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

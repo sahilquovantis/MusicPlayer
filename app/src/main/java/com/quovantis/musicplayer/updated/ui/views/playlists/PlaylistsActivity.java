@@ -78,11 +78,6 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
     }
 
     @Override
-    public void onStopService() {
-
-    }
-
-    @Override
     public void onUpdateUI(List<UserPlaylistModel> list) {
         mPlaylistsListRV.setVisibility(View.VISIBLE);
         mPlaylistsList.clear();
@@ -139,13 +134,4 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
         }
     }
 
-    @Override
-    public void updateMusicProgress(PlaybackStateCompat playbackState) {
-
-    }
-
-    @Override
-    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
-
-    }
 }

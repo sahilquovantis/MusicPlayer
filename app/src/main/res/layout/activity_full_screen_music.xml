@@ -64,40 +64,56 @@
                     android:text="@string/dummy_artist"
                     android:textColor="@color/white" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="@dimen/dp_10">
 
                     <ImageView
-                        android:id="@+id/iv_previous_song"
+                        android:id="@+id/iv_shuffle_song"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:background="@drawable/btn_selector"
                         android:clickable="true"
                         android:padding="@dimen/dp_10"
-                        android:src="@drawable/ic_action_previous" />
+                        android:src="@drawable/shuffle_off" />
 
-                    <ImageView
-                        android:id="@+id/iv_play_pause_button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/btn_selector"
-                        android:clickable="true"
-                        android:padding="@dimen/dp_10"
-                        android:src="@drawable/ic_action_pause" />
 
-                    <ImageView
-                        android:id="@+id/iv_next_song"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/btn_selector"
-                        android:clickable="true"
-                        android:padding="@dimen/dp_10"
-                        android:src="@drawable/ic_action_next" />
-                </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_previous_song"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/btn_selector"
+                            android:clickable="true"
+                            android:padding="@dimen/dp_10"
+                            android:src="@drawable/ic_action_previous" />
+
+                        <ImageView
+                            android:id="@+id/iv_play_pause_button"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/btn_selector"
+                            android:clickable="true"
+                            android:padding="@dimen/dp_10"
+                            android:src="@drawable/ic_action_pause" />
+
+                        <ImageView
+                            android:id="@+id/iv_next_song"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/btn_selector"
+                            android:clickable="true"
+                            android:padding="@dimen/dp_10"
+                            android:src="@drawable/ic_action_next" />
+                    </LinearLayout>
+                </RelativeLayout>
+
             </LinearLayout>
 
             <RelativeLayout

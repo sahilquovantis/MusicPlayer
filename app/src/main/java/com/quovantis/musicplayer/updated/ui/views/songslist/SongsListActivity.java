@@ -116,6 +116,7 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         if (mSongList != null) {
             boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mSongList, pos);
             if (isListAdded) {
+                if(iMusicPresenter != null)
                 iMusicPresenter.playSong();
             }
         }
@@ -137,17 +138,14 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
 
     @Override
     public void onClick(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
+        if(iMusicPresenter != null)
         iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
     }
 
     @Override
     public void onAddToPlaylist(SongDetailsModel model) {
-       /* ArrayList<SongDetailsModel> list = new ArrayList<>();
-        list.add(model);
-        Parcelable parcelable = Parcels.wrap(list);*/
         Bundle bundle = new Bundle();
         bundle.putString("Id", model.getSongID());
-        //  bundle.putParcelable("demo", parcelable);
         Intent intent = new Intent(this, CreatePlaylistActivity.class);
         intent.setAction(Utils.SONG_LIST);
         intent.putExtras(bundle);
@@ -163,18 +161,4 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onStopService() {
-
-    }
-
-    @Override
-    public void updateMusicProgress(PlaybackStateCompat playbackState) {
-
-    }
-
-    @Override
-    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
-
-    }
 }

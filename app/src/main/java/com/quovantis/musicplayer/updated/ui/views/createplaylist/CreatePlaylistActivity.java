@@ -139,21 +139,6 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
     }
 
     @Override
-    public void onStopService() {
-
-    }
-
-    @Override
-    public void updateMusicProgress(PlaybackStateCompat playbackState) {
-
-    }
-
-    @Override
-    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
-
-    }
-
-    @Override
     public void updateUI(List<UserPlaylistModel> list) {
         if (list != null && !list.isEmpty()) {
             mList.clear();

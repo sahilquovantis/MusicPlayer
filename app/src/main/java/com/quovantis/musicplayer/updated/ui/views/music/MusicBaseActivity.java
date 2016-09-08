@@ -2,6 +2,7 @@ package com.quovantis.musicplayer.updated.ui.views.music;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullSc
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public abstract class MusicBaseActivity extends AppCompatActivity implements IMusicView {
+public class MusicBaseActivity extends AppCompatActivity implements IMusicView {
 
     @BindView(R.id.rl_music_layout)
     public RelativeLayout mMusicLayout;
@@ -71,6 +72,21 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
     @Override
     public void onShowMusicLayout() {
         mMusicLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onStopService() {
+
+    }
+
+    @Override
+    public void updateMusicProgress(PlaybackStateCompat playbackState) {
+
+    }
+
+    @Override
+    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
+
     }
 
     @Override

@@ -65,7 +65,6 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
     RecyclerView mFoldersListRV;
     @BindView(R.id.pb_progress_bar)
     ProgressBar mProgressBar;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongPathModel> mFoldersList;
     private RefreshListDialog mRefreshListDialog;
@@ -90,7 +89,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(" ");
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open, R.string.close);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -316,13 +315,4 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         startActivity(intent);
     }
 
-    @Override
-    public void updateMusicProgress(PlaybackStateCompat playbackState) {
-
-    }
-
-    @Override
-    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
-
-    }
 }

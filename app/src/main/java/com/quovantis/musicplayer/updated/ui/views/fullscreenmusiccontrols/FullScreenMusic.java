@@ -16,6 +16,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -35,7 +36,9 @@ import com.quovantis.musicplayer.updated.ui.views.currentplaylist.ICurrentPlayli
 import com.quovantis.musicplayer.updated.ui.views.currentplaylist.ICurrentPlaylistView;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
+import com.quovantis.musicplayer.updated.utility.Utils;
 
+import java.io.UTFDataFormatException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,10 +47,14 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.realm.internal.Util;
 
 public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlaylistView,
         ICurrentPlaylistClickListener, SeekBar.OnSeekBarChangeListener {
 
+    @BindView(R.id.iv_shuffle_song)
+    ImageView mShuffleSongIV;
     @BindView(R.id.tv_current_duration)
     TextView mCurrentTimeTV;
     @BindView(R.id.tv_final_duration)
@@ -106,7 +113,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @Override
     public void onClick(int pos) {
         MusicHelper.getInstance().setCurrentPosition(pos);
-        iMusicPresenter.playSong();
+        if (iMusicPresenter != null)
+            iMusicPresenter.playSong();
     }
 
     @Override
@@ -126,7 +134,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onCurrentPlayingSongRemoved() {
-        iMusicPresenter.onSkipToNext();
+        if (iMusicPresenter != null)
+            iMusicPresenter.onSkipToNext();
     }
 
     @Override
@@ -135,6 +144,18 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         mAdapter.notifyItemMoved(from, to);
     }
 
+    @OnClick(R.id.iv_shuffle_song)
+    public void onShuffle() {
+        if (Utils.SHUFFLE_STATE == Utils.SHUFFLE_OFF) {
+            Utils.SHUFFLE_STATE = Utils.SHUFFLE_ON;
+            mShuffleSongIV.setImageResource(R.drawable.shuffle_on);
+            Toast.makeText(this, "Shuffle turned on", Toast.LENGTH_LONG).show();
+        } else {
+            Utils.SHUFFLE_STATE = Utils.SHUFFLE_OFF;
+            mShuffleSongIV.setImageResource(R.drawable.shuffle_off);
+            Toast.makeText(this, "Shuffle turned off", Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public void onShowProgress() {
@@ -165,11 +186,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     public void onEmptyList() {
         Toast.makeText(this, "There are no songs in queue", Toast.LENGTH_LONG).show();
         onBackPressed();
-    }
-
-    @Override
-    public void onStopService() {
-
     }
 
     @Override
@@ -245,7 +261,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         int progress = seekBar.getProgress();
-        iMusicPresenter.seekTo(progress);
+        if (iMusicPresenter != null)
+            iMusicPresenter.seekTo(progress);
         mCurrentTimeTV.setText(DateUtils.formatElapsedTime(progress / 1000));
     }
 }

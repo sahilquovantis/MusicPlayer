@@ -122,20 +122,12 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onStopService() {
-
-    }
-
-    @Override
-    public void updateMusicProgress(PlaybackStateCompat playbackState) {
-
-    }
 
     @Override
     public void onClick(int pos) {
         MusicHelper.getInstance().setCurrentPosition(pos);
-        iMusicPresenter.playSong();
+        if (iMusicPresenter != null)
+            iMusicPresenter.playSong();
     }
 
     @OnClick(R.id.iv_create_playlist)
@@ -161,7 +153,8 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
 
     @Override
     public void onCurrentPlayingSongRemoved() {
-        iMusicPresenter.onSkipToNext();
+        if (iMusicPresenter != null)
+            iMusicPresenter.onSkipToNext();
     }
 
     @Override
@@ -170,8 +163,4 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
         mAdapter.notifyItemMoved(from, to);
     }
 
-    @Override
-    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
-
-    }
 }

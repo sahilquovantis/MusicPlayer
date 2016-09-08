@@ -1,5 +1,11 @@
 package com.quovantis.musicplayer.updated.helper;
 
+import android.util.Log;
+
+import com.quovantis.musicplayer.updated.utility.Utils;
+
+import java.util.Random;
+
 /**
  * Created by sahil-goel on 6/9/16.
  */
@@ -28,6 +34,12 @@ public class CurrentPositionHelper {
     }
 
     public int getNextSong(int size) {
+        if (Utils.SHUFFLE_STATE == Utils.SHUFFLE_ON && size > 0) {
+            Random random = new Random();
+            mCurrentPosition = random.nextInt(size);
+            Log.d("Training", "Random :  " + mCurrentPosition);
+            return mCurrentPosition;
+        }
         if (mCurrentPosition == size - 1 || mCurrentPosition >= size)
             mCurrentPosition = 0;
         else

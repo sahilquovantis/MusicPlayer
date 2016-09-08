@@ -11,4 +11,7 @@ public class Utils {
     public static final String INTENT_ACTION_PREVIOUS = "com.music.action.previous";
     public static final String SONG_LIST = "com.music.song.list";
     public static final String FOLDER_LIST= "com.music.folder.list";
+    public static final int SHUFFLE_ON = 1;
+    public static final int SHUFFLE_OFF = 0;
+    public static int SHUFFLE_STATE = SHUFFLE_OFF;
 }

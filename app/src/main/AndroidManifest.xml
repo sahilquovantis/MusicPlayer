@@ -30,11 +30,12 @@
         <activity android:name=".updated.ui.views.playlists.PlaylistsActivity" />
         <activity
             android:name=".updated.ui.views.fullscreenmusiccontrols.FullScreenMusic"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleInstance"
+            android:parentActivityName=".updated.ui.views.folders.FoldersActivity"/>
         <activity
             android:name=".updated.ui.views.search.SearchActivity"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".updated.ui.views.createplaylist.CreatePlaylistActivity"></activity>
+        <activity android:name=".updated.ui.views.createplaylist.CreatePlaylistActivity"/>
     </application>
 
 </manifest>
