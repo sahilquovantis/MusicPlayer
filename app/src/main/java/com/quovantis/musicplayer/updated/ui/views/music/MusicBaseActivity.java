@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.helper.AnimationHelper;
 import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 
 import butterknife.BindView;
@@ -66,11 +67,23 @@ public class MusicBaseActivity extends AppCompatActivity implements IMusicView {
 
     @Override
     public void onHideMusicLayout() {
+        /*mMusicLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                AnimationHelper.hideView(mMusicLayout);
+            }
+        });*/
         mMusicLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void onShowMusicLayout() {
+      /*  mMusicLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                AnimationHelper.CircularReveal(mMusicLayout);
+            }
+        });*/
         mMusicLayout.setVisibility(View.VISIBLE);
     }
 

@@ -261,7 +261,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
      */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        mDrawerLayout.closeDrawer(mNavigationView);
+      //  mDrawerLayout.closeDrawer(mNavigationView);
         int id = item.getItemId();
         if (id == R.id.queue) {
             Intent intent = new Intent(this, CurrentPlaylistActivity.class);

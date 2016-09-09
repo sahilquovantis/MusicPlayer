@@ -34,10 +34,12 @@ public class CurrentPositionHelper {
     }
 
     public int getNextSong(int size) {
+        if (Utils.REPEAT_STATE == Utils.REPEAT_ON) {
+            return mCurrentPosition;
+        }
         if (Utils.SHUFFLE_STATE == Utils.SHUFFLE_ON && size > 0) {
             Random random = new Random();
             mCurrentPosition = random.nextInt(size);
-            Log.d("Training", "Random :  " + mCurrentPosition);
             return mCurrentPosition;
         }
         if (mCurrentPosition == size - 1 || mCurrentPosition >= size)

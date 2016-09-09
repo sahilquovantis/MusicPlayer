@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -70,6 +71,10 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     }
 
     private void initRecyclerView() {
+        if (MusicHelper.getInstance().getCurrentPlaylist().isEmpty()) {
+            Toast.makeText(this, "Current queue is empty", Toast.LENGTH_LONG).show();
+            onBackPressed();
+        }
         mCurrentPlaylistRV.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new CurrentPlaylistAdapter(MusicHelper.getInstance().getCurrentPlaylist(), this, this);
         mCurrentPlaylistRV.setAdapter(mAdapter);
@@ -114,9 +119,20 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.action_menu_now_playlist_list, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.add_to_playlist) {
+            Intent intent = new Intent(this, CreatePlaylistActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -128,12 +144,6 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
         MusicHelper.getInstance().setCurrentPosition(pos);
         if (iMusicPresenter != null)
             iMusicPresenter.playSong();
-    }
-
-    @OnClick(R.id.iv_create_playlist)
-    public void createPlaylist() {
-        Intent intent = new Intent(this, CreatePlaylistActivity.class);
-        startActivity(intent);
     }
 
     @Override

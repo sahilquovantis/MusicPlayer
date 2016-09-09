@@ -10,9 +10,18 @@ public class SongPathModel extends RealmObject {
 
     @PrimaryKey
     private int mId;
+    private byte[] mThumbnailData;
     private String mSongDirectory;
     private String mCompletePath;
     private String mSongPath;
+
+    public byte[] getThumbnailData() {
+        return mThumbnailData;
+    }
+
+    public void setThumbnailData(byte[] mThumbnailData) {
+        this.mThumbnailData = mThumbnailData;
+    }
 
     public String getCompletePath() {
         return mCompletePath;

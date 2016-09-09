@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:itemBackground">@color/white</item>
+        <item name="android:itemTextAppearance">@style/PopUpStyle</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowEnterTransition">@transition/explode</item>
         <item name="android:windowExitTransition">@transition/explode</item>
-
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
+    </style>
+    <style name="PopUpStyle">
+        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

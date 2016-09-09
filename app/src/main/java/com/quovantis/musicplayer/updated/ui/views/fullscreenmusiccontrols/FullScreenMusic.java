@@ -53,6 +53,8 @@ import io.realm.internal.Util;
 public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlaylistView,
         ICurrentPlaylistClickListener, SeekBar.OnSeekBarChangeListener {
 
+    @BindView(R.id.iv_repeat_song)
+    ImageView mRepeatSongIV;
     @BindView(R.id.iv_shuffle_song)
     ImageView mShuffleSongIV;
     @BindView(R.id.tv_current_duration)
@@ -154,6 +156,19 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
             Utils.SHUFFLE_STATE = Utils.SHUFFLE_OFF;
             mShuffleSongIV.setImageResource(R.drawable.shuffle_off);
             Toast.makeText(this, "Shuffle turned off", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @OnClick(R.id.iv_repeat_song)
+    public void onRepeat() {
+        if (Utils.REPEAT_STATE == Utils.REPEAT_OFF) {
+            Utils.REPEAT_STATE = Utils.REPEAT_ON;
+            mRepeatSongIV.setImageResource(R.drawable.repeat_on);
+            Toast.makeText(this, "Repeat turned on", Toast.LENGTH_LONG).show();
+        } else {
+            Utils.REPEAT_STATE = Utils.REPEAT_OFF;
+            mRepeatSongIV.setImageResource(R.drawable.repeat_off);
+            Toast.makeText(this, "Repeat turned off", Toast.LENGTH_LONG).show();
         }
     }
 

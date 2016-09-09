@@ -94,6 +94,7 @@ public class RefreshMusicAsyncTask extends AsyncTask<Void, Integer, Void> {
 
                         final String path = songPath.substring(0, songPath.lastIndexOf("/"));
                         Log.d("Training", path);
+                        final byte[] data = metadataRetriever.getEmbeddedPicture();
                         final int[] id = {getPathStoredID(path)};
                         if (id[0] == -1) {
                             final String directory = path.substring(path.lastIndexOf("/") + 1);
@@ -103,6 +104,7 @@ public class RefreshMusicAsyncTask extends AsyncTask<Void, Integer, Void> {
                                     SongPathModel songPathModel = realm.createObject(SongPathModel.class);
                                     songPathModel.setSongDirectory(directory);
                                     songPathModel.setSongPath(path);
+                                    songPathModel.setThumbnailData(data);
                                     songPathModel.setCompletePath(songPath);
                                     id[0] = getKey();
                                     songPathModel.setId(id[0]);
@@ -110,7 +112,6 @@ public class RefreshMusicAsyncTask extends AsyncTask<Void, Integer, Void> {
                             });
                         }
 
-                        final byte[] data = metadataRetriever.getEmbeddedPicture();
                         mRealm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {

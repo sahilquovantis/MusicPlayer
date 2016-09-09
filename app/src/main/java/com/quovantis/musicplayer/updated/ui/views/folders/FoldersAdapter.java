@@ -7,13 +7,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.os.AsyncTask;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
@@ -49,7 +53,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final SongPathModel songPathModel = mSongPathModelArrayList.get(position);
         final String directory = songPathModel.getSongDirectory();
         String path = songPathModel.getSongPath();
@@ -57,7 +61,39 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
         final long id = songPathModel.getId();
         holder.mDirectoryNameTV.setText(directory);
         holder.mDirectoryPathTV.setText(path);
-        loadBitmap(holder.mDirectoryThumbnail, songPathModel.getCompletePath());
+        byte[] data = songPathModel.getThumbnailData();
+        if (data == null) {
+            Glide.with(mContext).load(R.drawable.music).asBitmap().placeholder(R.drawable.music).into(new BitmapImageViewTarget(holder.mDirectoryThumbnail) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                        public void onGenerated(Palette palette) {
+                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                            if (vibrantSwatch != null) {
+                                holder.mBackground.setBackgroundColor(vibrantSwatch.getRgb());
+                            }
+                        }
+                    });
+                    super.setResource(resource);
+                }
+            });
+        } else {
+            Glide.with(mContext).load(data).asBitmap().placeholder(R.drawable.music).into(new BitmapImageViewTarget(holder.mDirectoryThumbnail) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                        public void onGenerated(Palette palette) {
+                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                            if (vibrantSwatch != null) {
+                                holder.mBackground.setBackgroundColor(vibrantSwatch.getRgb());
+                            }
+                        }
+                    });
+                    super.setResource(resource);
+                }
+            });
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,11 +101,11 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
             }
         });
 
-       holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 iFolderClickListener.onFoldersLongPress(songPathModel);
-               return true;
+                return true;
             }
         });
     }
@@ -81,6 +117,8 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.rl_background)
+        RelativeLayout mBackground;
         @BindView(R.id.tv_folder_name)
         TextView mDirectoryNameTV;
         @BindView(R.id.tv_folder_path)
@@ -91,98 +129,6 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-        }
-    }
-
-    public void loadBitmap(ImageView imageView, String data) {
-        if (cancelPotentialWork(data, imageView)) {
-            final DisplayImage task = new DisplayImage(imageView);
-            final AsyncDrawable asyncDrawable = new AsyncDrawable(task);
-            imageView.setImageDrawable(asyncDrawable);
-            task.execute(data);
-        }
-    }
-
-    static class AsyncDrawable extends BitmapDrawable {
-        private final WeakReference<DisplayImage> bitmapWorkerTask;
-
-        public AsyncDrawable(DisplayImage bitmapTask) {
-            bitmapWorkerTask = new WeakReference<DisplayImage>(bitmapTask);
-        }
-
-        public DisplayImage getBitmapWorkerTask() {
-            return bitmapWorkerTask.get();
-        }
-    }
-
-    public static boolean cancelPotentialWork(String data, ImageView imageView) {
-        final DisplayImage bitmapWorkerTask = getBitmapWorkerTask(imageView);
-
-        if (bitmapWorkerTask != null) {
-            final String bitmapData = bitmapWorkerTask.data;
-            if (bitmapData != data) {
-                bitmapWorkerTask.cancel(true);
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static DisplayImage getBitmapWorkerTask(ImageView imageView) {
-        if (imageView != null) {
-            final Drawable drawable = imageView.getDrawable();
-            if (drawable instanceof AsyncDrawable) {
-                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
-                return asyncDrawable.getBitmapWorkerTask();
-            }
-        }
-        return null;
-    }
-
-
-    class DisplayImage extends AsyncTask<String, Void, Bitmap> {
-
-        private WeakReference<ImageView> imageViewWeakReference;
-        public String data = null;
-
-        DisplayImage(ImageView iv) {
-            imageViewWeakReference = new WeakReference<ImageView>(iv);
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            data = strings[0];
-            Bitmap bitmap = null;
-            try {
-                metadataRetriever.setDataSource(data);
-                byte[] imageData = metadataRetriever.getEmbeddedPicture();
-                if (imageData == null) {
-                    bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.music);
-                } else {
-                    bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-                }
-            } catch (IllegalArgumentException e) {
-                bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.music);
-            }
-
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            if (isCancelled()) {
-                bitmap = null;
-            }
-            if (bitmap != null && imageViewWeakReference != null) {
-                ImageView imageView = imageViewWeakReference.get();
-                final DisplayImage bitmapWorkerTask =
-                        getBitmapWorkerTask(imageView);
-                if (this == bitmapWorkerTask && imageView != null) {
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
         }
     }
 }
