@@ -2,11 +2,16 @@ package com.quovantis.musicplayer.updated.ui.views.music;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,7 +23,7 @@ import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullSc
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MusicBaseActivity extends AppCompatActivity implements IMusicView {
+public abstract class MusicBaseActivity extends AppCompatActivity implements IMusicView {
 
     @BindView(R.id.rl_music_layout)
     public RelativeLayout mMusicLayout;
@@ -30,12 +35,16 @@ public class MusicBaseActivity extends AppCompatActivity implements IMusicView {
     public TextView mSelectedSongArtistTV;
     @BindView(R.id.iv_play_pause_button)
     public ImageView mPlayPauseIV;
-
     public IMusicPresenter iMusicPresenter;
+    private Window window;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
     }
 
     @OnClick({R.id.iv_next_song, R.id.iv_previous_song, R.id.iv_play_pause_button})
@@ -54,6 +63,20 @@ public class MusicBaseActivity extends AppCompatActivity implements IMusicView {
         mSelectedSongTV.setText(title);
         mSelectedSongArtistTV.setText(artist);
         mSelectedSongThumbnailIV.setImageBitmap(bitmap);
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                if (vibrantSwatch != null) {
+                    int rgb = vibrantSwatch.getRgb();
+                    mMusicLayout.setBackgroundColor(rgb);
+                    changeToolbarColor(rgb);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        window.setStatusBarColor(rgb);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -74,6 +97,11 @@ public class MusicBaseActivity extends AppCompatActivity implements IMusicView {
             }
         });*/
         mMusicLayout.setVisibility(View.GONE);
+        changeToolbarColor(R.color.colorPrimary);
+        mMusicLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        }
     }
 
     @Override

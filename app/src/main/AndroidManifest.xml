@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+
     <application
         android:name=".updated.application.MusicPlayerApplication"
         android:allowBackup="true"
@@ -23,7 +25,8 @@
 
         <service
             android:name=".updated.services.MusicService"
-            android:stopWithTask="false" />
+            android:stopWithTask="false" >
+            </service>
 
         <activity android:name=".updated.ui.views.currentplaylist.CurrentPlaylistActivity" />
         <activity android:name=".updated.ui.views.music.MusicBaseActivity" />
@@ -35,6 +38,16 @@
         <activity
             android:name=".updated.ui.views.createplaylist.CreatePlaylistActivity"
             android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".updated.HomeActivity">
+
+        </activity>
+
+        <receiver android:name=".updated.receivers.NoisyReceiver">
+            <intent-filter>
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

@@ -280,4 +280,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
             iMusicPresenter.seekTo(progress);
         mCurrentTimeTV.setText(DateUtils.formatElapsedTime(progress / 1000));
     }
+    @Override
+    public void changeToolbarColor(int color) {
+
+    }
 }

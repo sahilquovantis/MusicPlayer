@@ -81,19 +81,21 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
     }
 
     public void play() {
-        if (mCurrentState == PlaybackStateCompat.STATE_PAUSED) {
-            if (isPauseWithMetaDataCalled) {
-                playFromMetaData(mCurrentMedia);
+        if (mMediaPlayer != null) {
+            if (mCurrentState == PlaybackStateCompat.STATE_PAUSED) {
+                if (isPauseWithMetaDataCalled) {
+                    playFromMetaData(mCurrentMedia);
+                    isPauseWithMetaDataCalled = false;
+                    return;
+                }
+                if (tryToGetAudioFocus()) {
+                    mMediaPlayer.start();
+                    updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
+                } else {
+                    mPlayOnFocusGain = true;
+                }
                 isPauseWithMetaDataCalled = false;
-                return;
             }
-            if (tryToGetAudioFocus()) {
-                mMediaPlayer.start();
-                updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
-            } else {
-                mPlayOnFocusGain = true;
-            }
-            isPauseWithMetaDataCalled = false;
         }
     }
 

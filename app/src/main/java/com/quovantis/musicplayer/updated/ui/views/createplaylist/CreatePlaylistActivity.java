@@ -102,7 +102,12 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
             iCreatePlaylistPresenter.createPlaylist(playlistName, id, action);
         }
     };
-
+    @Override
+    public void changeToolbarColor(int color) {
+        if (mToolbar != null) {
+            mToolbar.setBackgroundColor(color);
+        }
+    }
     @OnClick(R.id.rl_create_playlist)
     public void createNewPlaylist() {
         CreatePlaylistDialog.showDialog(CreatePlaylistActivity.this, iOnCreatePlaylistDialog);

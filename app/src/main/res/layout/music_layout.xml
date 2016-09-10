@@ -3,19 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
     tools:visibility="visible">
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#212121" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/music_player_height"
-        android:layout_below="@id/divider"
-        android:background="@color/colorPrimary">
+        android:layout_height="@dimen/music_player_height">
 
         <ImageView
             android:id="@+id/iv_selected_song_thumbnail"

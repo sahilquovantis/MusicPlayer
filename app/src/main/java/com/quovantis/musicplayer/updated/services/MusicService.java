@@ -2,18 +2,28 @@ package com.quovantis.musicplayer.updated.services;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaMetadata;
+import android.media.session.MediaSession;
+import android.media.session.MediaSessionManager;
 import android.media.session.PlaybackState;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
@@ -49,12 +59,16 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         Log.d(ICommonKeys.TAG, "Service Created");
         MusicHelper.getInstance();
         mMediaSession = new MediaSessionCompat(this, ICommonKeys.TAG);
-        mMediaSession.setCallback(mMediaCallback);
-        mMediaSession.setActive(true);
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        mMediaSession.setCallback(mMediaCallback);
+        mMediaSession.setActive(true);
         mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                .setState(PlaybackStateCompat.STATE_NONE, 0, 1.0f)
+                .setActions(
+                        PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID | PlaybackStateCompat.ACTION_PAUSE |
+                                PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+                .setState(PlaybackStateCompat.STATE_NONE, 0, 1, SystemClock.elapsedRealtime())
                 .build());
         try {
             mMediaController = new MediaControllerCompat(this, getMediaSessionToken());
@@ -94,6 +108,42 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
             if (mPlaybackManager != null) {
                 mPlaybackManager.play();
             }
+        }
+
+        @Override
+        public boolean onMediaButtonEvent(Intent intent) {
+            if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
+                KeyEvent event = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+                if (event != null && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (event.getKeyCode()) {
+                        case KeyEvent.KEYCODE_MEDIA_PLAY: {
+                            onPlay();
+                            break;
+                        }
+                        case KeyEvent.KEYCODE_MEDIA_PAUSE: {
+                            onPause();
+                            break;
+                        }
+
+                        case KeyEvent.KEYCODE_HEADSETHOOK: {
+                            int state = mMediaController.getPlaybackState().getState();
+                            if (state == PlaybackStateCompat.STATE_PAUSED) {
+                                onPlay();
+                            } else if (state == PlaybackStateCompat.STATE_PLAYING) {
+                                onPause();
+                            }
+                            break;
+                        }
+                        case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                            onSkipToPrevious();
+                            break;
+                        case KeyEvent.KEYCODE_MEDIA_NEXT:
+                            onSkipToNext();
+                            break;
+                    }
+                }
+            }
+            return true;
         }
 
         @Override

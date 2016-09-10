@@ -23,4 +23,6 @@ public interface IMusicView {
     void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata);
 
     void cancelDialog();
+
+    void changeToolbarColor(int color);
 }

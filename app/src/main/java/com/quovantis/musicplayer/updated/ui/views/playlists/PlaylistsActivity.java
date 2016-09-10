@@ -133,5 +133,10 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
             startActivity(intent);
         }
     }
-
+    @Override
+    public void changeToolbarColor(int color) {
+        if (mToolbar != null) {
+            mToolbar.setBackgroundColor(color);
+        }
+    }
 }
