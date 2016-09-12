@@ -6,14 +6,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.ui.views.home.HomeActivity;
 import com.quovantis.musicplayer.updated.services.MusicService;
-import com.quovantis.musicplayer.updated.ui.views.folders.FoldersActivity;
-import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 import com.quovantis.musicplayer.updated.utility.Utils;
 
 /**
@@ -48,8 +48,8 @@ public class NotificationHelper {
             NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
             style.setMediaSession(token);
 
-            Intent showActivityIntent = new Intent(mContext, FoldersActivity.class);
-          //  showActivityIntent.setAction(Utils.LAUNCHED_FROM_NOTIFICATION);
+            Intent showActivityIntent = new Intent(mContext, HomeActivity.class);
+            //  showActivityIntent.setAction(Utils.LAUNCHED_FROM_NOTIFICATION);
             showActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent showActivityPendingIntent = PendingIntent.getActivity(mContext, 1, showActivityIntent, 0);
 
@@ -62,7 +62,7 @@ public class NotificationHelper {
                     .setStyle(new NotificationCompat.MediaStyle()
                             .setShowActionsInCompactView(0, 1, 2)
                             .setMediaSession(token))
-                    .setColor(0x3f51b5);
+                    .setColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
             builder.addAction(createAction(R.drawable.ic_action_previous, "Previous", Utils.INTENT_ACTION_PREVIOUS));
             builder.addAction(createAction(iconForPlayPause, playPause, action));
             builder.addAction(createAction(R.drawable.ic_action_next, "Next", Utils.INTENT_ACTION_NEXT));

@@ -24,5 +24,4 @@ public interface IMusicView {
 
     void cancelDialog();
 
-    void changeToolbarColor(int color);
 }

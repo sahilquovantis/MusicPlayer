@@ -14,29 +14,7 @@ public interface IFoldersInteractor {
 
     void onFetchedSongs();
 
-    void resyncMusic(Context context);
-
-    interface RefreshSongsListListener {
-        void onRefreshMusicListUpdateProgress(int value, int total);
-
-        void onRefreshMusicListUpdateFetchedSongs(int value, int total);
-
-        void onIntitalizeRefreshMusicListDialog();
-
-        void onCancelRefreshMusicListDialog();
-
-        void onRefreshListSuccessfully();
-    }
-
     interface Listener {
         void onUpdateFoldersList(ArrayList<SongPathModel> list);
-
-        void onRefreshMusicListProgress(int value, int size);
-
-        void onRefreshMusicListFetchedSongs(int value, int size);
-
-        void onCancelRefreshMusicListDialog();
-
-        void onIntitalzeRefreshMusicListDialog();
     }
 }

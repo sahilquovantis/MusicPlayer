@@ -178,10 +178,4 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
         intent.putExtras(bundle);
         startActivity(intent);
     }
-    @Override
-    public void changeToolbarColor(int color) {
-        if (mToolbar != null) {
-            mToolbar.setBackgroundColor(color);
-        }
-    }
 }

@@ -46,39 +46,4 @@ public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteracto
             mFoldersView.hideProgress();
         }
     }
-
-    @Override
-    public void onRefreshMusicListProgress(int value, int size) {
-        if (mFoldersView != null)
-            mFoldersView.updateRefreshListProgress(size, value);
-    }
-
-    @Override
-    public void onRefreshMusicListFetchedSongs(int value, int size) {
-        if (mFoldersView != null)
-            mFoldersView.updateRefreshListFetchedFolders(size, value);
-    }
-
-    @Override
-    public void onCancelRefreshMusicListDialog() {
-        if (mFoldersView != null)
-            mFoldersView.cancelRefreshListDialog();
-    }
-
-    @Override
-    public void onIntitalzeRefreshMusicListDialog() {
-        if (mFoldersView != null)
-            mFoldersView.initializeRefreshListDialog();
-    }
-
-    /**
-     * Sync Music From the Storage
-     * @param context
-     */
-    @Override
-    public void syncMusic(Context context) {
-        if(mFoldersView != null)
-            mFoldersView.showProgress();
-        iFoldersInteractor.resyncMusic(context);
-    }
 }

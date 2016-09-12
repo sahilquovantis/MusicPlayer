@@ -15,12 +15,4 @@ public interface IFolderView {
     void hideProgress();
 
     void showEmptyMessage();
-
-    void updateRefreshListProgress(int size, int value);
-
-    void updateRefreshListFetchedFolders(int size, int value);
-
-    void cancelRefreshListDialog();
-
-    void initializeRefreshListDialog();
 }

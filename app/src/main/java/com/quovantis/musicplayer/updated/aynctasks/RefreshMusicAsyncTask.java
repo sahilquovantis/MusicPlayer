@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.quovantis.musicplayer.updated.ui.views.folders.IFoldersInteractor;
+import com.quovantis.musicplayer.updated.ui.views.home.IHomeInteractor;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 
@@ -22,10 +22,10 @@ import io.realm.RealmResults;
 public class RefreshMusicAsyncTask extends AsyncTask<Void, Integer, Void> {
     private Context mContext;
     private Realm mRealm;
-    private IFoldersInteractor.RefreshSongsListListener iFoldersInteractor;
+    private IHomeInteractor.RefreshSongsListListener iFoldersInteractor;
     private int mCursorSize = 0;
 
-    public RefreshMusicAsyncTask(Context context, IFoldersInteractor.RefreshSongsListListener iFoldersInteractor) {
+    public RefreshMusicAsyncTask(Context context, IHomeInteractor.RefreshSongsListListener iFoldersInteractor) {
         mContext = context;
         this.iFoldersInteractor = iFoldersInteractor;
     }

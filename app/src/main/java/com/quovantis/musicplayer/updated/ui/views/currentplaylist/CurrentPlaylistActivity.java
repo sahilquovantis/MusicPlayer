@@ -172,10 +172,4 @@ public class CurrentPlaylistActivity extends MusicBaseActivity implements ICurre
         iCurrentPlaylistPresenter.songsMoved(from, to);
         mAdapter.notifyItemMoved(from, to);
     }
-    @Override
-    public void changeToolbarColor(int color) {
-        if (mToolbar != null) {
-            mToolbar.setBackgroundColor(color);
-        }
-    }
 }

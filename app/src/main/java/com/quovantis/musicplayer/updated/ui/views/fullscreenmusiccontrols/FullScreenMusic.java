@@ -74,6 +74,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     private PlaybackStateCompat mPlaybackState;
     private Timer mTimer;
     private Dialog mDialog;
+    private int state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,14 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         initRecyclerView();
         initPresenters();
         initTimer();
+        initViews();
+    }
+
+    private void initViews() {
+        if (Utils.SHUFFLE_STATE == Utils.SHUFFLE_ON)
+            mShuffleSongIV.setImageResource(R.drawable.shuffle_on);
+        if (Utils.REPEAT_STATE == Utils.REPEAT_ON)
+            mRepeatSongIV.setImageResource(R.drawable.repeat_on);
     }
 
     private void initToolbar() {
@@ -228,7 +237,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
             return;
         }
         long currentPosition = mPlaybackState.getPosition();
-        int state = mPlaybackState.getState();
+        state = mPlaybackState.getState();
         if (state == PlaybackStateCompat.STATE_PLAYING) {
             long timeDelta = SystemClock.elapsedRealtime() -
                     mPlaybackState.getLastPositionUpdateTime();
@@ -276,12 +285,12 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         int progress = seekBar.getProgress();
-        if (iMusicPresenter != null)
+        if (iMusicPresenter != null) {
+            if (state == PlaybackStateCompat.STATE_PAUSED) {
+                iMusicPresenter.playSong();
+            }
             iMusicPresenter.seekTo(progress);
+        }
         mCurrentTimeTV.setText(DateUtils.formatElapsedTime(progress / 1000));
-    }
-    @Override
-    public void changeToolbarColor(int color) {
-
     }
 }

@@ -159,47 +159,31 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
     public void showEmptyMessage() {
 
     }
+/*
 
-    /**
-     * Update Progress Bar in Dialog {@link RefreshListDialog} while Fetching Songs from the Storage.
-     *
-     * @param size  Total Number of Songs
-     * @param value Number of Fetched Songs
-     */
     @Override
     public void updateRefreshListProgress(int size, int value) {
         mRefreshListDialog.updateProgress(value, size);
     }
-
-    /**
-     * Update Dialog {@link RefreshListDialog} and Shows Number of fetched songs.
-     *
-     * @param size  Total Number of Songs
-     * @param value Number of Fetched Songs
-     */
-    @Override
+verride
     public void updateRefreshListFetchedFolders(int size, int value) {
         mRefreshListDialog.updateFetchedSongs(value, size);
     }
 
-    /**
-     * Cancel the Dialog {@link RefreshListDialog} after getting songs.
-     */
+
     @Override
     public void cancelRefreshListDialog() {
         mRefreshListDialog.cancelProgressDialog();
         mRefreshListDialog = null;
     }
 
-    /**
-     * Initialize the Dialog {@link RefreshListDialog}
-     */
+
     @Override
     public void initializeRefreshListDialog() {
         mRefreshListDialog = new RefreshListDialog(FoldersActivity.this);
         mRefreshListDialog.showProgressDialog();
     }
-
+*/
     /**
      * Shows the options Dialog on Long Press {@link QueueOptionsDialog}
      *
@@ -281,7 +265,7 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
             return true;
         } else if (id == R.id.resync_device) {
             iMusicPresenter.hideMusicLayoutDuringResyncMusic();
-            iFoldersPresenter.syncMusic(this);
+           // iFoldersPresenter.syncMusic(this);
             return true;
         }
         return false;
@@ -325,12 +309,5 @@ public class FoldersActivity extends MusicBaseActivity implements IFolderView,
         intent.setAction(Utils.FOLDER_LIST);
         intent.putExtras(bundle);
         startActivity(intent);
-    }
-
-    @Override
-    public void changeToolbarColor(int color) {
-        if (mToolbar != null) {
-            mToolbar.setBackgroundColor(color);
-        }
     }
 }

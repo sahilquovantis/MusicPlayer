@@ -8,5 +8,4 @@ import android.content.Context;
 public interface IFoldersPresenter {
     void updateUI(Context context);
     void onDestroy();
-    void syncMusic(Context context);
 }

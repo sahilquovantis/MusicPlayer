@@ -8,7 +8,7 @@
     <string name="playlists">Playlists</string>
     <string name="now_playing">Now Playing</string>
     <string name="group_two_title">Settings</string>
-    <string name="sync_device">Sync Device</string>
+    <string name="sync_device">Sync Music</string>
     <string name="advanced_settings">Advanced Settings</string>
     <string name="empty">Empty</string>
     <string name="playlist">Playlist</string>
@@ -32,4 +32,8 @@
     <string name="add_to_playlist">Add to Playlist</string>
     <string name="create_new_playlist">Create New Playlist</string>
     <string name="already_created">Already Created</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings">Settings</string>
 </resources>

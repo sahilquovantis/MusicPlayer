@@ -7,7 +7,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,10 @@ import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
-import com.quovantis.musicplayer.updated.ui.views.search.SearchPresenterImp;
 import com.quovantis.musicplayer.updated.utility.CircleImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -105,6 +104,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         }
     }
 
+    public void setList(List<SongDetailsModel> list){
+        mSongList.clear();
+        mSongList.addAll(list);
+    }
     public void setQuery(String query) {
         mQuery = query;
     }

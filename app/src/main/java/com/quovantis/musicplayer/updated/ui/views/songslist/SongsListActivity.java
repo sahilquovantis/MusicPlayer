@@ -161,10 +161,4 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         }
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public void changeToolbarColor(int color) {
-        if (mToolbar != null) {
-            mToolbar.setBackgroundColor(color);
-        }
-    }
 }

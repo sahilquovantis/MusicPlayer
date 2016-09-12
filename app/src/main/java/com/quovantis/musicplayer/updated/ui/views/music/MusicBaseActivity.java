@@ -63,10 +63,11 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
         mSelectedSongTV.setText(title);
         mSelectedSongArtistTV.setText(artist);
         mSelectedSongThumbnailIV.setImageBitmap(bitmap);
-        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+
+       /* Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                Palette.Swatch vibrantSwatch = palette.getDominantSwatch();
                 if (vibrantSwatch != null) {
                     int rgb = vibrantSwatch.getRgb();
                     mMusicLayout.setBackgroundColor(rgb);
@@ -76,7 +77,7 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
                     }
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -97,11 +98,10 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
             }
         });*/
         mMusicLayout.setVisibility(View.GONE);
-        changeToolbarColor(R.color.colorPrimary);
-        mMusicLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        /*mMusicLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-        }
+        }*/
     }
 
     @Override

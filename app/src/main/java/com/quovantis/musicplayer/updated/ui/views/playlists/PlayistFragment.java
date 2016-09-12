@@ -1,16 +1,18 @@
 package com.quovantis.musicplayer.updated.ui.views.playlists;
 
+
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -18,10 +20,8 @@ import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
-import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +29,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistView,
-        IPlaylistClickListener {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class PlayistFragment extends Fragment implements IPlaylistView, IPlaylistClickListener {
 
     @BindView(R.id.tv_no_playlist)
     TextView mEmptyPlaylistTV;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.rv_playlists_list)
     RecyclerView mPlaylistsListRV;
     @BindView(R.id.progress_bar)
@@ -44,39 +44,38 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
     private ArrayList<UserPlaylistModel> mPlaylistsList;
     private IPlaylistPresenter iPlaylistPresenter;
 
+    public PlayistFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_playlists);
-        ButterKnife.bind(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.fragment_playist, container, false);
+        ButterKnife.bind(this,view);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         mPlaylistsList = new ArrayList<>();
-        initToolbar();
         initRecyclerView();
         initPresenters();
     }
 
-    private void initPresenters() {
-        iPlaylistPresenter = new PlaylistPresenterImp(this);
-        iMusicPresenter = new MusicPresenterImp(this, this);
-        iMusicPresenter.bindService();
-        iPlaylistPresenter.updateUI();
-    }
-
-    private void initToolbar() {
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Playlists");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-        }
-    }
-
     private void initRecyclerView() {
-        mPlaylistsListRV.setLayoutManager(new LinearLayoutManager(PlaylistsActivity.this));
-        mAdapter = new PlaylistAdapter(mPlaylistsList, this, this);
+        mPlaylistsListRV.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new PlaylistAdapter(mPlaylistsList, getActivity(), this);
         mPlaylistsListRV.setAdapter(mAdapter);
     }
 
+    private void initPresenters() {
+        iPlaylistPresenter = new PlaylistPresenterImp(this);
+        iPlaylistPresenter.updateUI();
+    }
     @Override
     public void onUpdateUI(List<UserPlaylistModel> list) {
         mPlaylistsListRV.setVisibility(View.VISIBLE);
@@ -102,21 +101,10 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroyView() {
         iPlaylistPresenter.onDestroy();
-        iMusicPresenter.onDestroy();
-        iMusicPresenter = null;
         iPlaylistPresenter = null;
-        super.onDestroy();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        super.onDestroyView();
     }
 
     @Override
@@ -124,11 +112,11 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
         Bundle bundle = new Bundle();
         bundle.putLong(ICommonKeys.FOLDER_ID_KEY, id);
         bundle.putString(ICommonKeys.DIRECTORY_NAME_KEY, name);
-        Intent intent = new Intent(this, SongsListActivity.class);
+        Intent intent = new Intent(getActivity(), SongsListActivity.class);
         intent.setAction(ICommonKeys.PLAYLIST_ACTION);
         intent.putExtras(bundle);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
         } else {
             startActivity(intent);
         }
