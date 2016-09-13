@@ -1,6 +1,8 @@
 package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
@@ -31,9 +34,11 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     private ArrayList<SongDetailsModel> mQueueList;
     private Context mContext;
     private ICurrentPlaylistClickListener iCurrentPlaylistClickListener;
+    private Uri mArtworkUri;
 
     public CurrentPlaylistAdapter(ArrayList<SongDetailsModel> mQueueList, Context mContext,
                                   ICurrentPlaylistClickListener iCurrentPlaylistClickListener) {
+        mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         this.mQueueList = mQueueList;
         this.mContext = mContext;
         this.iCurrentPlaylistClickListener = iCurrentPlaylistClickListener;
@@ -60,7 +65,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
                     iCurrentPlaylistClickListener.onClick(holder.getAdapterPosition());
                 }
             });
-            LoadBitmapHelper.loadBitmap(mContext, holder.mImage, model.getSongThumbnailData());
+            Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, model.getAlbumId())).asBitmap().placeholder(R.drawable.music).into(holder.mImage);
         }
     }
 

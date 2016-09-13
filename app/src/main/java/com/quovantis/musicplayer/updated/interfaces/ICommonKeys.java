@@ -12,4 +12,5 @@ public interface ICommonKeys {
     String PLAYLIST_ACTION = "com.musicplayer.playlist";
     String FOLDERS_ACTION = "com.musicplayer.songlist";
     String CURRENT_POSITION = "com.musicplayer.current.position";
+    int UPDATE_PLAYLIST_RESULT_CODE = 100;
 }

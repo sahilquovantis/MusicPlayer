@@ -1,5 +1,8 @@
 package com.quovantis.musicplayer.updated.ui.views.createplaylist;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
@@ -14,9 +17,10 @@ public class CreatePlaylistPresenterImp implements ICreatePlaylistPresenter,
     private ICreatePlaylistView iCreatePlaylistView;
     private ICreatePlaylistInteractor iCreatePlaylistInteractor;
 
-    public CreatePlaylistPresenterImp(ICreatePlaylistView iCreatePlaylistView) {
+    public CreatePlaylistPresenterImp(ICreatePlaylistView iCreatePlaylistView, Context context,
+                                      Activity activity) {
         this.iCreatePlaylistView = iCreatePlaylistView;
-        iCreatePlaylistInteractor = new CreatePlaylistInteractorImp();
+        iCreatePlaylistInteractor = new CreatePlaylistInteractorImp(context,activity);
     }
 
     @Override

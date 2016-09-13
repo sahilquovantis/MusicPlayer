@@ -62,6 +62,7 @@ public class PlaylistsActivity extends MusicBaseActivity implements IPlaylistVie
         iPlaylistPresenter.updateUI();
     }
 
+
     private void initToolbar() {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {

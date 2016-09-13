@@ -16,7 +16,7 @@ public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteracto
 
     public FoldersPresenterImp(IFolderView mFoldersView) {
         this.mFoldersView = mFoldersView;
-        iFoldersInteractor = new FoldersInteractorImp(this);
+        //iFoldersInteractor = new FoldersInteractorImp(this);
     }
 
     /**
@@ -27,7 +27,7 @@ public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteracto
     public void updateUI(Context context) {
         if (mFoldersView != null)
             mFoldersView.showProgress();
-        iFoldersInteractor.getFoldersList(context);
+       // iFoldersInteractor.getFoldersList(context);
     }
 
     @Override

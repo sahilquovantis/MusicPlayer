@@ -1,17 +1,26 @@
 package com.quovantis.musicplayer.updated.ui.views.home;
 
 import android.app.Dialog;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
+import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndFolderCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -24,8 +33,11 @@ import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.playlists.PlayistFragment;
 import com.quovantis.musicplayer.updated.ui.views.search.SearchActivity;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCommunicator,
         IHomeAndMusicCommunicator, IHomeView {
@@ -61,13 +73,13 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
         iHomePresenter = new HomePresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, this);
         iMusicPresenter.bindService();
-        iHomePresenter.firstTimeSync(this);
+        // iHomePresenter.firstTimeSync(this);
     }
 
     private void initViewPager() {
         homeAdapter = new HomeAdapter(getSupportFragmentManager());
         homeAdapter.addFragments(new FoldersFragment(), "Folders");
-        homeAdapter.addFragments(new AllSongsFragment(), "Music");
+        homeAdapter.addFragments(new AllSongsFragment(), "All Tracks");
         homeAdapter.addFragments(new PlayistFragment(), "Playlists");
         mViewPager.setAdapter(homeAdapter);
         mViewPager.setOffscreenPageLimit(3);
@@ -75,9 +87,57 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
     }
 
     @Override
-    public void onOptionsDialogClick(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong) {
+    public void onOptionsDialogClick(SongPathModel model, final boolean isClearQueue, final boolean isPlaythisSong) {
         mDialog = ProgresDialog.showProgressDialog(this);
-        iMusicPresenter.addSongToPlaylist(model.getId(), isClearQueue, isPlaythisSong);
+        final String path = model.getPath();
+        getLoaderManager().initLoader(4, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+                Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                String[] columns = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
+                        MediaStore.Audio.Media.ALBUM_ID};
+                return new CursorLoader(HomeActivity.this, uri, columns, MediaStore.Audio.Media.DATA + " LIKE ?",
+                        new String[]{path + "%"}, null);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> loader, Cursor mCursor) {
+                ArrayList<SongDetailsModel> mSongList = new ArrayList<SongDetailsModel>();
+                if (mCursor != null) {
+                    mCursor.moveToFirst();
+                    mSongList.clear();
+                    while (!mCursor.isAfterLast()) {
+                        SongDetailsModel model = new SongDetailsModel();
+                        final String title = mCursor.getString(2);
+                        final String id = mCursor.getString(0);
+                        final String artist = mCursor.getString(3);
+                        final String path = mCursor.getString(1);
+                        long albumId = mCursor.getLong(4);
+                        model.setSongTitle(title);
+                        model.setSongArtist(artist);
+                        model.setAlbumId(albumId);
+                        model.setSongPath(path);
+                        model.setSongID(id);
+                        mSongList.add(model);
+                        mCursor.moveToNext();
+                    }
+                }
+                if (!mSongList.isEmpty()) {
+                    MusicHelper.getInstance().addSongToPlaylist(mSongList, isClearQueue);
+                    if (isPlaythisSong) {
+                        iMusicPresenter.playSong();
+                    }
+                }
+                if (mDialog != null)
+                    mDialog.dismiss();
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> loader) {
+
+            }
+        });
+        // iMusicPresenter.addSongToPlaylist(model.getId(), isClearQueue, isPlaythisSong);
     }
 
     @Override
@@ -180,13 +240,15 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
 
     @Override
     public void onRefreshSuccess() {
-        FoldersFragment foldersFragment = (FoldersFragment) homeAdapter.getFirstItem(0);
-        if (foldersFragment != null) {
-            foldersFragment.getListOnNotifyFromHome();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        PlayistFragment playistFragment = (PlayistFragment) homeAdapter.getFirstItem(2);
+        if (playistFragment != null) {
+            playistFragment.onNotifyFromHome();
         }
-        AllSongsFragment fragment = (AllSongsFragment) homeAdapter.getFirstItem(1);
-        if (fragment != null) {
-            fragment.getListOnNotifyFromHome();
-        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -1,8 +1,14 @@
 package com.quovantis.musicplayer.updated.ui.views.songslist;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +29,7 @@ import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.ui.views.allsongs.AllSongsAdapter;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
@@ -48,38 +55,53 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
     private RecyclerView.Adapter mAdapter;
+    private String mAction;
     private ArrayList<SongDetailsModel> mSongList;
     private ISongsPresenter iSongsPresenter;
-    private String mAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_songs_list);
-        ButterKnife.bind(this);
         mSongList = new ArrayList<>();
+        ButterKnife.bind(this);
         initToolbar();
         initRecyclerView();
-        iSongsPresenter = new SongsPresenterImp(this);
-        iMusicPresenter = new MusicPresenterImp(this, SongsListActivity.this);
-        iMusicPresenter.bindService();
+        initPresenters();
+        initBundle();
+    }
+
+    private void initBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            if (getIntent().getAction() != null)
-                mAction = getIntent().getAction();
-            long id = bundle.getLong(ICommonKeys.FOLDER_ID_KEY, -1);
             String directory = bundle.getString(ICommonKeys.DIRECTORY_NAME_KEY);
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(directory);
-            iSongsPresenter.updateUI(id, mAction);
+            if (getIntent().getAction() != null) {
+                mAction = getIntent().getAction();
+            }
+            if (mAction.equalsIgnoreCase(ICommonKeys.PLAYLIST_ACTION)) {
+                long id = bundle.getLong(ICommonKeys.FOLDER_ID_KEY, 1);
+                iSongsPresenter.updateUI(id, mAction, null, this);
+            } else {
+                String mPath = bundle.getString(ICommonKeys.FOLDER_ID_KEY, null);
+                iSongsPresenter.updateUI(0, mAction, mPath, this);
+            }
         }
     }
 
-    @Override
-    public void onEmptyList() {
-        Toast.makeText(this, "There are no tracks", Toast.LENGTH_LONG).show();
-        onBackPressed();
+    private void initPresenters() {
+        iSongsPresenter = new SongsPresenterImp(this, this);
+        iMusicPresenter = new MusicPresenterImp(this, SongsListActivity.this);
+        iMusicPresenter.bindService();
     }
+
+    private void initRecyclerView() {
+        mSongsListRV.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new SongsListAdapter(this, this, mSongList);
+        mSongsListRV.setAdapter(mAdapter);
+    }
+
 
     private void initToolbar() {
         setSupportActionBar(mToolbar);
@@ -89,36 +111,14 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         }
     }
 
-    private void initRecyclerView() {
-        mSongsListRV.setLayoutManager(new LinearLayoutManager(SongsListActivity.this));
-        mAdapter = new SongsListAdapter(this, this, mSongList);
-        mSongsListRV.setAdapter(mAdapter);
-    }
-
-    @Override
-    public void onUpdateUI(ArrayList<SongDetailsModel> list) {
-        mSongList.clear();
-        mSongList.addAll(list);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onShowProgress() {
-        mProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onHideProgres() {
-        mProgressBar.setVisibility(View.GONE);
-    }
 
     @Override
     public void onMusicListClick(int pos) {
         if (mSongList != null) {
             boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mSongList, pos);
             if (isListAdded) {
-                if(iMusicPresenter != null)
-                iMusicPresenter.playSong();
+                if (iMusicPresenter != null)
+                    iMusicPresenter.playSong();
             }
         }
     }
@@ -130,23 +130,23 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
 
     @Override
     protected void onDestroy() {
-        iSongsPresenter.onDestroy();
         iMusicPresenter.onDestroy();
-        iSongsPresenter = null;
         iMusicPresenter = null;
+        iSongsPresenter.onDestroy();
+        iSongsPresenter = null;
         super.onDestroy();
     }
 
     @Override
     public void onClick(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
-        if(iMusicPresenter != null)
-        iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
+        if (iMusicPresenter != null)
+            iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
     }
 
     @Override
     public void onAddToPlaylist(SongDetailsModel model) {
         Bundle bundle = new Bundle();
-        bundle.putString("Id", model.getSongID());
+        bundle.putString("Id", model.getSongPath());
         Intent intent = new Intent(this, CreatePlaylistActivity.class);
         intent.setAction(Utils.SONG_LIST);
         intent.putExtras(bundle);
@@ -160,5 +160,27 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onUpdateUI(ArrayList<SongDetailsModel> list) {
+        mSongList.clear();
+        mSongList.addAll(list);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onShowProgress() {
+        mProgressBar.setProgress(View.VISIBLE);
+    }
+
+    @Override
+    public void onHideProgres() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onEmptyList() {
+
     }
 }

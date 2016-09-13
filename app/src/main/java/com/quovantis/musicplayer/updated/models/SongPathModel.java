@@ -1,57 +1,45 @@
 package com.quovantis.musicplayer.updated.models;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
 /**
  * Created by sahil-goel on 23/8/16.
  */
-public class SongPathModel extends RealmObject {
+public class SongPathModel {
+    private long mAlbumId;
+    private String mPath;
+    private String mDirectory;
 
-    @PrimaryKey
-    private int mId;
-    private byte[] mThumbnailData;
-    private String mSongDirectory;
-    private String mCompletePath;
-    private String mSongPath;
-
-    public byte[] getThumbnailData() {
-        return mThumbnailData;
+    public long getAlbumId() {
+        return mAlbumId;
     }
 
-    public void setThumbnailData(byte[] mThumbnailData) {
-        this.mThumbnailData = mThumbnailData;
+    public void setAlbumId(long mAlbumId) {
+        this.mAlbumId = mAlbumId;
     }
 
-    public String getCompletePath() {
-        return mCompletePath;
+    public String getPath() {
+        return mPath;
     }
 
-    public void setCompletePath(String mCompletePath) {
-        this.mCompletePath = mCompletePath;
+    public void setPath(String mPath) {
+        this.mPath = mPath;
     }
 
-    public int getId() {
-        return mId;
+    public String getDirectory() {
+        return mDirectory;
     }
 
-    public void setId(int mId) {
-        this.mId = mId;
+    public void setDirectory(String mDirectory) {
+        this.mDirectory = mDirectory;
     }
 
-    public String getSongDirectory() {
-        return mSongDirectory;
-    }
-
-    public void setSongDirectory(String mSongDirectory) {
-        this.mSongDirectory = mSongDirectory;
-    }
-
-    public String getSongPath() {
-        return mSongPath;
-    }
-
-    public void setSongPath(String mSongPath) {
-        this.mSongPath = mSongPath;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+        if (!(obj instanceof SongPathModel))
+            return false;
+        return this.getPath().equalsIgnoreCase(((SongPathModel) obj).getPath());
     }
 }

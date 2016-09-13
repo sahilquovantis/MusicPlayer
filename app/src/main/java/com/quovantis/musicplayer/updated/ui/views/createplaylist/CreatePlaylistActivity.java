@@ -78,7 +78,7 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
     }
 
     private void initPresenters() {
-        iCreatePlaylistPresenter = new CreatePlaylistPresenterImp(this);
+        iCreatePlaylistPresenter = new CreatePlaylistPresenterImp(this, this, this);
         iMusicPresenter = new MusicPresenterImp(this, this);
         iMusicPresenter.bindService();
         iCreatePlaylistPresenter.updateUI();
@@ -116,7 +116,9 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
             Toast.makeText(this, "Playlist Updated", Toast.LENGTH_LONG).show();
         else
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
-        onBackPressed();
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override

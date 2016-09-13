@@ -4,6 +4,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.support.v4.media.MediaMetadataCompat;
 import android.util.Log;
@@ -99,14 +100,19 @@ public class MusicHelper {
         if (isValidIndex(pos)) {
             SongDetailsModel songDetailsModel = mCurrentPlaylist.get(pos);
             mCurrentSong = songDetailsModel;
-            MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
-            builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songDetailsModel.getSongID());
-            builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songDetailsModel.getSongArtist());
-            builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, songDetailsModel.getSongTitle());
-            builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, songDetailsModel.getSongDuration());
-            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, getAlbumBitmap(context,
-                    songDetailsModel.getSongThumbnailData()));
-            return builder.build();
+            MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+            mediaMetadataRetriever.setDataSource(songDetailsModel.getSongPath());
+            String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            if (duration != null) {
+                MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+                builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songDetailsModel.getSongID());
+                builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songDetailsModel.getSongArtist());
+                builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, songDetailsModel.getSongTitle());
+                builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, Long.parseLong(duration));
+                builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, getAlbumBitmap(context,
+                        mediaMetadataRetriever.getEmbeddedPicture()));
+                return builder.build();
+            }
         }
         return null;
     }

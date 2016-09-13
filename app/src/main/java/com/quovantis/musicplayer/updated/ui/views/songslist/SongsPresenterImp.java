@@ -1,5 +1,9 @@
 package com.quovantis.musicplayer.updated.ui.views.songslist;
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.ArrayList;
@@ -11,16 +15,19 @@ public class SongsPresenterImp implements ISongsPresenter, ISongsInteractor.List
     private ISongsView iSongsView;
     private ISongsInteractor iSongsInteractor;
 
-    public SongsPresenterImp(ISongsView iSongsView) {
+    public SongsPresenterImp(Context context, ISongsView iSongsView) {
         this.iSongsView = iSongsView;
-        iSongsInteractor = new SongsInteractorImp();
+        iSongsInteractor = new SongsInteractorImp(context);
     }
 
     @Override
-    public void updateUI(long id, String action) {
+    public void updateUI(long id, String action, String path, Activity activity) {
         if (iSongsView != null) {
             iSongsView.onShowProgress();
-            iSongsInteractor.getSongsList(id, action, this);
+            if (action.equalsIgnoreCase(ICommonKeys.PLAYLIST_ACTION))
+                iSongsInteractor.getSongsList(id, action, this);
+            else if (action.equalsIgnoreCase(ICommonKeys.FOLDERS_ACTION))
+                iSongsInteractor.getSongsList(path, action, this, activity);
         }
     }
 

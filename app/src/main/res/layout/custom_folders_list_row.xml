@@ -28,7 +28,7 @@
                 android:id="@+id/rl_background"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/grey"
+                android:background="#ffee9400"
                 android:gravity="center"
                 android:orientation="vertical">
 

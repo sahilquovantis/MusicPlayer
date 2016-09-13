@@ -7,5 +7,5 @@ import com.quovantis.musicplayer.updated.models.SongPathModel;
  */
 public interface IFolderClickListener {
     void onFoldersLongPress(SongPathModel songPathModel);
-    void onFoldersSinglePress(long id, String directoryName);
+    void onFoldersSinglePress(String path, String directoryName);
 }

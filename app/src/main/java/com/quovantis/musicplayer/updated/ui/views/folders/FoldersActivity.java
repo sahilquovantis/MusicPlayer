@@ -194,6 +194,11 @@ verride
         QueueOptionsDialog.showDialog(FoldersActivity.this, songPathModel, this);
     }
 
+    @Override
+    public void onFoldersSinglePress(String path, String directoryName) {
+
+    }
+
     /**
      * On Clicking Folder , it starts activity {@link SongsListActivity} and shows
      * all the songs list in that folder
@@ -201,7 +206,7 @@ verride
      * @param id            Id of the folder
      * @param directoryName Folder Name
      */
-    @Override
+   /* @Override
     public void onFoldersSinglePress(long id, String directoryName) {
         Bundle bundle = new Bundle();
         bundle.putLong(ICommonKeys.FOLDER_ID_KEY, id);
@@ -215,7 +220,7 @@ verride
             startActivity(intent);
         }
     }
-
+*/
     /**
      * On Destroy activity Remove all the presenters
      */
@@ -281,7 +286,7 @@ verride
     @Override
     public void onClick(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong) {
         mDialog = ProgresDialog.showProgressDialog(this);
-        iMusicPresenter.addSongToPlaylist(model.getId(), isClearQueue, isPlaythisSong);
+        //iMusicPresenter.addSongToPlaylist(model.getId(), isClearQueue, isPlaythisSong);
     }
 
     /**
@@ -304,7 +309,7 @@ verride
     @Override
     public void onAddToPlaylist(SongPathModel model) {
         Bundle bundle = new Bundle();
-        bundle.putString("Id", String.valueOf(model.getId()));
+       // bundle.putString("Id", String.valueOf(model.getId()));
         Intent intent = new Intent(FoldersActivity.this, CreatePlaylistActivity.class);
         intent.setAction(Utils.FOLDER_LIST);
         intent.putExtras(bundle);

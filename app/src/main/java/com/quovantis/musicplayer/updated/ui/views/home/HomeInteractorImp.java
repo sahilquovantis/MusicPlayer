@@ -29,7 +29,7 @@ public class HomeInteractorImp implements IHomeInteractor, IHomeInteractor.Refre
      */
     @Override
     public void resyncMusic(Context context) {
-        new RefreshMusicAsyncTask(context, this).execute();
+        //new RefreshMusicAsyncTask(context, this).execute();
     }
 
     @Override

@@ -53,8 +53,8 @@ public class PlayistFragment extends Fragment implements IPlaylistView, IPlaylis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_playist, container, false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_playist, container, false);
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -76,6 +76,7 @@ public class PlayistFragment extends Fragment implements IPlaylistView, IPlaylis
         iPlaylistPresenter = new PlaylistPresenterImp(this);
         iPlaylistPresenter.updateUI();
     }
+
     @Override
     public void onUpdateUI(List<UserPlaylistModel> list) {
         mPlaylistsListRV.setVisibility(View.VISIBLE);
@@ -120,5 +121,10 @@ public class PlayistFragment extends Fragment implements IPlaylistView, IPlaylis
         } else {
             startActivity(intent);
         }
+    }
+
+    public void onNotifyFromHome() {
+        if (iPlaylistPresenter != null)
+            iPlaylistPresenter.updateUI();
     }
 }

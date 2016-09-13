@@ -3,10 +3,16 @@ package com.quovantis.musicplayer.updated.ui.views.folders;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -43,7 +49,7 @@ import butterknife.ButterKnife;
  * A simple {@link Fragment} subclass.
  */
 public class FoldersFragment extends Fragment implements IFolderView, IFolderClickListener,
-        IQueueOptionsDialog.onFolderClickListener {
+        IQueueOptionsDialog.onFolderClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     @BindView(R.id.rv_folders_list)
     RecyclerView mFoldersListRV;
@@ -51,9 +57,7 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     ProgressBar mProgressBar;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongPathModel> mFoldersList = new ArrayList<>();
-    private IFoldersPresenter iFoldersPresenter;
     private IHomeAndFolderCommunicator iHomeAndFolderCommunicator;
-    private RefreshListDialog mRefreshListDialog;
 
     public FoldersFragment() {
         // Required empty public constructor
@@ -62,7 +66,6 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_folders, container, false);
         ButterKnife.bind(this, view);
         Log.d("Training", "On Create View Folders");
@@ -74,12 +77,7 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         super.onActivityCreated(savedInstanceState);
         iHomeAndFolderCommunicator = (IHomeAndFolderCommunicator) getActivity();
         initRecyclerView();
-        initPresenters();
-    }
-
-    private void initPresenters() {
-        iFoldersPresenter = new FoldersPresenterImp(this);
-        iFoldersPresenter.updateUI(getActivity());
+        getLoaderManager().initLoader(1, null, this);
     }
 
     private void initRecyclerView() {
@@ -100,6 +98,7 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         mFoldersList.clear();
         mFoldersList.addAll(foldersList);
         mAdapter.notifyDataSetChanged();
+        hideProgress();
     }
 
     /**
@@ -124,22 +123,14 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     }
 
     @Override
-    public void onDestroyView() {
-        Log.d("Training", "On Destroy View Called Folders");
-        iFoldersPresenter.onDestroy();
-        iFoldersPresenter = null;
-        super.onDestroyView();
-    }
-
-    @Override
     public void onFoldersLongPress(SongPathModel songPathModel) {
         QueueOptionsDialog.showDialog(getActivity(), songPathModel, this);
     }
 
     @Override
-    public void onFoldersSinglePress(long id, String directoryName) {
+    public void onFoldersSinglePress(String path, String directoryName) {
         Bundle bundle = new Bundle();
-        bundle.putLong(ICommonKeys.FOLDER_ID_KEY, id);
+        bundle.putString(ICommonKeys.FOLDER_ID_KEY, path);
         bundle.putString(ICommonKeys.DIRECTORY_NAME_KEY, directoryName);
         Intent intent = new Intent(getActivity(), SongsListActivity.class);
         intent.setAction(ICommonKeys.FOLDERS_ACTION);
@@ -159,16 +150,44 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     @Override
     public void onAddToPlaylist(SongPathModel model) {
         Bundle bundle = new Bundle();
-        bundle.putString("Id", String.valueOf(model.getId()));
+        bundle.putString("Id", model.getPath());
         Intent intent = new Intent(getActivity(), CreatePlaylistActivity.class);
         intent.setAction(Utils.FOLDER_LIST);
         intent.putExtras(bundle);
-        startActivity(intent);
+        startActivityForResult(intent, ICommonKeys.UPDATE_PLAYLIST_RESULT_CODE);
     }
 
-    public void getListOnNotifyFromHome() {
-        Log.d("Training", "Folders Notify Called");
-        if (iFoldersPresenter != null)
-            iFoldersPresenter.updateUI(getActivity());
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        showProgress();
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] columns = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM_ID};
+        return new CursorLoader(getActivity(), uri, columns, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        ArrayList<SongPathModel> list = new ArrayList<>();
+        if (data != null) {
+            data.moveToFirst();
+            while (!data.isAfterLast()) {
+                String songPath = data.getString(1);
+                String path = songPath.substring(0, songPath.lastIndexOf("/"));
+                SongPathModel model = new SongPathModel();
+                model.setAlbumId(data.getLong(4));
+                model.setPath(path);
+                model.setDirectory(path.substring(path.lastIndexOf("/") + 1));
+                if (list.isEmpty() || !list.contains(model)) {
+                    list.add(model);
+                }
+                data.moveToNext();
+            }
+            onUpdateFoldersList(list);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }

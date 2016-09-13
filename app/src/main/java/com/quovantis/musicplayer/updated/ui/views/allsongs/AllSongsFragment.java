@@ -2,9 +2,15 @@ package com.quovantis.musicplayer.updated.ui.views.allsongs;
 
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,10 +22,12 @@ import android.widget.ProgressBar;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
+import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListAdapter;
 import com.quovantis.musicplayer.updated.utility.Utils;
@@ -33,14 +41,14 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AllSongsFragment extends Fragment implements IAllSongsView, IMusicListClickListener,
-        IQueueOptionsDialog.onSongClickListener {
+public class AllSongsFragment extends Fragment implements IMusicListClickListener,
+        IQueueOptionsDialog.onSongClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     @BindView(R.id.rv_songs_list)
     RecyclerView mSongsListRV;
     @BindView(R.id.pb_progress_bar)
     ProgressBar mProgressBar;
-    private SongsListAdapter mAdapter;
+    private AllSongsAdapter mAdapter;
     private IHomeAndMusicCommunicator iHomeAndMusicCommunicator;
     private ArrayList<SongDetailsModel> mSongsList = new ArrayList<>();
     private IAllSongsPresenter iAllSongsPresenter;
@@ -57,49 +65,21 @@ public class AllSongsFragment extends Fragment implements IAllSongsView, IMusicL
         return view;
     }
 
-    private void initRecyclerView() {
-        mSongsListRV.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new SongsListAdapter(getActivity(), this, mSongsList);
-        mSongsListRV.setAdapter(mAdapter);
-    }
-
-    private void initPresenter() {
-        iAllSongsPresenter = new AllSongsPresenterImp(this);
-        Log.d("Training","Presenter Called");
-        iAllSongsPresenter.getSongsList();
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         iHomeAndMusicCommunicator = (IHomeAndMusicCommunicator) getActivity();
-        initRecyclerView();
-        initPresenter();
+        getLoaderManager().initLoader(2, null, this);
     }
 
-    @Override
-    public void updateUi(List<SongDetailsModel> list) {
-        mSongsList.clear();
-        mAdapter.setList(list);
-        mAdapter.notifyDataSetChanged();
-        mSongsList.addAll(list);
-        mAdapter.notifyDataSetChanged();
-    }
 
-    @Override
-    public void showProgress() {
+    private void showProgress() {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void hideProgress() {
-        mProgressBar.setVisibility(View.INVISIBLE);
-    }
 
-    public void onDestroyView() {
-        iAllSongsPresenter.onDestroy();
-        iAllSongsPresenter = null;
-        super.onDestroyView();
+    private void hideProgress() {
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -125,15 +105,33 @@ public class AllSongsFragment extends Fragment implements IAllSongsView, IMusicL
     @Override
     public void onAddToPlaylist(SongDetailsModel model) {
         Bundle bundle = new Bundle();
-        bundle.putString("Id", model.getSongID());
+        bundle.putString("Id", model.getSongPath());
         Intent intent = new Intent(getActivity(), CreatePlaylistActivity.class);
         intent.setAction(Utils.SONG_LIST);
         intent.putExtras(bundle);
-        startActivity(intent);
+        startActivityForResult(intent, ICommonKeys.UPDATE_PLAYLIST_RESULT_CODE);
     }
 
-    public void getListOnNotifyFromHome() {
-        if (iAllSongsPresenter != null)
-            iAllSongsPresenter.getSongsList();
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        showProgress();
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] columns = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM_ID};
+        return new CursorLoader(getActivity(), uri, columns, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null) {
+            mSongsListRV.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mAdapter = new AllSongsAdapter(getActivity(), this, data);
+            mSongsListRV.setAdapter(mAdapter);
+        }
+        hideProgress();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }

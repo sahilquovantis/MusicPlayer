@@ -1,7 +1,8 @@
-package com.quovantis.musicplayer.updated.ui.views.songslist;
+package com.quovantis.musicplayer.updated.ui.views.allsongs;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -30,20 +30,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by sahil-goel on 24/8/16.
+ * Created by sahil-goel on 13/9/16.
  */
-public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder> {
-    private final Uri mArtworkUri;
+public class AllSongsAdapter extends RecyclerView.Adapter<AllSongsAdapter.ViewHolder> {
     private Context mContext;
     private IMusicListClickListener iMusicListClickListener;
-    private ArrayList<SongDetailsModel> mSongList;
+    private Cursor mCursor;
     private String mQuery;
+    private Uri mArtworkUri;
 
-    public SongsListAdapter(Context context, IMusicListClickListener iMusicListClickListener, ArrayList<SongDetailsModel> mSongList) {
+    public AllSongsAdapter(Context context, IMusicListClickListener iMusicListClickListener, Cursor mCursor) {
         mContext = context;
         mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         this.iMusicListClickListener = iMusicListClickListener;
-        this.mSongList = mSongList;
+        this.mCursor = mCursor;
     }
 
     @Override
@@ -55,12 +55,16 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final int pos = position;
-        final SongDetailsModel songDetailsModel = mSongList.get(pos);
-        String title = songDetailsModel.getSongTitle();
+        mCursor.moveToPosition(position);
+        final String title = mCursor.getString(2);
+        final String id = mCursor.getString(0);
+        final String artist = mCursor.getString(3);
+        final String path = mCursor.getString(1);
+        long albumId = mCursor.getLong(4);
         String query = mQuery;
         setSpan(title, query, holder.mSongTV);
-        holder.mSongArtistTV.setText(songDetailsModel.getSongArtist());
-        Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, songDetailsModel.getAlbumId())).asBitmap().placeholder(R.drawable.music).into(holder.mSongThumbnailIV);
+        holder.mSongArtistTV.setText(artist);
+        Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, albumId)).asBitmap().placeholder(R.drawable.music).into(holder.mSongThumbnailIV);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,6 +74,11 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                SongDetailsModel songDetailsModel = new SongDetailsModel();
+                songDetailsModel.setSongArtist(artist);
+                songDetailsModel.setSongID(id);
+                songDetailsModel.setSongTitle(title);
+                songDetailsModel.setSongPath(path);
                 iMusicListClickListener.onActionOverFlowClick(songDetailsModel);
                 return true;
             }
@@ -77,6 +86,11 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         holder.mPopUpMenuLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SongDetailsModel songDetailsModel = new SongDetailsModel();
+                songDetailsModel.setSongArtist(artist);
+                songDetailsModel.setSongID(id);
+                songDetailsModel.setSongTitle(title);
+                songDetailsModel.setSongPath(path);
                 iMusicListClickListener.onActionOverFlowClick(songDetailsModel);
             }
         });
@@ -102,17 +116,14 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
 
     @Override
     public int getItemCount() {
-        if (mSongList != null && !mSongList.isEmpty()) {
-            return mSongList.size();
-        } else {
-            return 0;
-        }
+        return mCursor.getCount();
     }
 
-    public void setList(List<SongDetailsModel> list){
-        mSongList.clear();
-        mSongList.addAll(list);
+    public void setList(List<SongDetailsModel> list) {
+        //  mSongList.clear();
+        // mSongList.addAll(list);
     }
+
     public void setQuery(String query) {
         mQuery = query;
     }

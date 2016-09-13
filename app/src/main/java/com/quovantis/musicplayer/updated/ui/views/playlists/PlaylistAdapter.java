@@ -1,6 +1,8 @@
 package com.quovantis.musicplayer.updated.ui.views.playlists;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
@@ -24,6 +27,7 @@ import butterknife.ButterKnife;
  */
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> {
 
+    private final Uri mArtworkUri;
     private ArrayList<UserPlaylistModel> mUserPlaylistList;
     private Context mContext;
     private IPlaylistClickListener iPlaylistClickListener;
@@ -32,6 +36,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         this.mUserPlaylistList = mUserPlaylistList;
         this.mContext = mContext;
         this.iPlaylistClickListener = iPlaylistClickListener;
+        mArtworkUri = Uri.parse("content://media/external/audio/albumart");
     }
 
     @Override
@@ -48,7 +53,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         holder.mPlaylistNameTV.setText(title);
         holder.mTotalTracksTV.setText(tracks + " tracks");
         if (tracks > 0)
-            LoadBitmapHelper.loadBitmap(mContext, holder.mPlaylistThumbnailIV, model.getPlaylist().get(0).getSongThumbnailData());
+            Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, model.getPlaylist().get(0).getAlbumId())).asBitmap().placeholder(R.drawable.music).into(holder.mPlaylistThumbnailIV);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

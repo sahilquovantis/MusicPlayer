@@ -70,7 +70,7 @@ public class QueueOptionsDialog {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
         TextView title = (TextView) view.findViewById(R.id.tv_dialog_title);
-        title.setText(model.getSongDirectory());
+        title.setText(model.getDirectory());
         LinearLayout addToPlaylist = (LinearLayout) view.findViewById(R.id.ll_add_to_playlist);
         LinearLayout clearAndPlay = (LinearLayout) view.findViewById(R.id.ll_play_and_clear);
         LinearLayout addToQueue = (LinearLayout) view.findViewById(R.id.ll_add_to_queue);

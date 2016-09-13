@@ -1,6 +1,14 @@
 package com.quovantis.musicplayer.updated.ui.views.folders;
 
+import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 
 import com.quovantis.musicplayer.updated.aynctasks.RefreshMusicAsyncTask;
 import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
@@ -18,36 +26,46 @@ import io.realm.Sort;
 /**
  * Created by sahil-goel on 23/8/16.
  */
-public class FoldersInteractorImp implements IFoldersInteractor {
+public class FoldersInteractorImp implements IFoldersInteractor , LoaderManager.LoaderCallbacks<Cursor>{
 
-    private IFoldersInteractor.Listener iListener;
-    private Realm mRealm;
-
-    public FoldersInteractorImp(IFoldersInteractor.Listener listener) {
-        iListener = listener;
-        mRealm = Realm.getDefaultInstance();
+    private Context mContext;
+    private IFoldersInteractor.Listener mListener;
+    @Override
+    public void getFoldersList(Context context, Activity activity, IFoldersInteractor.Listener listener) {
+        mContext = context;
+        mListener = listener;
+        //activity.getLoaderManager().initLoader(1,null,this);
     }
 
-    /**
-     * Get the Folders list. It checks whether app is opened first time or not.
-     * If this is first time. Scans the storage.
-     * If this is not first time, load the music from Database.
-     *
-     * @param context
-     */
     @Override
-    public void getFoldersList(Context context) {
-        onFetchedSongs();
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] columns = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM_ID};
+        return new CursorLoader(mContext, uri, columns, null, null, null);
     }
 
-    /**
-     * Fetched the Songs From the DataBase
-     */
     @Override
-    public void onFetchedSongs() {
-        RealmResults<SongPathModel> list = mRealm.where(SongPathModel.class).findAll().sort("mSongDirectory", Sort.ASCENDING);
-        ArrayList<SongPathModel> arrayList = new ArrayList<>();
-        arrayList.addAll(list);
-        iListener.onUpdateFoldersList(arrayList);
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        ArrayList<SongPathModel> list = new ArrayList<>();
+        if (data != null) {
+            data.moveToFirst();
+            while (!data.isAfterLast()) {
+                String songPath = data.getString(1);
+                String path = songPath.substring(0, songPath.lastIndexOf("/"));
+                SongPathModel model = new SongPathModel();
+                model.setAlbumId(data.getLong(4));
+                model.setPath(path);
+                model.setDirectory(path.substring(path.lastIndexOf("/") + 1));
+                if (list.isEmpty() || !list.contains(model)) {
+                    list.add(model);
+                }
+                data.moveToNext();
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }

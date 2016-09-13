@@ -1,6 +1,8 @@
 package com.quovantis.musicplayer.updated.ui.views.createplaylist;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.interfaces.IAddToExistingPlaylistClickListener;
@@ -26,10 +29,12 @@ public class CreatePlaylistAdapter extends RecyclerView.Adapter<CreatePlaylistAd
     private Context mContext;
     private ArrayList<UserPlaylistModel> mList;
     private IAddToExistingPlaylistClickListener iAddToExistingPlaylistClickListener;
+    private Uri mArtworkUri;
 
     public CreatePlaylistAdapter(Context mContext, ArrayList<UserPlaylistModel> mList,
                                  IAddToExistingPlaylistClickListener iAddToExistingPlaylistClickListener) {
         this.mContext = mContext;
+        mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         this.mList = mList;
         this.iAddToExistingPlaylistClickListener = iAddToExistingPlaylistClickListener;
     }
@@ -46,7 +51,7 @@ public class CreatePlaylistAdapter extends RecyclerView.Adapter<CreatePlaylistAd
         holder.mPlaylistTV.setText(model.getPlaylistName());
         long tracks = model.getPlaylist() == null ? 0 : model.getPlaylist().size();
         if (tracks > 0)
-            LoadBitmapHelper.loadBitmap(mContext, holder.mPlayliastThumbnail, model.getPlaylist().get(0).getSongThumbnailData());
+            Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, model.getPlaylist().get(0).getAlbumId())).asBitmap().placeholder(R.drawable.music).into(holder.mPlaylistThumbnaiIIV);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,7 +68,7 @@ public class CreatePlaylistAdapter extends RecyclerView.Adapter<CreatePlaylistAd
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_playlist_thumbnail)
-        ImageView mPlayliastThumbnail;
+        ImageView mPlaylistThumbnaiIIV;
         @BindView(R.id.tv_playlist)
         TextView mPlaylistTV;
 

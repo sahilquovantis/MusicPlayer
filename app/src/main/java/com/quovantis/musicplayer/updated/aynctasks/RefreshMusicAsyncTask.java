@@ -19,7 +19,8 @@ import io.realm.RealmResults;
 /**
  * Created by sahil-goel on 24/8/16.
  */
-public class RefreshMusicAsyncTask extends AsyncTask<Void, Integer, Void> {
+public class RefreshMusicAsyncTask{
+       /* extends AsyncTask<Void, Integer, Void> {
     private Context mContext;
     private Realm mRealm;
     private IHomeInteractor.RefreshSongsListListener iFoldersInteractor;
@@ -151,5 +152,5 @@ public class RefreshMusicAsyncTask extends AsyncTask<Void, Integer, Void> {
             key = 1;
         }
         return key;
-    }
+    }*/
 }
