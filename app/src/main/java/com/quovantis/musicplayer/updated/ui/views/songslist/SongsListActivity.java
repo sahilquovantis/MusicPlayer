@@ -138,7 +138,7 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     }
 
     @Override
-    public void onClick(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
+    public void onClickFromSpecificSongOptionsDialog(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
         if (iMusicPresenter != null)
             iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
     }

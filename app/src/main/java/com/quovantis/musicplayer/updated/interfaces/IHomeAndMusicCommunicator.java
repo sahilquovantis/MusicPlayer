@@ -7,5 +7,5 @@ import com.quovantis.musicplayer.updated.models.SongDetailsModel;
  */
 public interface IHomeAndMusicCommunicator {
     void onMusicListClick();
-    void onOptionsDialogClick(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong);
+    void onOptionsDialogClickFromAllTracks(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong);
 }

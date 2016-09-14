@@ -1,19 +1,17 @@
 package com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols;
 
 import android.app.Dialog;
-import android.os.Handler;
-import android.os.Message;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.format.DateUtils;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,10 +24,9 @@ import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
-import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.currentplaylist.CurrentPlaylistAdapter;
 import com.quovantis.musicplayer.updated.ui.views.currentplaylist.CurrentPlaylistPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.currentplaylist.ICurrentPlaylistPresenter;
@@ -38,9 +35,6 @@ import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.utility.Utils;
 
-import java.io.UTFDataFormatException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,7 +42,6 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.internal.Util;
 
 public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlaylistView,
         ICurrentPlaylistClickListener, SeekBar.OnSeekBarChangeListener {
@@ -224,9 +217,20 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.action_menu_now_playlist_list, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.add_to_playlist) {
+            Intent intent = new Intent(this, CreatePlaylistActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

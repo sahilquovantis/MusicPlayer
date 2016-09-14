@@ -1,61 +1,41 @@
 package com.quovantis.musicplayer.updated.ui.views.home;
 
+import android.app.Activity;
 import android.content.Context;
+
+import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+
+import java.util.List;
 
 /**
  * Created by sahil-goel on 11/9/16.
  */
-public class HomePresenterImp implements IHomePresenter,IHomeInteractor.Listener{
-    private IHomeView mFoldersView;
+public class HomePresenterImp implements IHomePresenter, IHomeInteractor.Listener {
+    private IHomeView iHomeView;
     private IHomeInteractor iHomeInteractor;
 
     public HomePresenterImp(IHomeView iHomeView) {
-        this.mFoldersView = iHomeView;
-        iHomeInteractor = new HomeInteractorImp(this);
+        this.iHomeView = iHomeView;
+        iHomeInteractor = new HomeInteractorImp();
     }
 
     @Override
     public void onDestroy() {
-        mFoldersView = null;
+        iHomeView = null;
     }
 
     @Override
-    public void syncMusic(Context context) {
-        iHomeInteractor.resyncMusic(context);
+    public void getSongsListFromFolder(String path, boolean isClearQueue, boolean isPlaythisSong, Context context, Activity activity) {
+        if (iHomeView != null)
+            iHomeView.showProgressDialog();
+        iHomeInteractor.getSongsListFromFolder(path, isClearQueue, isPlaythisSong, context, activity, this);
     }
 
     @Override
-    public void firstTimeSync(Context context) {
-        iHomeInteractor.firstTimeSync(context);
-    }
-
-    @Override
-    public void onRefreshMusicListProgress(int value, int size) {
-        if (mFoldersView != null)
-            mFoldersView.updateRefreshListProgress(size, value);
-    }
-
-    @Override
-    public void onRefreshMusicListFetchedSongs(int value, int size) {
-        if (mFoldersView != null)
-            mFoldersView.updateRefreshListFetchedFolders(size, value);
-    }
-
-    @Override
-    public void onCancelRefreshMusicListDialog() {
-        if (mFoldersView != null)
-            mFoldersView.cancelRefreshListDialog();
-    }
-
-    @Override
-    public void onIntitalzeRefreshMusicListDialog() {
-        if (mFoldersView != null)
-            mFoldersView.initializeRefreshListDialog();
-    }
-
-    @Override
-    public void onRefreshSuccess() {
-        if(mFoldersView != null)
-            mFoldersView.onRefreshSuccess();
+    public void onSuccess(List<SongDetailsModel> list, boolean isClearQueue, boolean isPlaythisSong) {
+        if (iHomeView != null) {
+            iHomeView.onSuccessGettingSongsListForAddingToQueue(list, isClearQueue, isPlaythisSong);
+            iHomeView.hideProgressDialog();
+        }
     }
 }

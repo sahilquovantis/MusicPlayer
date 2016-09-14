@@ -8,13 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialog;
-import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
-import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 /**
  * Created by sahil-goel on 29/8/16.

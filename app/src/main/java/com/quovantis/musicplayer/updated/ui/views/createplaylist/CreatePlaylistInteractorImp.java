@@ -97,12 +97,6 @@ public class CreatePlaylistInteractorImp implements ICreatePlaylistInteractor, L
         bundle.putString("path", path);
         bundle.putString("action", action);
         mActivity.getLoaderManager().initLoader(5, bundle, this);
-        /*final RealmResults<SongDetailsModel> list;
-        if (action.equalsIgnoreCase(Utils.SONG_LIST)) {
-            list = realm.where(SongDetailsModel.class).equalTo("mSongID", id).findAll();
-        } else {
-            list = realm.where(SongDetailsModel.class).equalTo("mSongPathID", Integer.parseInt(id)).findAll().sort("mSongTitle", Sort.ASCENDING);
-        }*/
     }
 
     private int getKey(Realm realm) {
@@ -125,7 +119,12 @@ public class CreatePlaylistInteractorImp implements ICreatePlaylistInteractor, L
         if (action.equalsIgnoreCase(Utils.SONG_LIST)) {
             return new CursorLoader(mContext, uri, columns, MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{path}, null);
         } else if (action.equalsIgnoreCase(Utils.FOLDER_LIST)) {
-            return new CursorLoader(mContext, uri, columns, MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{path + "%"}, null);
+            String selection = MediaStore.Audio.Media.DATA + " LIKE ? AND " + MediaStore.Audio.Media.DATA + " NOT LIKE ? ";
+            String[] selectionArgs = new String[]{
+                    path + "%",
+                    path + "/%/%"
+            };
+            return new CursorLoader(mContext, uri, columns, selection, selectionArgs, null);
         }
         return null;
     }

@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.ui.views.folders;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.quovantis.musicplayer.updated.models.SongPathModel;
@@ -11,39 +12,41 @@ import java.util.ArrayList;
  */
 public class FoldersPresenterImp implements IFoldersPresenter, IFoldersInteractor.Listener {
 
-    private IFolderView mFoldersView;
+    private IFolderView iFolderView;
     private IFoldersInteractor iFoldersInteractor;
 
     public FoldersPresenterImp(IFolderView mFoldersView) {
-        this.mFoldersView = mFoldersView;
-        //iFoldersInteractor = new FoldersInteractorImp(this);
+        this.iFolderView = mFoldersView;
+        iFoldersInteractor = new FoldersInteractorImp();
     }
 
     /**
      * Call Interactor for Folders List {@link FoldersInteractorImp}
+     *
      * @param context
      */
     @Override
-    public void updateUI(Context context) {
-        if (mFoldersView != null)
-            mFoldersView.showProgress();
-       // iFoldersInteractor.getFoldersList(context);
+    public void updateUI(Context context, Activity activity) {
+        if (iFolderView != null)
+            iFolderView.showProgress();
+        iFoldersInteractor.getFoldersList(context, activity, this);
     }
 
     @Override
     public void onDestroy() {
-        mFoldersView = null;
+        iFolderView = null;
     }
 
     /**
-     * Update the Folders Activity after getting songs {@link FoldersActivity}
+     * Update the Folders Activity after getting songs {@link FoldersFragment}
+     *
      * @param list List of Folders
      */
     @Override
     public void onUpdateFoldersList(ArrayList<SongPathModel> list) {
-        if (mFoldersView != null) {
-            mFoldersView.onUpdateFoldersList(list);
-            mFoldersView.hideProgress();
+        if (iFolderView != null) {
+            iFolderView.onUpdateFoldersList(list);
+            iFolderView.hideProgress();
         }
     }
 }

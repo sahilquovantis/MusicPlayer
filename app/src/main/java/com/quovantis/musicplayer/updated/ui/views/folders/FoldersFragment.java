@@ -3,16 +3,10 @@ package com.quovantis.musicplayer.updated.ui.views.folders;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,20 +16,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
-import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndFolderCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
-import com.quovantis.musicplayer.updated.ui.views.folders.FoldersAdapter;
-import com.quovantis.musicplayer.updated.ui.views.folders.FoldersPresenterImp;
-import com.quovantis.musicplayer.updated.ui.views.folders.IFolderView;
-import com.quovantis.musicplayer.updated.ui.views.folders.IFoldersPresenter;
-import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
 import com.quovantis.musicplayer.updated.utility.Utils;
 
@@ -49,7 +36,7 @@ import butterknife.ButterKnife;
  * A simple {@link Fragment} subclass.
  */
 public class FoldersFragment extends Fragment implements IFolderView, IFolderClickListener,
-        IQueueOptionsDialog.onFolderClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+        IQueueOptionsDialog.onFolderClickListener {
 
     @BindView(R.id.rv_folders_list)
     RecyclerView mFoldersListRV;
@@ -58,17 +45,13 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongPathModel> mFoldersList = new ArrayList<>();
     private IHomeAndFolderCommunicator iHomeAndFolderCommunicator;
-
-    public FoldersFragment() {
-        // Required empty public constructor
-    }
+    private IFoldersPresenter iFoldersPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_folders, container, false);
         ButterKnife.bind(this, view);
-        Log.d("Training", "On Create View Folders");
         return view;
     }
 
@@ -77,7 +60,12 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         super.onActivityCreated(savedInstanceState);
         iHomeAndFolderCommunicator = (IHomeAndFolderCommunicator) getActivity();
         initRecyclerView();
-        getLoaderManager().initLoader(1, null, this);
+        initPresenter();
+    }
+
+    private void initPresenter() {
+        iFoldersPresenter = new FoldersPresenterImp(this);
+        iFoldersPresenter.updateUI(getActivity(), getActivity());
     }
 
     private void initRecyclerView() {
@@ -143,8 +131,8 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     }
 
     @Override
-    public void onClick(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong) {
-        iHomeAndFolderCommunicator.onOptionsDialogClick(model, isClearQueue, isPlaythisSong);
+    public void onClickFromFolderOptionsDialog(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong) {
+        iHomeAndFolderCommunicator.onOptionsDialogClickFromFolders(model, isClearQueue, isPlaythisSong);
     }
 
     @Override
@@ -158,36 +146,9 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        showProgress();
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String[] columns = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ALBUM_ID};
-        return new CursorLoader(getActivity(), uri, columns, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        ArrayList<SongPathModel> list = new ArrayList<>();
-        if (data != null) {
-            data.moveToFirst();
-            while (!data.isAfterLast()) {
-                String songPath = data.getString(1);
-                String path = songPath.substring(0, songPath.lastIndexOf("/"));
-                SongPathModel model = new SongPathModel();
-                model.setAlbumId(data.getLong(4));
-                model.setPath(path);
-                model.setDirectory(path.substring(path.lastIndexOf("/") + 1));
-                if (list.isEmpty() || !list.contains(model)) {
-                    list.add(model);
-                }
-                data.moveToNext();
-            }
-            onUpdateFoldersList(list);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onDestroyView() {
+        iFoldersPresenter.onDestroy();
+        iFoldersPresenter = null;
+        super.onDestroyView();
     }
 }

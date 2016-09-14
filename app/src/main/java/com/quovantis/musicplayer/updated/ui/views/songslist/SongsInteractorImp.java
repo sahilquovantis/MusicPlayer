@@ -56,7 +56,12 @@ public class SongsInteractorImp implements ISongsInteractor,
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] columns = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM_ID};
-        return new CursorLoader(mContext, uri, columns, MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{path + "%"}, null);
+        String selection = MediaStore.Audio.Media.DATA + " LIKE ? AND " + MediaStore.Audio.Media.DATA + " NOT LIKE ? ";
+        String[] selectionArgs = new String[]{
+                path + "%",
+                path + "/%/%"
+        };
+        return new CursorLoader(mContext, uri, columns, selection, selectionArgs, null);
     }
 
     @Override

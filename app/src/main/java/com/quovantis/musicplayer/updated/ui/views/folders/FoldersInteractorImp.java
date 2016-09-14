@@ -1,40 +1,33 @@
 package com.quovantis.musicplayer.updated.ui.views.folders;
 
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 
-import com.quovantis.musicplayer.updated.aynctasks.RefreshMusicAsyncTask;
-import com.quovantis.musicplayer.updated.dialogs.RefreshListDialog;
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
-import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
-import com.quovantis.musicplayer.updated.utility.SharedPrefrence;
 
 import java.util.ArrayList;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
-import io.realm.Sort;
 
 /**
  * Created by sahil-goel on 23/8/16.
  */
-public class FoldersInteractorImp implements IFoldersInteractor , LoaderManager.LoaderCallbacks<Cursor>{
+public class FoldersInteractorImp implements IFoldersInteractor,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private Context mContext;
     private IFoldersInteractor.Listener mListener;
+
     @Override
     public void getFoldersList(Context context, Activity activity, IFoldersInteractor.Listener listener) {
         mContext = context;
         mListener = listener;
-        //activity.getLoaderManager().initLoader(1,null,this);
+        activity.getLoaderManager().initLoader(1, null, this);
     }
 
     @Override
@@ -63,6 +56,7 @@ public class FoldersInteractorImp implements IFoldersInteractor , LoaderManager.
                 data.moveToNext();
             }
         }
+        mListener.onUpdateFoldersList(list);
     }
 
     @Override

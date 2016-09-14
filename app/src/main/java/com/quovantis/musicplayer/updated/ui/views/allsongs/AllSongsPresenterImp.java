@@ -1,5 +1,8 @@
 package com.quovantis.musicplayer.updated.ui.views.allsongs;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.List;
@@ -7,7 +10,7 @@ import java.util.List;
 /**
  * Created by sahil-goel on 11/9/16.
  */
-public class AllSongsPresenterImp implements IAllSongsPresenter, IAllSongsInteractor.Listener{
+public class AllSongsPresenterImp implements IAllSongsPresenter, IAllSongsInteractor.Listener {
     private IAllSongsView iAllSongsView;
     private IAllSongsInteractor iAllSongsInteractor;
 
@@ -17,21 +20,20 @@ public class AllSongsPresenterImp implements IAllSongsPresenter, IAllSongsIntera
     }
 
     @Override
-    public void getSongsList() {
-        if(iAllSongsView != null){
+    public void getSongsList(Context context, Activity activity) {
+        if (iAllSongsView != null)
             iAllSongsView.showProgress();
-            iAllSongsInteractor.getSongsList(this);
-        }
+        iAllSongsInteractor.getSongsList(context, activity, this);
     }
 
     @Override
     public void onDestroy() {
-            iAllSongsView = null;
+        iAllSongsView = null;
     }
 
     @Override
     public void onGettingSongsList(List<SongDetailsModel> list) {
-        if(iAllSongsView != null){
+        if (iAllSongsView != null) {
             iAllSongsView.updateUi(list);
             iAllSongsView.hideProgress();
         }

@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,31 +60,43 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
         final SongPathModel songPathModel = mSongPathModelArrayList.get(position);
         final String directory = songPathModel.getDirectory();
         final String path = songPathModel.getPath();
+        String subPath = path.substring(0, path.lastIndexOf("/"));
+        Log.d("Training","Path : " + subPath);
         final long id = songPathModel.getAlbumId();
         holder.mDirectoryNameTV.setText(directory);
-        holder.mDirectoryPathTV.setText(path);
-        Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, id)).asBitmap().error(R.drawable.music).
-                placeholder(R.drawable.music).into(new BitmapImageViewTarget(holder.mDirectoryThumbnail) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                if (resource != null) {
-                    Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
-                        public void onGenerated(Palette palette) {
-                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                            if (vibrantSwatch != null) {
-                                holder.mBackground.setBackgroundColor(vibrantSwatch.getRgb());
-                            } else {
-                                holder.mBackground.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg));
-                            }
+        holder.mDirectoryPathTV.setText(subPath);
+
+        Uri uri = ContentUris.withAppendedId(mArtworkUri, id);
+        Glide.with(mContext).load(uri).asBitmap().error(R.drawable.music).
+                placeholder(R.drawable.music).into(
+                new BitmapImageViewTarget(holder.mDirectoryThumbnail) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        if (resource != null) {
+                            Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                                public void onGenerated(Palette palette) {
+                                    Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                                    if (vibrantSwatch != null) {
+                                        holder.mBackground.setBackgroundColor(vibrantSwatch.getRgb());
+                                    } else {
+                                        holder.mBackground.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg));
+                                    }
+                                }
+                            });
                         }
-                    });
-                }
-                super.setResource(resource);
-            }
-        });
+                        super.setResource(resource);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        holder.mBackground.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg));
+                        super.onLoadFailed(e, errorDrawable);
+                    }
+                });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("Training", "CLicked : " + path);
                 iFolderClickListener.onFoldersSinglePress(path, directory);
             }
         });

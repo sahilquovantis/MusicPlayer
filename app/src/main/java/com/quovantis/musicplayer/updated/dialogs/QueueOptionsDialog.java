@@ -40,14 +40,14 @@ public class QueueOptionsDialog {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                listener.onClick(model, false, false);
+                listener.onClickFromSpecificSongOptionsDialog(model, false, false);
             }
         });
         clearAndPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                listener.onClick(model, true, true);
+                listener.onClickFromSpecificSongOptionsDialog(model, true, true);
             }
         });
         addToPlaylist.setOnClickListener(new View.OnClickListener() {
@@ -78,14 +78,14 @@ public class QueueOptionsDialog {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                listener.onClick(model, false, false);
+                listener.onClickFromFolderOptionsDialog(model, false, false);
             }
         });
         clearAndPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                listener.onClick(model, true, true);
+                listener.onClickFromFolderOptionsDialog(model, true, true);
             }
         });
         addToPlaylist.setOnClickListener(new View.OnClickListener() {
