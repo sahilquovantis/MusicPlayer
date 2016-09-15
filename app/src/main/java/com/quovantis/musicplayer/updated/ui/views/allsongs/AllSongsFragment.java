@@ -2,18 +2,11 @@ package com.quovantis.musicplayer.updated.ui.views.allsongs;
 
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +20,7 @@ import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
-import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
-import com.quovantis.musicplayer.updated.ui.views.music.IMusicView;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListAdapter;
 import com.quovantis.musicplayer.updated.utility.Utils;
 

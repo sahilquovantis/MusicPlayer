@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -32,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * Created by sahil-goel on 24/8/16.
  */
-public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder> {
+public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder>  {
     private final Uri mArtworkUri;
     private Context mContext;
     private IMusicListClickListener iMusicListClickListener;
@@ -109,14 +108,14 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
         }
     }
 
-    public void setList(List<SongDetailsModel> list){
+    public void setList(List<SongDetailsModel> list) {
         mSongList.clear();
         mSongList.addAll(list);
     }
+
     public void setQuery(String query) {
         mQuery = query;
     }
-
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_song_thumbnail)

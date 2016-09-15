@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
+import com.quovantis.musicplayer.updated.helper.DepthPageTransformerHelper;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndFolderCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
@@ -65,6 +66,7 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
     }
 
     private void initViewPager() {
+        mViewPager.setPageTransformer(true, new DepthPageTransformerHelper());
         mHomeAdapter = new HomeAdapter(getSupportFragmentManager());
         mHomeAdapter.addFragments(new FoldersFragment(), "Folders");
         mHomeAdapter.addFragments(new AllSongsFragment(), "All Tracks");

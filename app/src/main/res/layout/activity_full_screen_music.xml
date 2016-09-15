@@ -17,13 +17,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/music" />
+            android:src="@drawable/music"
+            android:transitionName="image" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clickable="true"
-            android:background="@drawable/transparent_background">
+            android:background="@drawable/transparent_background"
+            android:clickable="true">
 
             <RelativeLayout
                 android:id="@+id/toolbar_layout"

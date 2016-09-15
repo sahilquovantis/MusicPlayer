@@ -123,11 +123,7 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         Intent intent = new Intent(getActivity(), SongsListActivity.class);
         intent.setAction(ICommonKeys.FOLDERS_ACTION);
         intent.putExtras(bundle);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
-        } else {
-            startActivity(intent);
-        }
+        startActivity(intent);
     }
 
     @Override

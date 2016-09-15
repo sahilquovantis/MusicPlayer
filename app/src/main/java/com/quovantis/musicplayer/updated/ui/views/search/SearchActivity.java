@@ -74,7 +74,7 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
         iSearchPresenter = new SearchPresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, SearchActivity.this);
         iMusicPresenter.bindService();
-        iSearchPresenter.fetchSongsList();
+        iSearchPresenter.fetchSongsList(this,this);
     }
 
     private void initToolbar() {

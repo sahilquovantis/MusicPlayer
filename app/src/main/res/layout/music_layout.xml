@@ -8,23 +8,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/music_player_height">
-
-        <ImageView
-            android:id="@+id/iv_selected_song_thumbnail"
-            android:layout_width="@dimen/music_player_height"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/thumbnail"
-            android:scaleType="fitXY"
-            android:src="@drawable/music" />
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/ll_controls"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
             android:orientation="horizontal">
 
             <ImageView
@@ -59,19 +51,22 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/rl_song_details"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iv_selected_song_thumbnail"
             android:layout_toLeftOf="@id/ll_controls"
             android:layout_toRightOf="@id/iv_selected_song_thumbnail"
             android:layout_toStartOf="@id/ll_controls"
-            android:padding="@dimen/dp_10">
+            android:paddingBottom="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/tv_selected_song"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:maxLines="1"
                 android:text="@string/dummy_song"
                 android:textColor="@color/white" />
@@ -81,10 +76,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_selected_song"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:maxLines="1"
                 android:text="@string/dummy_artist"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_selected_song_thumbnail"
+            android:layout_width="@dimen/music_player_height"
+            android:layout_height="0dp"
+            android:layout_alignBottom="@id/rl_song_details"
+            android:layout_alignTop="@id/rl_song_details"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/thumbnail"
+            android:scaleType="fitXY"
+            android:src="@drawable/music"
+            android:transitionName="image" />
     </RelativeLayout>
 </RelativeLayout>

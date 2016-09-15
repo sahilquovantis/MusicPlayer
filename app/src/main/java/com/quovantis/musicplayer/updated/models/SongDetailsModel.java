@@ -1,14 +1,9 @@
 package com.quovantis.musicplayer.updated.models;
 
-import org.parceler.Parcel;
+import java.io.Serializable;
 
 import io.realm.RealmObject;
-import io.realm.SongDetailsModelRealmProxy;
 
-/**
- * @author sahil-goel
- *         Model of the Song or Music and Contains Information of the Songs.
- */
 public class SongDetailsModel extends RealmObject {
     private String mSongID;
     private String mSongTitle;

@@ -242,7 +242,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         }
         long currentPosition = mPlaybackState.getPosition();
         state = mPlaybackState.getState();
-        if (state == PlaybackStateCompat.STATE_PLAYING) {
+        if (state != PlaybackStateCompat.STATE_PAUSED) {
             long timeDelta = SystemClock.elapsedRealtime() -
                     mPlaybackState.getLastPositionUpdateTime();
             currentPosition += (int) timeDelta * mPlaybackState.getPlaybackSpeed();
@@ -291,10 +291,10 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         int progress = seekBar.getProgress();
         if (iMusicPresenter != null) {
             if (state == PlaybackStateCompat.STATE_PAUSED) {
-                iMusicPresenter.playSong();
+                iMusicPresenter.onPlayPause();
             }
             iMusicPresenter.seekTo(progress);
+            mCurrentTimeTV.setText(DateUtils.formatElapsedTime(progress / 1000));
         }
-        mCurrentTimeTV.setText(DateUtils.formatElapsedTime(progress / 1000));
     }
 }

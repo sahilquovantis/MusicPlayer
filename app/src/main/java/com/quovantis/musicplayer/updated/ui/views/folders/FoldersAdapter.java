@@ -12,11 +12,13 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -61,10 +63,13 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
         final String directory = songPathModel.getDirectory();
         final String path = songPathModel.getPath();
         String subPath = path.substring(0, path.lastIndexOf("/"));
-        Log.d("Training","Path : " + subPath);
+        Log.d("Training", "Path : " + subPath);
         final long id = songPathModel.getAlbumId();
         holder.mDirectoryNameTV.setText(directory);
         holder.mDirectoryPathTV.setText(subPath);
+        holder.mDirectoryPathTV.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        holder.mDirectoryPathTV.setSelected(true);
+        holder.mDirectoryPathTV.setSingleLine();
 
         Uri uri = ContentUris.withAppendedId(mArtworkUri, id);
         Glide.with(mContext).load(uri).asBitmap().error(R.drawable.music).
@@ -108,6 +113,13 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
                 return true;
             }
         });
+
+        holder.mOptionsDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iFolderClickListener.onFoldersLongPress(songPathModel);
+            }
+        });
     }
 
     @Override
@@ -125,6 +137,8 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
         TextView mDirectoryPathTV;
         @BindView(R.id.iv_song_thumbnail)
         ImageView mDirectoryThumbnail;
+        @BindView(R.id.ll_action)
+        LinearLayout mOptionsDialog;
 
         public ViewHolder(View itemView) {
             super(itemView);

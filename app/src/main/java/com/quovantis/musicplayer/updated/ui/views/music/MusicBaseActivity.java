@@ -1,14 +1,15 @@
 package com.quovantis.musicplayer.updated.ui.views.music;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.graphics.Palette;
-import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.helper.AnimationHelper;
 import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 
 import butterknife.BindView;
@@ -63,21 +63,12 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
         mSelectedSongTV.setText(title);
         mSelectedSongArtistTV.setText(artist);
         mSelectedSongThumbnailIV.setImageBitmap(bitmap);
-
-       /* Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-                Palette.Swatch vibrantSwatch = palette.getDominantSwatch();
-                if (vibrantSwatch != null) {
-                    int rgb = vibrantSwatch.getRgb();
-                    mMusicLayout.setBackgroundColor(rgb);
-                    changeToolbarColor(rgb);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        window.setStatusBarColor(rgb);
-                    }
-                }
-            }
-        });*/
+        mSelectedSongTV.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        mSelectedSongTV.setSelected(true);
+        mSelectedSongTV.setSingleLine(true);
+        mSelectedSongArtistTV.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        mSelectedSongArtistTV.setSelected(true);
+        mSelectedSongArtistTV.setSingleLine(true);
     }
 
     @Override

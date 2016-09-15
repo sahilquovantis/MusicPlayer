@@ -1,15 +1,12 @@
 package com.quovantis.musicplayer.updated.ui.views.playlists;
 
 
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +17,6 @@ import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
-import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
 
 import java.util.ArrayList;
@@ -123,11 +119,7 @@ public class PlaylistFragment extends Fragment implements IPlaylistView, IPlayli
         Intent intent = new Intent(getActivity(), SongsListActivity.class);
         intent.setAction(ICommonKeys.PLAYLIST_ACTION);
         intent.putExtras(bundle);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
-        } else {
-            startActivity(intent);
-        }
+        startActivity(intent);
     }
 
     public void onNotifyFromHome() {

@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.ui.views.search;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -21,10 +22,10 @@ public class SearchPresenterImp implements ISearchPresenter, ISearchInteractor.L
     }
 
     @Override
-    public void fetchSongsList() {
+    public void fetchSongsList(Context context, Activity activity) {
         if (iSearchView != null)
             iSearchView.onShowProgress();
-        iSearchInteractor.fetchSongsList(this);
+        iSearchInteractor.fetchSongsList(context, activity, this);
     }
 
     @Override
