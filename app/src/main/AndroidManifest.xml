@@ -18,10 +18,8 @@
 
         <service
             android:name=".updated.services.MusicService"
-            android:stopWithTask="false" >
-            </service>
+            android:stopWithTask="false"></service>
 
-        <activity android:name=".updated.ui.views.currentplaylist.CurrentPlaylistActivity" />
         <activity android:name=".updated.ui.views.music.MusicBaseActivity" />
         <activity android:name=".updated.ui.views.fullscreenmusiccontrols.FullScreenMusic" />
         <activity
@@ -30,13 +28,7 @@
         <activity
             android:name=".updated.ui.views.createplaylist.CreatePlaylistActivity"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".updated.ui.views.home.HomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".updated.ui.views.home.HomeActivity" />
 
         <receiver android:name=".updated.receivers.NoisyReceiver">
             <intent-filter>
@@ -44,6 +36,13 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".updated.ui.views.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

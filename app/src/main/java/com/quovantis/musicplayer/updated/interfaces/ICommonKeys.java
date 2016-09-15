@@ -13,4 +13,5 @@ public interface ICommonKeys {
     String FOLDERS_ACTION = "com.musicplayer.songlist";
     String CURRENT_POSITION = "com.musicplayer.current.position";
     int UPDATE_PLAYLIST_RESULT_CODE = 100;
+    int MY_PERMISSIONS_REQUEST_READ_STORAGE = 200;
 }

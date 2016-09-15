@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.helper.LoadBitmapHelper;
 import com.quovantis.musicplayer.updated.interfaces.IAddToExistingPlaylistClickListener;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
