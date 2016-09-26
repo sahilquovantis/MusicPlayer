@@ -27,7 +27,7 @@ public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter, I
     @Override
     public void onSongRemovedSuccessfully(int curPos) {
         if (mView != null)
-            mView.onSuccessfullyRemovedSong(curPos);
+            mView.onSuccessfullyRemovedSong();
     }
 
     @Override

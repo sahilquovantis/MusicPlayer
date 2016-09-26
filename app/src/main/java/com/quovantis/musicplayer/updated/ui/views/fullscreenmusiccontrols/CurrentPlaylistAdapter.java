@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IItemTouchHelperAdapter;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -28,15 +29,14 @@ import butterknife.ButterKnife;
 public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylistAdapter.ViewHolder> implements
         IItemTouchHelperAdapter {
 
-    private ArrayList<SongDetailsModel> mQueueList;
+    // private ArrayList<SongDetailsModel> mQueueList;
     private Context mContext;
     private ICurrentPlaylistClickListener iCurrentPlaylistClickListener;
     private Uri mArtworkUri;
 
-    public CurrentPlaylistAdapter(ArrayList<SongDetailsModel> mQueueList, Context mContext,
+    public CurrentPlaylistAdapter(Context mContext,
                                   ICurrentPlaylistClickListener iCurrentPlaylistClickListener) {
         mArtworkUri = Uri.parse("content://media/external/audio/albumart");
-        this.mQueueList = mQueueList;
         this.mContext = mContext;
         this.iCurrentPlaylistClickListener = iCurrentPlaylistClickListener;
     }
@@ -49,8 +49,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position1) {
-        int pos = position1;
-        final SongDetailsModel model = mQueueList.get(holder.getAdapterPosition());
+        final SongDetailsModel model = MusicHelper.getInstance().getCurrentPlaylist().get(holder.getAdapterPosition());
         if (model != null) {
             String title = model.getSongTitle();
             String artist = model.getSongArtist();
@@ -68,7 +67,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
 
     @Override
     public int getItemCount() {
-        return mQueueList.size();
+        return MusicHelper.getInstance().getCurrentPlaylist().size();
     }
 
     @Override
@@ -88,8 +87,6 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
         CircleImageView mImage;
         @BindView(R.id.tv_queue_song_artist)
         TextView mQueueSongArtist;
-        @BindView(R.id.ll_drag_icon)
-        LinearLayout mDragIconLL;
 
         public ViewHolder(View itemView) {
             super(itemView);

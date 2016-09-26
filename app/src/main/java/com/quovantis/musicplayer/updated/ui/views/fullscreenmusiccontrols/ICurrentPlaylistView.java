@@ -9,8 +9,12 @@ import java.util.ArrayList;
  */
 public interface ICurrentPlaylistView {
     void onShowProgress();
+
     void onHideProgress();
+
     void onEmptyList();
+
     void onCurrentPlayingSongRemoved();
-    void onSuccessfullyRemovedSong(int currentPos);
+
+    void onSuccessfullyRemovedSong();
 }
