@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
+package com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols;
 
 /**
  * Created by sahil-goel on 29/8/16.

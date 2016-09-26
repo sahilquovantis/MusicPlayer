@@ -1,10 +1,7 @@
-package com.quovantis.musicplayer.updated.ui.views.currentplaylist;
+package com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols;
 
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.IOnSongRemovedFromQueue;
-import com.quovantis.musicplayer.updated.models.SongDetailsModel;
-
-import java.util.ArrayList;
 
 /**
  * Created by sahil-goel on 29/8/16.
