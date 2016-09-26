@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="sp_16">16sp</dimen>
     <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
     <dimen name="play_pause_size">50dp</dimen>
     <dimen name="music_player_height">50dp</dimen>
     <dimen name="sp_18">18sp</dimen>
@@ -12,4 +13,9 @@
     <dimen name="sp_20">20sp</dimen>
     <dimen name="dp_5">5dp</dimen>
     <dimen name="sp_12">12sp</dimen>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="circluar_image_view_width_height">60dp</dimen>
+    <!-- Create Playlist Screen -->
+    <dimen name="create_playlist_thumbnail_width_height">60dp</dimen>
+    <dimen name="add_playlist_image_width_height">30dp</dimen>
 </resources>

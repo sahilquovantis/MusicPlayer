@@ -18,7 +18,8 @@
 
         <service
             android:name=".updated.services.MusicService"
-            android:stopWithTask="false"></service>
+            android:exported="false"
+            android:stopWithTask="false" />
 
         <activity android:name=".updated.ui.views.music.MusicBaseActivity" />
         <activity android:name=".updated.ui.views.fullscreenmusiccontrols.FullScreenMusic" />
@@ -39,7 +40,6 @@
         <activity android:name=".updated.ui.views.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

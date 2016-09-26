@@ -59,8 +59,8 @@
             android:layout_height="60dp">
 
             <ImageView
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/drag" />
         </LinearLayout>

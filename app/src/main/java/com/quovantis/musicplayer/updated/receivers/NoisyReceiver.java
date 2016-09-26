@@ -14,11 +14,11 @@ import com.quovantis.musicplayer.updated.utility.Utils;
 public class NoisyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent != null) {
+      /*  if (intent != null) {
             Log.d("Training", "On Noisy Receiver");
             Intent intent1 = new Intent(context, MusicService.class);
             intent1.setAction(Utils.INTENT_ACTION_PAUSE);
             context.startService(intent1);
-        }
+        }*/
     }
 }

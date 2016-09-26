@@ -17,8 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/music"
-            android:transitionName="image" />
+            android:src="@drawable/music"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

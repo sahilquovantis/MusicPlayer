@@ -24,6 +24,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
@@ -98,7 +99,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
                 mMediaController.getTransportControls().play();
             }
         }
-        return START_NOT_STICKY;
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private MediaSessionCompat.Callback mMediaCallback = new MediaSessionCompat.Callback() {
@@ -294,12 +295,11 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
             if (mNotification != null)
                 startForeground(NOTIFICATION_ID, mNotification);
         } else {
+            stopForeground(true);
+            mNotification = null;
             if (state.getState() == PlaybackStateCompat.STATE_STOPPED) {
                 stopSelf();
             }
-            stopForeground(true);
-            mNotification = null;
-            //mNotificationHelper.cancelNotification();
         }
     }
 

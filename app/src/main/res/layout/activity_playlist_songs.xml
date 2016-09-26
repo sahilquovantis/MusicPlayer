@@ -1,51 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
+    style="@style/AppRelativeLayoutMatchParent"
     tools:context="com.quovantis.musicplayer.updated.ui.views.playlistsongs.PlaylistSongsActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary" />
+        style="@style/AppToolbar" />
 
     <include
         android:id="@+id/rl_music_layout"
-        layout="@layout/music_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+        style="@style/AppIncludeMusicLayout"
+        layout="@layout/music_layout" />
 
     <TextView
         android:id="@+id/tv_no_playlist_songs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:padding="@dimen/dp_10"
+        style="@style/AppEmptyTextView"
         android:text="@string/empty"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_26"
         android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_playlist_songs_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/rl_music_layout"
-        android:layout_below="@id/toolbar"
-        android:background="@color/white"
-        android:scrollbars="vertical" />
+        style="@style/AppRecyclerView"
+        android:layout_above="@+id/rl_music_layout"
+        android:layout_below="@+id/toolbar" />
 
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        style="@style/AppProgressBar"
         android:visibility="visible" />
 </RelativeLayout>

@@ -163,4 +163,10 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
 }
