@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
@@ -31,7 +32,7 @@ import butterknife.ButterKnife;
 /**
  * Created by sahil-goel on 24/8/16.
  */
-public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder>  {
+public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder> implements SectionTitleProvider {
     private final Uri mArtworkUri;
     private Context mContext;
     private IMusicListClickListener iMusicListClickListener;
@@ -116,6 +117,12 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
     public void setQuery(String query) {
         mQuery = query;
     }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return mSongList.get(position).getSongTitle().substring(0, 1);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_song_thumbnail)

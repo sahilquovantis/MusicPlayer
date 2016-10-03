@@ -53,6 +53,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     public void onBindViewHolder(final ViewHolder holder, int position1) {
         final SongDetailsModel model = MusicHelper.getInstance().getCurrentPlaylist().get(holder.getAdapterPosition());
         if (model != null) {
+            holder.mEqualizer.setVisibility(View.GONE);
             String title = model.getSongTitle();
             String artist = model.getSongArtist();
             holder.mQueueSOngTitle.setText(title);
@@ -70,8 +71,6 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
                     holder.mEqualizer.animateBars();
                 else
                     holder.mEqualizer.stopBars();
-            } else {
-                holder.mEqualizer.setVisibility(View.GONE);
             }
         }
     }
@@ -91,11 +90,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
         iCurrentPlaylistClickListener.onSongRemove(position);
     }
 
-    public boolean isPlaying() {
-        return mIsPlaying;
-    }
-
-    public void setIsPlaying(boolean mIsPlaying) {
+    void setIsPlaying(boolean mIsPlaying) {
         this.mIsPlaying = mIsPlaying;
     }
 

@@ -1,13 +1,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/AppRelativeLayoutMatchParent"
     tools:context=".updated.ui.views.allsongs.AllSongsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_songs_list"
-        style="@style/AppRecyclerView"
-        android:layout_above="@+id/rl_music_layout"
-        android:layout_below="@+id/toolbar_layout" />
+        style="@style/AppRecyclerView"/>
+
+    <com.futuremind.recyclerviewfastscroll.FastScroller
+        android:id="@+id/fast_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical"
+        app:fastscroll__bubbleColor="@color/colorAccent"
+        app:fastscroll__handleColor="@color/colorAccent" />
 
     <ProgressBar
         android:id="@+id/pb_progress_bar"

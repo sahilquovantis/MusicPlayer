@@ -71,7 +71,6 @@
                     android:id="@+id/iv_previous_song"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/btn_selector"
                     android:clickable="true"
                     android:padding="@dimen/dp_10"
                     android:src="@drawable/ic_action_previous" />
@@ -80,7 +79,6 @@
                     android:id="@+id/iv_play_pause_button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/btn_selector"
                     android:clickable="true"
                     android:padding="@dimen/dp_10"
                     android:src="@drawable/ic_action_pause" />
@@ -89,7 +87,6 @@
                     android:id="@+id/iv_next_song"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/btn_selector"
                     android:clickable="true"
                     android:padding="@dimen/dp_10"
                     android:src="@drawable/ic_action_next" />
