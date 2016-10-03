@@ -26,7 +26,7 @@ public class AllSongsInteractorImp implements IAllSongsInteractor, LoaderManager
     public void getSongsList(Context context, Activity activity, Listener listener) {
         mContext = context;
         mListener = listener;
-        activity.getLoaderManager().initLoader(2, null, this);
+        activity.getLoaderManager().restartLoader(2, null, this);
     }
 
     @Override

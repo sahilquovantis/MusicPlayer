@@ -2,39 +2,29 @@ package com.quovantis.musicplayer.updated.services;
 
 import android.app.Notification;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.media.AudioManager;
-import android.media.MediaMetadata;
-import android.media.session.MediaSession;
-import android.media.session.MediaSessionManager;
-import android.media.session.PlaybackState;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
+import com.quovantis.musicplayer.updated.constants.AppPreferenceKeys;
+import com.quovantis.musicplayer.updated.helper.LoggerHelper;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.NotificationHelper;
 import com.quovantis.musicplayer.updated.helper.PlayBackManager;
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
-import com.quovantis.musicplayer.updated.utility.SharedPrefrence;
-import com.quovantis.musicplayer.updated.utility.Utils;
+import com.quovantis.musicplayer.updated.utility.SharedPreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +33,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by sahil-goel on 25/8/16.
+ * Music Service which runs in Background.
  */
 public class MusicService extends Service implements PlayBackManager.ICallback,
         PlayBackManager.ISongProgressCallback {
@@ -58,9 +48,9 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(ICommonKeys.TAG, "Service Created");
+        LoggerHelper.debug("Music Service Created");
         MusicHelper.getInstance();
-        mMediaSession = new MediaSessionCompat(this, ICommonKeys.TAG);
+        mMediaSession = new MediaSessionCompat(this, "Music");
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         mMediaSession.setCallback(mMediaCallback);
@@ -75,7 +65,6 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
         try {
             mMediaController = new MediaControllerCompat(this, getMediaSessionToken());
         } catch (RemoteException e) {
-            Log.d(ICommonKeys.TAG, "Media Controller Exception : " + e.getMessage());
             mMediaController = null;
         }
         mPlaybackManager = new PlayBackManager(getApplicationContext(), this, this);
@@ -85,19 +74,25 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(ICommonKeys.TAG, "Service Start Command");
+        LoggerHelper.debug("Music Service OnStartCommand");
         if (intent != null && intent.getAction() != null) {
             String action = intent.getAction();
-            if (action.equals(Utils.INTENT_ACTION_PAUSE)) {
-                mMediaController.getTransportControls().pause();
-            } else if (action.equals(Utils.INTENT_ACTION_STOP)) {
-                mMediaController.getTransportControls().stop();
-            } else if (action.equals(Utils.INTENT_ACTION_NEXT)) {
-                mMediaController.getTransportControls().skipToNext();
-            } else if (action.equals(Utils.INTENT_ACTION_PREVIOUS)) {
-                mMediaController.getTransportControls().skipToPrevious();
-            } else if (action.equals(Utils.INTENT_ACTION_PLAY)) {
-                mMediaController.getTransportControls().play();
+            switch (action) {
+                case AppMusicKeys.INTENT_ACTION_PAUSE:
+                    mMediaController.getTransportControls().pause();
+                    break;
+                case AppMusicKeys.INTENT_ACTION_STOP:
+                    mMediaController.getTransportControls().stop();
+                    break;
+                case AppMusicKeys.INTENT_ACTION_NEXT:
+                    mMediaController.getTransportControls().skipToNext();
+                    break;
+                case AppMusicKeys.INTENT_ACTION_PREVIOUS:
+                    mMediaController.getTransportControls().skipToPrevious();
+                    break;
+                case AppMusicKeys.INTENT_ACTION_PLAY:
+                    mMediaController.getTransportControls().play();
+                    break;
             }
         }
         return super.onStartCommand(intent, flags, startId);
@@ -221,7 +216,6 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
     @Override
     public void onDestroy() {
         updateDefaultPlaylist();
-        Log.d(ICommonKeys.TAG, "Service Destroying");
         if (mMediaSession != null) {
             mMediaSession.release();
             mMediaSession = null;
@@ -230,6 +224,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
         if (mNotification != null)
             stopForeground(true);
         super.onDestroy();
+        LoggerHelper.debug("Music Service Destroyed");
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
@@ -242,7 +237,8 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
                         equalTo("mPlaylistId", 0).findAll();
                 if (realmResults.size() > 0) {
                     ArrayList<SongDetailsModel> list = new ArrayList<>(realmResults.get(0).getPlaylist());
-                    int pos = SharedPrefrence.getCurrentPosition(MusicService.this, ICommonKeys.CURRENT_POSITION);
+                    int pos = SharedPreference.getInstance().getInt(MusicService.this,
+                            AppPreferenceKeys.CURRENT_POSITION);
                     MusicHelper.getInstance().setCurrentPlaylist(list, pos);
                 }
             }
@@ -270,7 +266,8 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
                 if (list != null && !list.isEmpty()) {
                     pos = MusicHelper.getInstance().getCurrentPosition();
                 }
-                SharedPrefrence.saveCurrentPosition(MusicService.this, ICommonKeys.CURRENT_POSITION, pos);
+                SharedPreference.getInstance().putInt(MusicService.this,
+                        AppPreferenceKeys.CURRENT_POSITION, pos);
             }
         });
     }
@@ -284,7 +281,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
                     mPlaybackManager.getMediaMetaData(),
                     getMediaSessionToken(),
                     R.drawable.ic_action_pause, "Pause",
-                    Utils.INTENT_ACTION_PAUSE);
+                    AppMusicKeys.INTENT_ACTION_PAUSE);
             if (mNotification != null)
                 startForeground(NOTIFICATION_ID, mNotification);
         } else if (state.getState() == PlaybackStateCompat.STATE_PAUSED) {
@@ -292,7 +289,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
                     mPlaybackManager.getMediaMetaData(),
                     getMediaSessionToken(),
                     R.drawable.ic_action_play, "Play",
-                    Utils.INTENT_ACTION_PLAY);
+                    AppMusicKeys.INTENT_ACTION_PLAY);
             if (mNotification != null)
                 startForeground(NOTIFICATION_ID, mNotification);
         } else {
@@ -317,9 +314,9 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
     @Override
     public void onProgress(long currentProgress, long totalProgress) {
         Intent intent = new Intent();
-        intent.putExtra(Utils.CURRENT_PROGRESS, currentProgress);
-        intent.putExtra(Utils.TOTAL_PROGRESS, totalProgress);
-        intent.setAction(Utils.UPDATE_PROGRESS);
+        intent.putExtra(AppMusicKeys.CURRENT_PROGRESS, currentProgress);
+        intent.putExtra(AppMusicKeys.TOTAL_PROGRESS, totalProgress);
+        intent.setAction(AppMusicKeys.UPDATE_PROGRESS);
         sendBroadcast(intent);
     }
 
@@ -331,7 +328,6 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(ICommonKeys.TAG, "OnBind Called");
         return mBinder;
     }
 }

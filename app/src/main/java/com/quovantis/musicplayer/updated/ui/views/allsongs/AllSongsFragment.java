@@ -14,16 +14,15 @@ import android.widget.ProgressBar;
 
 import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListAdapter;
-import com.quovantis.musicplayer.updated.utility.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +106,8 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
 
     @Override
     public void onActionOverFlowClick(SongDetailsModel model) {
-        QueueOptionsDialog.showDialog(getActivity(), model, this);
+        QueueOptionsDialog dialog = new QueueOptionsDialog(getActivity(), model, this);
+        dialog.show();
     }
 
     @Override
@@ -120,9 +120,9 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
         Bundle bundle = new Bundle();
         bundle.putString("Id", model.getSongPath());
         Intent intent = new Intent(getActivity(), CreatePlaylistActivity.class);
-        intent.setAction(Utils.SONG_LIST);
+        intent.setAction(AppKeys.SONG_LIST);
         intent.putExtras(bundle);
-        startActivityForResult(intent, ICommonKeys.UPDATE_PLAYLIST_RESULT_CODE);
+        startActivityForResult(intent, AppKeys.UPDATE_PLAYLIST_RESULT_CODE);
     }
 
     @Override

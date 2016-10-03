@@ -1,31 +1,29 @@
 package com.quovantis.musicplayer.updated.helper;
 
-import android.util.Log;
-
-import com.quovantis.musicplayer.updated.utility.Utils;
+import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
 
 import java.util.Random;
 
 /**
- * Created by sahil-goel on 6/9/16.
+ * This Class helps in maintaining current Position of the queue.
  */
-public class CurrentPositionHelper {
+class CurrentPositionHelper {
 
     private int mCurrentPosition;
 
-    public CurrentPositionHelper() {
+    CurrentPositionHelper() {
         mCurrentPosition = 0;
     }
 
-    public int getCurrentPosition() {
+    int getCurrentPosition() {
         return mCurrentPosition;
     }
 
-    public void setCurrentPosition(int mCurrentPosition) {
+    void setCurrentPosition(int mCurrentPosition) {
         this.mCurrentPosition = mCurrentPosition;
     }
 
-    public int getPreviousSong(int size) {
+    int getPreviousSong(int size) {
         if (mCurrentPosition == 0 || mCurrentPosition < 0)
             mCurrentPosition = size - 1;
         else
@@ -33,11 +31,11 @@ public class CurrentPositionHelper {
         return mCurrentPosition;
     }
 
-    public int getNextSong(int size) {
-        if (Utils.REPEAT_STATE == Utils.REPEAT_ON) {
+    int getNextSong(int size) {
+        if (AppMusicKeys.REPEAT_STATE == AppMusicKeys.REPEAT_ON) {
             return mCurrentPosition;
         }
-        if (Utils.SHUFFLE_STATE == Utils.SHUFFLE_ON && size > 0) {
+        if (AppMusicKeys.SHUFFLE_STATE == AppMusicKeys.SHUFFLE_ON && size > 0) {
             Random random = new Random();
             mCurrentPosition = random.nextInt(size);
             return mCurrentPosition;

@@ -6,7 +6,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 /**
- * Created by sahil-goel on 24/8/16.
+ * Custom Application Class For Realm Configuration.
  */
 public class MusicPlayerApplication extends Application {
     @Override

@@ -10,16 +10,15 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
-import com.quovantis.musicplayer.updated.utility.Utils;
 
 import java.util.ArrayList;
 
@@ -55,17 +54,17 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     private void initBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String directory = bundle.getString(ICommonKeys.DIRECTORY_NAME_KEY);
+            String directory = bundle.getString(AppKeys.DIRECTORY_NAME_KEY);
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(directory);
             if (getIntent().getAction() != null) {
                 mAction = getIntent().getAction();
             }
-            if (mAction.equalsIgnoreCase(ICommonKeys.PLAYLIST_ACTION)) {
-                long id = bundle.getLong(ICommonKeys.FOLDER_ID_KEY, 1);
+            if (mAction.equalsIgnoreCase(AppKeys.PLAYLIST_ACTION)) {
+                long id = bundle.getLong(AppKeys.FOLDER_ID_KEY, 1);
                 iSongsPresenter.updateUI(id, mAction, null, this);
             } else {
-                String mPath = bundle.getString(ICommonKeys.FOLDER_ID_KEY, null);
+                String mPath = bundle.getString(AppKeys.FOLDER_ID_KEY, null);
                 iSongsPresenter.updateUI(0, mAction, mPath, this);
             }
         }
@@ -106,7 +105,8 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
 
     @Override
     public void onActionOverFlowClick(SongDetailsModel model) {
-        QueueOptionsDialog.showDialog(SongsListActivity.this, model, this);
+        QueueOptionsDialog dialog = new QueueOptionsDialog(this,model,this);
+        dialog.show();
     }
 
     @Override
@@ -127,9 +127,9 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     @Override
     public void onAddToPlaylist(SongDetailsModel model) {
         Bundle bundle = new Bundle();
-        bundle.putString("Id", model.getSongPath());
+        bundle.putString(AppKeys.CREATE_PLAYLIST_INTENT_PATH, model.getSongPath());
         Intent intent = new Intent(this, CreatePlaylistActivity.class);
-        intent.setAction(Utils.SONG_LIST);
+        intent.setAction(AppKeys.SONG_LIST);
         intent.putExtras(bundle);
         startActivity(intent);
     }

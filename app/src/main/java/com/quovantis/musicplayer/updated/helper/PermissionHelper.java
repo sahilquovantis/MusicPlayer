@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 
 /**
  * Created by sahil-goel on 15/9/16.
@@ -22,7 +22,7 @@ public class PermissionHelper {
                 createDialog(activity);
             } else {
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        ICommonKeys.MY_PERMISSIONS_REQUEST_READ_STORAGE);
+                        AppKeys.MY_PERMISSIONS_REQUEST_READ_STORAGE);
             }
             return false;
         } else {

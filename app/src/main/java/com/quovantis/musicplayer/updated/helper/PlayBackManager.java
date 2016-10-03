@@ -2,7 +2,6 @@ package com.quovantis.musicplayer.updated.helper;
 
 import android.content.Context;
 import android.media.AudioManager;
-import android.media.MediaMetadata;
 import android.media.MediaPlayer;
 import android.media.session.PlaybackState;
 import android.os.Handler;
@@ -12,8 +11,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 
 import java.io.IOException;
 
@@ -113,11 +110,9 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             mMediaPlayer.setOnErrorListener(this);
             mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.setWakeMode(mContext, PowerManager.PARTIAL_WAKE_LOCK);
-            Log.d(ICommonKeys.TAG, "New Media Player Created");
         } else {
             mMediaPlayer.setOnCompletionListener(null);
             mMediaPlayer.reset();
-            Log.d(ICommonKeys.TAG, "Media Player reset");
         }
     }
 

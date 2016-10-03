@@ -1,8 +1,6 @@
 package com.quovantis.musicplayer.updated.ui.views.search;
 
 import android.content.Intent;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
+import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
@@ -24,7 +24,6 @@ import com.quovantis.musicplayer.updated.ui.views.music.IMusicPresenter;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListAdapter;
-import com.quovantis.musicplayer.updated.utility.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +73,7 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
         iSearchPresenter = new SearchPresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, SearchActivity.this);
         iMusicPresenter.bindService();
-        iSearchPresenter.fetchSongsList(this,this);
+        iSearchPresenter.fetchSongsList(this, this);
     }
 
     private void initToolbar() {
@@ -90,15 +89,16 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
             if (mFilteredList != null) {
                 boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mFilteredList, pos);
                 if (isListAdded) {
-                    if(iMusicPresenter != null)
-                    iMusicPresenter.playSong();
+                    if (iMusicPresenter != null)
+                        iMusicPresenter.playSong();
                 }
             }
         }
 
         @Override
         public void onActionOverFlowClick(SongDetailsModel model) {
-            QueueOptionsDialog.showDialog(SearchActivity.this, model, SearchActivity.this);
+            QueueOptionsDialog dialog = new QueueOptionsDialog(SearchActivity.this, model, SearchActivity.this);
+            dialog.show();
         }
     };
 
@@ -165,16 +165,16 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
 
     @Override
     public void onClickFromSpecificSongOptionsDialog(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
-        if(iMusicPresenter != null)
+        if (iMusicPresenter != null)
             iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
     }
 
     @Override
     public void onAddToPlaylist(SongDetailsModel model) {
         Bundle bundle = new Bundle();
-        bundle.putString("Id", model.getSongID());
+        bundle.putString(AppKeys.FOLDER_ID_KEY, model.getSongID());
         Intent intent = new Intent(this, CreatePlaylistActivity.class);
-        intent.setAction(Utils.SONG_LIST);
+        intent.setAction(AppKeys.SONG_LIST);
         intent.putExtras(bundle);
         startActivity(intent);
     }

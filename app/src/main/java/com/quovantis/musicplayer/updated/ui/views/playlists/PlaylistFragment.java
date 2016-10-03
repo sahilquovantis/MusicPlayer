@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
@@ -114,10 +114,10 @@ public class PlaylistFragment extends Fragment implements IPlaylistView, IPlayli
     @Override
     public void onClick(long id, String name) {
         Bundle bundle = new Bundle();
-        bundle.putLong(ICommonKeys.FOLDER_ID_KEY, id);
-        bundle.putString(ICommonKeys.DIRECTORY_NAME_KEY, name);
+        bundle.putLong(AppKeys.FOLDER_ID_KEY, id);
+        bundle.putString(AppKeys.DIRECTORY_NAME_KEY, name);
         Intent intent = new Intent(getActivity(), SongsListActivity.class);
-        intent.setAction(ICommonKeys.PLAYLIST_ACTION);
+        intent.setAction(AppKeys.PLAYLIST_ACTION);
         intent.putExtras(bundle);
         startActivity(intent);
     }

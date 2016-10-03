@@ -33,7 +33,7 @@ public class HomeInteractorImp implements IHomeInteractor, LoaderManager.LoaderC
         mIsPlayThisSong = isPlaythisSong;
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
-        activity.getLoaderManager().initLoader(10, bundle, this);
+        activity.getLoaderManager().restartLoader(10, bundle, this);
     }
 
     @Override

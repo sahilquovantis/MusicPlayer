@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
-import android.media.MediaMetadata;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -15,16 +14,10 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
+import com.quovantis.musicplayer.updated.helper.LoggerHelper;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
-
-import java.util.List;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
-import io.realm.Sort;
 
 /**
  * Created by sahil-goel on 26/8/16.
@@ -43,21 +36,19 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         if (iBinder instanceof MusicService.ServiceBinder) {
+            LoggerHelper.debug("Music Service Binded");
             MediaMetadataCompat mCurrentMetadata = null;
             PlaybackStateCompat mCurrentState = null;
-            Log.d(ICommonKeys.TAG, "Service Binded");
             try {
                 mMediaController = new MediaControllerCompat(mContext,
                         ((MusicService.ServiceBinder) iBinder).getService().getMediaSessionToken());
 
                 mMediaController.registerCallback(mMediaCallback);
-                Log.d("Training", "Activity : Media Callback registered");
                 mCurrentMetadata = mMediaController.getMetadata();
                 mCurrentState = mMediaController.getPlaybackState();
             } catch (RemoteException e) {
                 mCurrentMetadata = null;
                 mCurrentState = null;
-                Log.d(ICommonKeys.TAG, "Media Controller Exception in Activities : " + e.getMessage());
             } finally {
                 updateUI(mCurrentMetadata);
                 updateState(mCurrentState);
@@ -67,7 +58,6 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-        Log.d(ICommonKeys.TAG, "Service Unbinded");
     }
 
     @Override
@@ -113,14 +103,12 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
 
         @Override
         public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
-            Log.d(ICommonKeys.TAG, "Activity Playback State Changed : " + state.getState());
             updateState(state);
         }
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             super.onMetadataChanged(metadata);
-            Log.d(ICommonKeys.TAG, "Activity Metadata Changed");
             updateUI(metadata);
         }
     };
@@ -128,6 +116,7 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     @Override
     public void onDestroy() {
         mContext.unbindService(this);
+        LoggerHelper.debug("Music Service UnBinded");
         iMusicView = null;
     }
 

@@ -5,10 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,20 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
-import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
-import com.quovantis.musicplayer.updated.utility.Utils;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,7 +66,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         setContentView(R.layout.activity_full_screen_music);
         ButterKnife.bind(this);
         mSeekbar.setOnSeekBarChangeListener(this);
-        registerReceiver(mProgressReceiver, new IntentFilter(Utils.UPDATE_PROGRESS));
+        registerReceiver(mProgressReceiver, new IntentFilter(AppMusicKeys.UPDATE_PROGRESS));
         initToolbar();
         initRecyclerView();
         initPresenters();
@@ -81,9 +74,9 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     }
 
     private void initViews() {
-        if (Utils.SHUFFLE_STATE == Utils.SHUFFLE_ON)
+        if (AppMusicKeys.SHUFFLE_STATE == AppMusicKeys.SHUFFLE_ON)
             mShuffleSongIV.setImageResource(R.drawable.shuffle_on);
-        if (Utils.REPEAT_STATE == Utils.REPEAT_ON)
+        if (AppMusicKeys.REPEAT_STATE == AppMusicKeys.REPEAT_ON)
             mRepeatSongIV.setImageResource(R.drawable.repeat_on);
     }
 
@@ -128,7 +121,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         mAdapter.notifyItemRangeChanged(position, size);
         int currPos = MusicHelper.getInstance().getCurrentPosition();
         if (position == currPos) {
-            if (Utils.REPEAT_STATE == Utils.REPEAT_OFF) {
+            if (AppMusicKeys.REPEAT_STATE == AppMusicKeys.REPEAT_OFF) {
                 MusicHelper.getInstance().setCurrentPosition(position - 1);
             }
             onCurrentPlayingSongRemoved();
@@ -173,12 +166,12 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @OnClick(R.id.iv_shuffle_song)
     public void onShuffle() {
-        if (Utils.SHUFFLE_STATE == Utils.SHUFFLE_OFF) {
-            Utils.SHUFFLE_STATE = Utils.SHUFFLE_ON;
+        if (AppMusicKeys.SHUFFLE_STATE == AppMusicKeys.SHUFFLE_OFF) {
+            AppMusicKeys.SHUFFLE_STATE = AppMusicKeys.SHUFFLE_ON;
             mShuffleSongIV.setImageResource(R.drawable.shuffle_on);
             Toast.makeText(this, "Shuffle turned on", Toast.LENGTH_LONG).show();
         } else {
-            Utils.SHUFFLE_STATE = Utils.SHUFFLE_OFF;
+            AppMusicKeys.SHUFFLE_STATE = AppMusicKeys.SHUFFLE_OFF;
             mShuffleSongIV.setImageResource(R.drawable.shuffle_off);
             Toast.makeText(this, "Shuffle turned off", Toast.LENGTH_LONG).show();
         }
@@ -186,12 +179,12 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @OnClick(R.id.iv_repeat_song)
     public void onRepeat() {
-        if (Utils.REPEAT_STATE == Utils.REPEAT_OFF) {
-            Utils.REPEAT_STATE = Utils.REPEAT_ON;
+        if (AppMusicKeys.REPEAT_STATE == AppMusicKeys.REPEAT_OFF) {
+            AppMusicKeys.REPEAT_STATE = AppMusicKeys.REPEAT_ON;
             mRepeatSongIV.setImageResource(R.drawable.repeat_on);
             Toast.makeText(this, "Repeat turned on", Toast.LENGTH_LONG).show();
         } else {
-            Utils.REPEAT_STATE = Utils.REPEAT_OFF;
+            AppMusicKeys.REPEAT_STATE = AppMusicKeys.REPEAT_OFF;
             mRepeatSongIV.setImageResource(R.drawable.repeat_off);
             Toast.makeText(this, "Repeat turned off", Toast.LENGTH_LONG).show();
         }
@@ -272,8 +265,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
-                long current = intent.getLongExtra(Utils.CURRENT_PROGRESS, 0);
-                long total = intent.getLongExtra(Utils.TOTAL_PROGRESS, 0);
+                long current = intent.getLongExtra(AppMusicKeys.CURRENT_PROGRESS, 0);
+                long total = intent.getLongExtra(AppMusicKeys.TOTAL_PROGRESS, 0);
                 mSeekbar.setProgress((int) current);
                 mSeekbar.setMax((int) total);
                 mCurrentTimeTV.setText(DateUtils.formatElapsedTime(current / 1000));

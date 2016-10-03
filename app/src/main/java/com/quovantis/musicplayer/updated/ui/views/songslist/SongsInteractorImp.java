@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 /**
  * Created by sahil-goel on 24/8/16.
@@ -47,7 +45,7 @@ public class SongsInteractorImp implements ISongsInteractor,
         this.listener = listener;
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
-        activity.getLoaderManager().initLoader(7, bundle, this);
+        activity.getLoaderManager().restartLoader(7, bundle, this);
     }
 
     @Override

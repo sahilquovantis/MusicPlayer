@@ -12,9 +12,9 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
 import com.quovantis.musicplayer.updated.ui.views.home.HomeActivity;
 import com.quovantis.musicplayer.updated.services.MusicService;
-import com.quovantis.musicplayer.updated.utility.Utils;
 
 /**
  * @author sahil-goel
@@ -63,10 +63,10 @@ public class NotificationHelper {
                             .setShowActionsInCompactView(0, 1, 2)
                             .setMediaSession(token))
                     .setColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-            builder.addAction(createAction(R.drawable.ic_action_previous, "Previous", Utils.INTENT_ACTION_PREVIOUS));
+            builder.addAction(createAction(R.drawable.ic_action_previous, "Previous", AppMusicKeys.INTENT_ACTION_PREVIOUS));
             builder.addAction(createAction(iconForPlayPause, playPause, action));
-            builder.addAction(createAction(R.drawable.ic_action_next, "Next", Utils.INTENT_ACTION_NEXT));
-            builder.addAction(createAction(R.drawable.ic_action_remove, "Close", Utils.INTENT_ACTION_STOP));
+            builder.addAction(createAction(R.drawable.ic_action_next, "Next", AppMusicKeys.INTENT_ACTION_NEXT));
+            builder.addAction(createAction(R.drawable.ic_action_remove, "Close", AppMusicKeys.INTENT_ACTION_STOP));
             style.setShowActionsInCompactView(0, 1, 2);
             return builder.build();
             /*mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

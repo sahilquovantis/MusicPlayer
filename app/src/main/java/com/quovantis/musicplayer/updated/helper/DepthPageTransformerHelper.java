@@ -4,7 +4,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 /**
- * Created by sahil-goel on 15/9/16.
+ *  View Pager Animation
  */
 public class DepthPageTransformerHelper implements ViewPager.PageTransformer {
     private static final float MIN_SCALE = 0.85f;

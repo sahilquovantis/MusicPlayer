@@ -174,5 +174,48 @@
         <item name="android:layout_width">match_parent</item>
     </style>
 
+    <!-- Bottom Music Layout-->
+    <style name="AppPlayPauseMusicControlsLinearLayout">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="AppPlayPauseIconsImage">
+        <item name="android:padding">@dimen/dp_10</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/btn_selector</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="AppSongDetailsMusicRelativeLayout">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:paddingLeft">@dimen/dp_10</item>
+        <item name="android:paddingTop">@dimen/dp_10</item>
+        <item name="android:paddingBottom">@dimen/dp_10</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="AppSelectedSongTextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="AppSelectedThumbnailImage">
+        <item name="android:src">@drawable/music</item>
+        <item name="android:contentDescription">@string/thumbnail</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_width">@dimen/dp_50</item>
+    </style>
 
 </resources>

@@ -25,7 +25,7 @@ public class SearchInteractorImp implements ISearchInteractor, LoaderManager.Loa
     public void fetchSongsList(Context context, Activity activity, final ISearchInteractor.Listener listener) {
         this.listener = listener;
         mContext = context;
-        activity.getLoaderManager().initLoader(11,null,this);
+        activity.getLoaderManager().restartLoader(11,null,this);
     }
 
     @Override

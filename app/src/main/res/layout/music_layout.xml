@@ -4,95 +4,59 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
+    android:minHeight="@dimen/dp_50"
     tools:visibility="visible">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/ll_controls"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_previous_song"
-                android:layout_width="@dimen/play_pause_size"
-                android:layout_height="@dimen/play_pause_size"
-                android:background="@drawable/btn_selector"
-                android:clickable="true"
-                android:contentDescription="@string/previous_song"
-                android:padding="10dp"
-                android:src="@drawable/ic_action_previous" />
-
-            <ImageView
-                android:id="@+id/iv_play_pause_button"
-                android:layout_width="@dimen/play_pause_size"
-                android:layout_height="@dimen/play_pause_size"
-                android:background="@drawable/btn_selector"
-                android:clickable="true"
-                android:contentDescription="@string/play_and_pause"
-                android:padding="10dp"
-                android:src="@drawable/ic_action_pause" />
-
-            <ImageView
-                android:id="@+id/iv_next_song"
-                android:layout_width="@dimen/play_pause_size"
-                android:layout_height="@dimen/play_pause_size"
-                android:background="@drawable/btn_selector"
-                android:clickable="true"
-                android:contentDescription="@string/next_song"
-                android:padding="10dp"
-                android:src="@drawable/ic_action_next" />
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_song_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/iv_selected_song_thumbnail"
-            android:layout_toLeftOf="@id/ll_controls"
-            android:layout_toRightOf="@id/iv_selected_song_thumbnail"
-            android:layout_toStartOf="@id/ll_controls"
-            android:paddingBottom="@dimen/dp_10"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_10">
-
-            <TextView
-                android:id="@+id/tv_selected_song"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:maxLines="1"
-                android:text="@string/dummy_song"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/tv_selected_song_artist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_selected_song"
-                android:ellipsize="marquee"
-                android:maxLines="1"
-                android:text="@string/dummy_artist"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12" />
-        </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ll_controls"
+        style="@style/AppPlayPauseMusicControlsLinearLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
 
         <ImageView
-            android:id="@+id/iv_selected_song_thumbnail"
-            android:layout_width="@dimen/music_player_height"
-            android:layout_height="0dp"
-            android:layout_alignBottom="@id/rl_song_details"
-            android:layout_alignTop="@id/rl_song_details"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/thumbnail"
-            android:scaleType="fitXY"
-            android:src="@drawable/music"
-            android:transitionName="image" />
+            android:id="@+id/iv_previous_song"
+            style="@style/AppPlayPauseIconsImage"
+            android:contentDescription="@string/previous_song"
+            android:src="@drawable/ic_action_previous" />
+
+        <ImageView
+            android:id="@+id/iv_play_pause_button"
+            style="@style/AppPlayPauseIconsImage"
+            android:contentDescription="@string/play_and_pause"
+            android:src="@drawable/ic_action_pause" />
+
+        <ImageView
+            android:id="@+id/iv_next_song"
+            style="@style/AppPlayPauseIconsImage"
+            android:contentDescription="@string/next_song"
+            android:src="@drawable/ic_action_next" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_song_details"
+        style="@style/AppSongDetailsMusicRelativeLayout"
+        android:layout_toEndOf="@+id/iv_selected_song_thumbnail"
+        android:layout_toLeftOf="@+id/ll_controls"
+        android:layout_toRightOf="@+id/iv_selected_song_thumbnail"
+        android:layout_toStartOf="@+id/ll_controls">
+
+        <TextView
+            android:id="@+id/tv_selected_song"
+            style="@style/AppSelectedSongTextView"
+            android:text="@string/dummy_song" />
+
+        <TextView
+            android:id="@+id/tv_selected_song_artist"
+            style="@style/AppSelectedSongTextView"
+            android:layout_below="@+id/tv_selected_song"
+            android:text="@string/dummy_artist"
+            android:textSize="@dimen/sp_12" />
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_selected_song_thumbnail"
+        style="@style/AppSelectedThumbnailImage"
+        android:layout_alignBottom="@+id/rl_song_details"
+        android:layout_alignTop="@+id/rl_song_details" />
 </RelativeLayout>

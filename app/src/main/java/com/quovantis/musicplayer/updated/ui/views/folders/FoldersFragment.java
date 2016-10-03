@@ -1,9 +1,7 @@
 package com.quovantis.musicplayer.updated.ui.views.folders;
 
 
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,15 +14,14 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
-import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndFolderCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
-import com.quovantis.musicplayer.updated.utility.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,16 +109,17 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
 
     @Override
     public void onFoldersLongPress(SongPathModel songPathModel) {
-        QueueOptionsDialog.showDialog(getActivity(), songPathModel, this);
+        QueueOptionsDialog dialog = new QueueOptionsDialog(getActivity(), songPathModel, this);
+        dialog.show();
     }
 
     @Override
     public void onFoldersSinglePress(String path, String directoryName) {
         Bundle bundle = new Bundle();
-        bundle.putString(ICommonKeys.FOLDER_ID_KEY, path);
-        bundle.putString(ICommonKeys.DIRECTORY_NAME_KEY, directoryName);
+        bundle.putString(AppKeys.FOLDER_ID_KEY, path);
+        bundle.putString(AppKeys.DIRECTORY_NAME_KEY, directoryName);
         Intent intent = new Intent(getActivity(), SongsListActivity.class);
-        intent.setAction(ICommonKeys.FOLDERS_ACTION);
+        intent.setAction(AppKeys.FOLDERS_ACTION);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -134,11 +132,11 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     @Override
     public void onAddToPlaylist(SongPathModel model) {
         Bundle bundle = new Bundle();
-        bundle.putString("Id", model.getPath());
+        bundle.putString(AppKeys.CREATE_PLAYLIST_INTENT_PATH, model.getPath());
         Intent intent = new Intent(getActivity(), CreatePlaylistActivity.class);
-        intent.setAction(Utils.FOLDER_LIST);
+        intent.setAction(AppKeys.FOLDER_LIST);
         intent.putExtras(bundle);
-        startActivityForResult(intent, ICommonKeys.UPDATE_PLAYLIST_RESULT_CODE);
+        startActivityForResult(intent, AppKeys.UPDATE_PLAYLIST_RESULT_CODE);
     }
 
     @Override

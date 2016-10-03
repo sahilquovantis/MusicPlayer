@@ -8,14 +8,16 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.dialogs.CreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.interfaces.IAddToExistingPlaylistClickListener;
-import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialog;
+import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialogListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
@@ -57,7 +59,7 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
             action = getIntent().getAction();
         }
         if (bundle != null)
-            id = bundle.getString("Id", null);
+            id = bundle.getString(AppKeys.CREATE_PLAYLIST_INTENT_PATH, null);
         initToolbar();
         initRecyclerView();
         initPresenters();
@@ -85,7 +87,7 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
         }
     }
 
-    private IOnCreatePlaylistDialog iOnCreatePlaylistDialog = new IOnCreatePlaylistDialog() {
+    private IOnCreatePlaylistDialogListener iOnCreatePlaylistDialog = new IOnCreatePlaylistDialogListener() {
         @Override
         public void onCreatePlaylist(String playlistName) {
             String message = "Creating playlist ...";
@@ -97,7 +99,12 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
 
     @OnClick(R.id.rl_create_playlist)
     public void createNewPlaylist() {
-        CreatePlaylistDialog.showDialog(CreatePlaylistActivity.this, iOnCreatePlaylistDialog);
+        CreatePlaylistDialog dialog = new CreatePlaylistDialog(CreatePlaylistActivity.this, iOnCreatePlaylistDialog);
+        dialog.show();
+        if (dialog.getWindow() != null)
+            dialog.getWindow().clearFlags(
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                            | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
 
     @Override

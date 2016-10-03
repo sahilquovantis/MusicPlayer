@@ -18,4 +18,5 @@
     <!-- Create Playlist Screen -->
     <dimen name="create_playlist_thumbnail_width_height">60dp</dimen>
     <dimen name="add_playlist_image_width_height">30dp</dimen>
+    <dimen name="dp_50">50dp</dimen>
 </resources>

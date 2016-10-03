@@ -27,7 +27,7 @@ public class FoldersInteractorImp implements IFoldersInteractor,
     public void getFoldersList(Context context, Activity activity, IFoldersInteractor.Listener listener) {
         mContext = context;
         mListener = listener;
-        activity.getLoaderManager().initLoader(1, null, this);
+        activity.getLoaderManager().restartLoader(1, null, this);
     }
 
     @Override

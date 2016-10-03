@@ -11,10 +11,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
-import com.quovantis.musicplayer.updated.utility.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +96,7 @@ public class CreatePlaylistInteractorImp implements ICreatePlaylistInteractor, L
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
         bundle.putString("action", action);
-        mActivity.getLoaderManager().initLoader(5, bundle, this);
+        mActivity.getLoaderManager().restartLoader(5, bundle, this);
     }
 
     private int getKey(Realm realm) {
@@ -116,9 +116,9 @@ public class CreatePlaylistInteractorImp implements ICreatePlaylistInteractor, L
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] columns = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM_ID};
-        if (action.equalsIgnoreCase(Utils.SONG_LIST)) {
+        if (action.equalsIgnoreCase(AppKeys.SONG_LIST)) {
             return new CursorLoader(mContext, uri, columns, MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{path}, null);
-        } else if (action.equalsIgnoreCase(Utils.FOLDER_LIST)) {
+        } else if (action.equalsIgnoreCase(AppKeys.FOLDER_LIST)) {
             String selection = MediaStore.Audio.Media.DATA + " LIKE ? AND " + MediaStore.Audio.Media.DATA + " NOT LIKE ? ";
             String[] selectionArgs = new String[]{
                     path + "%",
