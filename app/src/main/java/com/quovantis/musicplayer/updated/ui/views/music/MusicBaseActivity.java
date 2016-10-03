@@ -1,6 +1,5 @@
 package com.quovantis.musicplayer.updated.ui.views.music;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -9,7 +8,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -36,15 +34,10 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
     @BindView(R.id.iv_play_pause_button)
     public ImageView mPlayPauseIV;
     public IMusicPresenter iMusicPresenter;
-    private Window window;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        window = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
     }
 
     @OnClick({R.id.iv_next_song, R.id.iv_previous_song, R.id.iv_play_pause_button})
@@ -82,42 +75,16 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
 
     @Override
     public void onHideMusicLayout() {
-        /*mMusicLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                AnimationHelper.hideView(mMusicLayout);
-            }
-        });*/
         mMusicLayout.setVisibility(View.GONE);
-        /*mMusicLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-        }*/
     }
 
     @Override
     public void onShowMusicLayout() {
-      /*  mMusicLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                AnimationHelper.CircularReveal(mMusicLayout);
-            }
-        });*/
         mMusicLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onStopService() {
-
-    }
-
-    @Override
-    public void updateMusicProgress(PlaybackStateCompat playbackState) {
-
-    }
-
-    @Override
-    public void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata) {
 
     }
 
@@ -129,6 +96,9 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
 
     @OnClick(R.id.rl_music_layout)
     public void onClick() {
+        if (this instanceof FullScreenMusic) {
+            return;
+        }
         Intent intent = new Intent(this, FullScreenMusic.class);
         startActivity(intent);
     }

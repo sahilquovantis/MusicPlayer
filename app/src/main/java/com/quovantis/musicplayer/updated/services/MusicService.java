@@ -45,7 +45,8 @@ import io.realm.RealmResults;
 /**
  * Created by sahil-goel on 25/8/16.
  */
-public class MusicService extends Service implements PlayBackManager.ICallback {
+public class MusicService extends Service implements PlayBackManager.ICallback,
+        PlayBackManager.ISongProgressCallback {
     private static final int NOTIFICATION_ID = 1;
     private Binder mBinder = new ServiceBinder();
     private MediaSessionCompat mMediaSession;
@@ -77,7 +78,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
             Log.d(ICommonKeys.TAG, "Media Controller Exception : " + e.getMessage());
             mMediaController = null;
         }
-        mPlaybackManager = new PlayBackManager(getApplicationContext(), this);
+        mPlaybackManager = new PlayBackManager(getApplicationContext(), this, this);
         mNotificationHelper = new NotificationHelper(getApplicationContext());
         initCurrentPlaylist();
     }
@@ -311,6 +312,15 @@ public class MusicService extends Service implements PlayBackManager.ICallback {
         } else {
             mMediaController.getTransportControls().playFromMediaId(mediaId, null);
         }
+    }
+
+    @Override
+    public void onProgress(long currentProgress, long totalProgress) {
+        Intent intent = new Intent();
+        intent.putExtra(Utils.CURRENT_PROGRESS, currentProgress);
+        intent.putExtra(Utils.TOTAL_PROGRESS, totalProgress);
+        intent.setAction(Utils.UPDATE_PROGRESS);
+        sendBroadcast(intent);
     }
 
     public class ServiceBinder extends Binder {

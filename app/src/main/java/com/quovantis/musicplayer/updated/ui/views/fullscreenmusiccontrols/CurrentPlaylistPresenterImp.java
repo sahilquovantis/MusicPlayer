@@ -1,12 +1,9 @@
 package com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols;
 
-import com.quovantis.musicplayer.updated.helper.MusicHelper;
-import com.quovantis.musicplayer.updated.interfaces.IOnSongRemovedFromQueue;
-
 /**
  * Created by sahil-goel on 29/8/16.
  */
-public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter, IOnSongRemovedFromQueue {
+public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter {
 
     private ICurrentPlaylistView mView;
 
@@ -21,29 +18,12 @@ public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter, I
 
     @Override
     public void songsMoved(int fromPosition, int toPosition) {
-        MusicHelper.getInstance().songsMoved(fromPosition, toPosition);
-    }
 
-    @Override
-    public void onSongRemovedSuccessfully(int curPos) {
-        if (mView != null)
-            mView.onSuccessfullyRemovedSong();
     }
 
     @Override
     public void songRemoved(int position) {
-        MusicHelper.getInstance().songRemove(position, this);
+
     }
 
-    @Override
-    public void onCurrentPlayingSongRemoved() {
-        if (mView != null)
-            mView.onCurrentPlayingSongRemoved();
-    }
-
-    @Override
-    public void onQueueListEmptyShowEmptyTV() {
-        if (mView != null)
-            mView.onEmptyList();
-    }
 }

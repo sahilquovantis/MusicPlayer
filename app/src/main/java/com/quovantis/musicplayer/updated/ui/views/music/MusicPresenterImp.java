@@ -73,7 +73,6 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     @Override
     public void updateUI(MediaMetadataCompat mediaMetadata) {
         if (iMusicView != null) {
-            iMusicView.updateMusicDurationInitial(mediaMetadata);
             boolean canHide = true;
             MediaDescriptionCompat mediaDescription = mediaMetadata == null ? null :
                     mediaMetadata.getDescription();
@@ -107,7 +106,6 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
             } else {
                 iMusicView.onHideMusicLayout();
             }
-            iMusicView.updateMusicProgress(playbackState);
         }
     }
 
@@ -179,31 +177,12 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     }
 
     @Override
-    public void addSongToPlaylist(long id, boolean isClearQueue, boolean isPlaythisSong) {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<SongDetailsModel> list = realm.where(SongDetailsModel.class).equalTo("mSongPathID", id).findAll().sort("mSongTitle", Sort.ASCENDING);
-        if (!list.isEmpty()) {
-            MusicHelper.getInstance().addSongToPlaylist(list, isClearQueue);
-            if (isPlaythisSong)
-                playSong();
-            if(iMusicView != null)
-                iMusicView.cancelDialog();
-        }
-    }
-
-    @Override
     public void playSong() {
         if (mMediaController != null) {
             mMediaController.getTransportControls().playFromMediaId("1", null);
         }
     }
 
-    @Override
-    public void hideMusicLayoutDuringResyncMusic() {
-        if (mMediaController != null)
-            mMediaController.getTransportControls().sendCustomAction("NONE", null);
-        MusicHelper.getInstance().clearCurrentPlaylist();
-    }
 
     @Override
     public void seekTo(long pos) {

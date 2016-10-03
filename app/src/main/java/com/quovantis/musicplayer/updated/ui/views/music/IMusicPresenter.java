@@ -13,8 +13,6 @@ import java.util.List;
 public interface IMusicPresenter {
     void addSongToPlaylist(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong);
 
-    void addSongToPlaylist(long id, boolean isClearQueue, boolean isPlaythisSong);
-
     void updateUI(MediaMetadataCompat mediaMetadata);
 
     void updateState(PlaybackStateCompat playbackState);
@@ -30,8 +28,6 @@ public interface IMusicPresenter {
     void onSkipToNext();
 
     void stopService();
-
-    void hideMusicLayoutDuringResyncMusic();
 
     void seekTo(long pos);
 

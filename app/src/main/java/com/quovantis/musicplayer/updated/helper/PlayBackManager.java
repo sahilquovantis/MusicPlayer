@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.media.MediaMetadata;
 import android.media.MediaPlayer;
 import android.media.session.PlaybackState;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.v4.media.MediaMetadataCompat;
@@ -17,22 +18,26 @@ import com.quovantis.musicplayer.updated.interfaces.ICommonKeys;
 import java.io.IOException;
 
 /**
- * Created by sahil-goel on 26/8/16.
+ *  This class handle the media player controls like playing and pausing of music.
  */
 public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     private Context mContext;
+    private Handler mHandler;
     private boolean mPlayOnFocusGain;
     private ICallback mCallback;
+    private ISongProgressCallback iProgressCallback;
     private MediaMetadataCompat mCurrentMedia;
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
     private int mCurrentState;
     private boolean isPauseWithMetaDataCalled = false;
 
-    public PlayBackManager(Context context, ICallback callback) {
+    public PlayBackManager(Context context, ICallback callback, ISongProgressCallback iCallback) {
         mContext = context;
+        iProgressCallback = iCallback;
+        mHandler = new Handler();
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         mCallback = callback;
     }
@@ -142,6 +147,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             mMediaPlayer.pause();
             updatePlaybackState(PlaybackStateCompat.STATE_PAUSED);
             isPauseWithMetaDataCalled = true;
+            mHandler.postDelayed(mProgressTimer, 100);
         } catch (IOException e) {
             mCurrentMedia = null;
             Toast.makeText(mContext, "File not found", Toast.LENGTH_LONG).show();
@@ -161,30 +167,19 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
-    public void updatePlaybackState(int state) {
+    private void updatePlaybackState(int state) {
         if (mCallback == null) {
             mCurrentState = -1;
             return;
         }
         mCurrentState = state;
         PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder()
-                //  .setActions(getAvailableActions())
                 .setState(state, getCurrentStreamPosition(), 1.0f, SystemClock.elapsedRealtime());
         mCallback.onPlaybackStateChanged(playbackState.build());
     }
 
     private int getCurrentStreamPosition() {
         return mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0;
-    }
-
-    private long getAvailableActions() {
-        long actions = PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
-                PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH |
-                PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS;
-        if (isPlaying()) {
-            actions |= PlaybackStateCompat.ACTION_PAUSE;
-        }
-        return actions;
     }
 
     /**
@@ -226,6 +221,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         if (mMediaPlayer != null) {
             mMediaPlayer.start();
             mMediaPlayer.setOnCompletionListener(this);
+            mHandler.postDelayed(mProgressTimer, 100);
             updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
         }
     }
@@ -266,4 +262,20 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
 
         void onSongCompletion();
     }
+
+    public interface ISongProgressCallback {
+        void onProgress(long currentProgress, long totalProgress);
+    }
+
+    private Runnable mProgressTimer = new Runnable() {
+        @Override
+        public void run() {
+            if (mMediaPlayer != null) {
+                int total = mMediaPlayer.getDuration();
+                int current = mMediaPlayer.getCurrentPosition();
+                iProgressCallback.onProgress(current, total);
+                mHandler.postDelayed(mProgressTimer, 100);
+            }
+        }
+    };
 }

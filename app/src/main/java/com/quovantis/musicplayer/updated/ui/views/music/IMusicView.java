@@ -18,10 +18,6 @@ public interface IMusicView {
 
     void onStopService();
 
-    void updateMusicProgress(PlaybackStateCompat playbackState);
-
-    void updateMusicDurationInitial(MediaMetadataCompat mediaMetadata);
-
     void cancelDialog();
 
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/selector"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_10"
     android:paddingRight="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_10"
-    android:background="@drawable/selector">
+    android:paddingTop="@dimen/dp_10">
 
     <LinearLayout
         android:id="@+id/ll_upper_layout"
@@ -18,11 +18,11 @@
 
         <com.quovantis.musicplayer.updated.utility.CircleImageView
             android:id="@+id/iv_song_thumbnail"
-            app:civ_border_color="@color/colorAccent"
-            app:civ_border_width="1dp"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/music" />
+            android:src="@drawable/music"
+            app:civ_border_color="@color/colorAccent"
+            app:civ_border_width="1dp" />
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -45,9 +45,9 @@
                 android:id="@+id/tv_queue_song_artist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/tv_queue_song_title"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:layout_below="@id/tv_queue_song_title"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
                 android:text="@string/dummy_artist" />
@@ -56,10 +56,21 @@
         <LinearLayout
             android:id="@+id/ll_drag_icon"
             android:layout_width="wrap_content"
-            android:layout_height="60dp">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <es.claucookie.miniequalizerlibrary.EqualizerView xmlns:custom="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/equalizer_view"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center_vertical"
+                custom:foregroundColor="@color/colorAccent"
+                android:layout_marginRight="20dp"
+                android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="@dimen/dp_40"
+                android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/drag" />

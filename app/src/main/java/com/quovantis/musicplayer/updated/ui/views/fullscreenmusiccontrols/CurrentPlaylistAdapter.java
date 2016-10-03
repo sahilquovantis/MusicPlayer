@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.claucookie.miniequalizerlibrary.EqualizerView;
 
 /**
  * Created by sahil-goel on 29/8/16.
@@ -29,7 +30,7 @@ import butterknife.ButterKnife;
 public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylistAdapter.ViewHolder> implements
         IItemTouchHelperAdapter {
 
-    // private ArrayList<SongDetailsModel> mQueueList;
+    private boolean mIsPlaying;
     private Context mContext;
     private ICurrentPlaylistClickListener iCurrentPlaylistClickListener;
     private Uri mArtworkUri;
@@ -38,6 +39,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
                                   ICurrentPlaylistClickListener iCurrentPlaylistClickListener) {
         mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         this.mContext = mContext;
+        mIsPlaying = false;
         this.iCurrentPlaylistClickListener = iCurrentPlaylistClickListener;
     }
 
@@ -62,6 +64,15 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
                 }
             });
             Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, model.getAlbumId())).asBitmap().placeholder(R.drawable.music).into(holder.mImage);
+            if (position1 == MusicHelper.getInstance().getCurrentPosition()) {
+                holder.mEqualizer.setVisibility(View.VISIBLE);
+                if (mIsPlaying)
+                    holder.mEqualizer.animateBars();
+                else
+                    holder.mEqualizer.stopBars();
+            } else {
+                holder.mEqualizer.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -80,6 +91,14 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
         iCurrentPlaylistClickListener.onSongRemove(position);
     }
 
+    public boolean isPlaying() {
+        return mIsPlaying;
+    }
+
+    public void setIsPlaying(boolean mIsPlaying) {
+        this.mIsPlaying = mIsPlaying;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_queue_song_title)
         TextView mQueueSOngTitle;
@@ -87,6 +106,8 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
         CircleImageView mImage;
         @BindView(R.id.tv_queue_song_artist)
         TextView mQueueSongArtist;
+        @BindView(R.id.equalizer_view)
+        EqualizerView mEqualizer;
 
         public ViewHolder(View itemView) {
             super(itemView);
