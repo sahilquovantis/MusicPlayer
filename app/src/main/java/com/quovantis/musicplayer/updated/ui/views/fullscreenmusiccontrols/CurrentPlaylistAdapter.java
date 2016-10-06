@@ -50,8 +50,8 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position1) {
-        final SongDetailsModel model = MusicHelper.getInstance().getCurrentPlaylist().get(holder.getAdapterPosition());
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final SongDetailsModel model = MusicHelper.getInstance().getCurrentPlaylist().get(position);
         if (model != null) {
             holder.mEqualizer.setVisibility(View.GONE);
             String title = model.getSongTitle();
@@ -61,11 +61,11 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    iCurrentPlaylistClickListener.onClick(holder.getAdapterPosition());
+                    iCurrentPlaylistClickListener.onClick(position);
                 }
             });
             Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, model.getAlbumId())).asBitmap().placeholder(R.drawable.music).into(holder.mImage);
-            if (position1 == MusicHelper.getInstance().getCurrentPosition()) {
+            if (position == MusicHelper.getInstance().getCurrentPosition()) {
                 holder.mEqualizer.setVisibility(View.VISIBLE);
                 if (mIsPlaying)
                     holder.mEqualizer.animateBars();

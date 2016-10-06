@@ -10,6 +10,10 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
     </style>
+
+    <style name="FullScreenMusicTheme" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
     <style name="PopUpStyle">
         <item name="android:textColor">@color/black</item>
     </style>

@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.format.DateUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,9 +56,9 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @BindView(R.id.rv_current_playlist)
     protected RecyclerView mCurrentPlaylistRV;
     @BindView(R.id.progress_bar)
-    protected ProgressBar mProgressBar;
+    protected ProgressBar mProgressBarPB;
     @BindView(R.id.seekbar)
-    protected SeekBar mSeekbar;
+    protected SeekBar mSeekbarSB;
     private CurrentPlaylistAdapter mAdapter;
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
     private Dialog mDialog;
@@ -65,7 +68,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen_music);
         ButterKnife.bind(this);
-        mSeekbar.setOnSeekBarChangeListener(this);
+        mSeekbarSB.setOnSeekBarChangeListener(this);
         registerReceiver(mProgressReceiver, new IntentFilter(AppMusicKeys.UPDATE_PROGRESS));
         initToolbar();
         initRecyclerView();
@@ -87,6 +90,27 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            mToolbar.setPadding(0, getStatusBarHeight(), 0, getStatusBarHeight());
+        }
+    }
+
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode!= KeyEvent.KEYCODE_MENU) {
+            return super.onKeyDown(keyCode, event);
+        }
+        return true;
     }
 
     private void initPresenters() {
@@ -96,7 +120,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     }
 
     private void initRecyclerView() {
-        mProgressBar.setVisibility(View.GONE);
+        mProgressBarPB.setVisibility(View.GONE);
         mCurrentPlaylistRV.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new CurrentPlaylistAdapter(this, this);
         mCurrentPlaylistRV.setAdapter(mAdapter);
@@ -108,6 +132,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @Override
     public void onClick(int pos) {
         MusicHelper.getInstance().setCurrentPosition(pos);
+        mAdapter.notifyDataSetChanged();
         if (iMusicPresenter != null)
             iMusicPresenter.playSong();
     }
@@ -117,24 +142,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         mDialog = ProgresDialog.showProgressDialog(this);
         MusicHelper.getInstance().getCurrentPlaylist().remove(position);
         mAdapter.notifyItemRemoved(position);
-        int size = MusicHelper.getInstance().getCurrentPlaylist().size();
-        mAdapter.notifyItemRangeChanged(position, size);
-        int currPos = MusicHelper.getInstance().getCurrentPosition();
-        if (position == currPos) {
-            if (AppMusicKeys.REPEAT_STATE == AppMusicKeys.REPEAT_OFF) {
-                MusicHelper.getInstance().setCurrentPosition(position - 1);
-            }
-            onCurrentPlayingSongRemoved();
-        } else if (position < currPos) {
-            MusicHelper.getInstance().setCurrentPosition(currPos - 1);
-        }
-        if (size == 0) {
-            onSuccessfullyRemovedSong();
-            Toast.makeText(this, "There are no songs to play.", Toast.LENGTH_LONG).show();
-            onBackPressed();
-            return;
-        }
-        onSuccessfullyRemovedSong();
+        iCurrentPlaylistPresenter.songRemoved(position);
     }
 
     @Override
@@ -153,7 +161,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onSongsMoved(int from, int to) {
-        // iCurrentPlaylistPresenter.songsMoved(from, to);
         int pos = MusicHelper.getInstance().getCurrentPosition();
         Collections.swap(MusicHelper.getInstance().getCurrentPlaylist(), from, to);
         if (pos == to)
@@ -192,12 +199,12 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onShowProgress() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBarPB.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onHideProgress() {
-        mProgressBar.setVisibility(View.GONE);
+        mProgressBarPB.setVisibility(View.GONE);
     }
 
     @Override
@@ -267,8 +274,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
             if (intent != null) {
                 long current = intent.getLongExtra(AppMusicKeys.CURRENT_PROGRESS, 0);
                 long total = intent.getLongExtra(AppMusicKeys.TOTAL_PROGRESS, 0);
-                mSeekbar.setProgress((int) current);
-                mSeekbar.setMax((int) total);
+                mSeekbarSB.setProgress((int) current);
+                mSeekbarSB.setMax((int) total);
                 mCurrentTimeTV.setText(DateUtils.formatElapsedTime(current / 1000));
                 mFinalTimeTV.setText(DateUtils.formatElapsedTime(total / 1000));
             }
@@ -284,7 +291,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
             } else {
                 mAdapter.setIsPlaying(false);
             }
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(MusicHelper.getInstance().getCurrentPosition());
         }
     }
 }

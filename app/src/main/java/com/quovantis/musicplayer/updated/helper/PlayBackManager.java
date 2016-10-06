@@ -15,7 +15,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 /**
- *  This class handle the media player controls like playing and pausing of music.
+ * This class handle the media player controls like playing and pausing of music.
  */
 public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
@@ -120,7 +120,6 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         String mediaId = metadata.getDescription().getMediaId();
         createMediaPlayerIfNeeded();
         try {
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setDataSource(mContext, MusicHelper.getInstance().getSongURI(mediaId));
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mCurrentMedia = metadata;
@@ -142,7 +141,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             mMediaPlayer.pause();
             updatePlaybackState(PlaybackStateCompat.STATE_PAUSED);
             isPauseWithMetaDataCalled = true;
-            mHandler.postDelayed(mProgressTimer, 100);
+            mHandler.postDelayed(mProgressTimer, 1000);
         } catch (IOException e) {
             mCurrentMedia = null;
             Toast.makeText(mContext, "File not found", Toast.LENGTH_LONG).show();
@@ -163,6 +162,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
     }
 
     private void updatePlaybackState(int state) {
+        MusicHelper.getInstance().setIsSongStartedPlaying(true);
         if (mCallback == null) {
             mCurrentState = -1;
             return;
@@ -216,7 +216,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         if (mMediaPlayer != null) {
             mMediaPlayer.start();
             mMediaPlayer.setOnCompletionListener(this);
-            mHandler.postDelayed(mProgressTimer, 100);
+            mHandler.postDelayed(mProgressTimer, 1000);
             updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
         }
     }
@@ -269,7 +269,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
                 int total = mMediaPlayer.getDuration();
                 int current = mMediaPlayer.getCurrentPosition();
                 iProgressCallback.onProgress(current, total);
-                mHandler.postDelayed(mProgressTimer, 100);
+                mHandler.postDelayed(mProgressTimer, 1000);
             }
         }
     };

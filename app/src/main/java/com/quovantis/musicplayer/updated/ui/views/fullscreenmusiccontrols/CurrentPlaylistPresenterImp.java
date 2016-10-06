@@ -1,13 +1,16 @@
 package com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols;
 
+import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
+import com.quovantis.musicplayer.updated.helper.MusicHelper;
+
 /**
- * Created by sahil-goel on 29/8/16.
+ * CurrentPlaylist Presenter Implementation
  */
-public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter {
+class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter {
 
     private ICurrentPlaylistView mView;
 
-    public CurrentPlaylistPresenterImp(ICurrentPlaylistView mView) {
+    CurrentPlaylistPresenterImp(ICurrentPlaylistView mView) {
         this.mView = mView;
     }
 
@@ -23,7 +26,22 @@ public class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter {
 
     @Override
     public void songRemoved(int position) {
-
+        int size = MusicHelper.getInstance().getCurrentPlaylist().size();
+        int currPos = MusicHelper.getInstance().getCurrentPosition();
+        if (position == currPos) {
+            if (AppMusicKeys.REPEAT_STATE == AppMusicKeys.REPEAT_OFF) {
+                MusicHelper.getInstance().setCurrentPosition(position - 1);
+            }
+            mView.onCurrentPlayingSongRemoved();
+        } else if (position < currPos) {
+            MusicHelper.getInstance().setCurrentPosition(currPos - 1);
+        }
+        if (size == 0) {
+            mView.onSuccessfullyRemovedSong();
+            mView.onEmptyList();
+            return;
+        }
+        mView.onSuccessfullyRemovedSong();
     }
 
 }

@@ -94,7 +94,8 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
 
     @Override
     public void onMusicListClick(int pos) {
-        if (mSongList != null) {
+        if (mSongList != null && MusicHelper.getInstance().isSongStartedPlaying()) {
+            MusicHelper.getInstance().setIsSongStartedPlaying(false);
             boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mSongList, pos);
             if (isListAdded) {
                 if (iMusicPresenter != null)
@@ -105,7 +106,7 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
 
     @Override
     public void onActionOverFlowClick(SongDetailsModel model) {
-        QueueOptionsDialog dialog = new QueueOptionsDialog(this,model,this);
+        QueueOptionsDialog dialog = new QueueOptionsDialog(this, model, this);
         dialog.show();
     }
 

@@ -96,7 +96,8 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
 
     @Override
     public void onMusicListClick(int pos) {
-        if (mSongsList != null) {
+        if (mSongsList != null && MusicHelper.getInstance().isSongStartedPlaying()) {
+            MusicHelper.getInstance().setIsSongStartedPlaying(false);
             boolean isListAdded = MusicHelper.getInstance().setCurrentPlaylist(mSongsList, pos);
             if (isListAdded) {
                 iHomeAndMusicCommunicator.onMusicListClick();

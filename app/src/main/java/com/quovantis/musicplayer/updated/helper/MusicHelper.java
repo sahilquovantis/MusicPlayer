@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.support.v4.media.MediaMetadataCompat;
+import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -15,14 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by sahil-goel on 25/8/16.
+ * Maintains Current Songs Queue.
  */
 public class MusicHelper {
+    private boolean mIsSongStartedPlaying;
     private CurrentPositionHelper mCurrentPositionHelper;
     private static MusicHelper sInstance;
     private ArrayList<SongDetailsModel> mCurrentPlaylist;
 
     private MusicHelper() {
+        mIsSongStartedPlaying = true;
         mCurrentPlaylist = new ArrayList<>();
         mCurrentPositionHelper = new CurrentPositionHelper();
     }
@@ -87,18 +90,23 @@ public class MusicHelper {
         int pos = mCurrentPositionHelper.getCurrentPosition();
         if (isValidIndex(pos)) {
             SongDetailsModel songDetailsModel = mCurrentPlaylist.get(pos);
-            MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-            mediaMetadataRetriever.setDataSource(songDetailsModel.getSongPath());
-            String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            if (duration != null) {
-                MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
-                builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songDetailsModel.getSongID());
-                builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songDetailsModel.getSongArtist());
-                builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, songDetailsModel.getSongTitle());
-                builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, Long.parseLong(duration));
-                builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, getAlbumBitmap(context,
-                        mediaMetadataRetriever.getEmbeddedPicture()));
-                return builder.build();
+            try {
+                MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+                mediaMetadataRetriever.setDataSource(songDetailsModel.getSongPath());
+                String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                if (duration != null) {
+                    MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+                    builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songDetailsModel.getSongID());
+                    builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songDetailsModel.getSongArtist());
+                    builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, songDetailsModel.getSongTitle());
+                    builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, Long.parseLong(duration));
+                    builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, getAlbumBitmap(context,
+                            mediaMetadataRetriever.getEmbeddedPicture()));
+                    return builder.build();
+                }
+            } catch (IllegalArgumentException e) {
+                LoggerHelper.debug("MetaData Retriever Exception : " + e.getMessage());
+                return null;
             }
         }
         return null;
@@ -179,5 +187,12 @@ public class MusicHelper {
         return mCurrentPositionHelper.getCurrentPosition();
     }
 
+    public boolean isSongStartedPlaying() {
+        return mIsSongStartedPlaying;
+    }
+
+    public void setIsSongStartedPlaying(boolean mIsSongStartedPlaying) {
+        this.mIsSongStartedPlaying = mIsSongStartedPlaying;
+    }
 }
 
