@@ -1,7 +1,9 @@
 package com.quovantis.musicplayer.updated.ui.views.playlists;
 
+import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +40,25 @@ public class PlaylistPresenterImp implements IPlaylistPresenter, IPlaylistIntera
             } else {
                 iPlaylistView.onUpdateUI(list);
             }
+        }
+    }
+
+    @Override
+    public void filterResults(List<UserPlaylistModel> list1, String query) {
+        if (iPlaylistView != null) {
+            iPlaylistView.onShowProgress();
+            ArrayList<UserPlaylistModel> list = new ArrayList<>();
+            if (!list1.isEmpty()) {
+                for (UserPlaylistModel model : list1) {
+                    String title = model.getPlaylistName().toLowerCase();
+                    query = query.toLowerCase();
+                    if (title.contains(query)) {
+                        list.add(model);
+                    }
+                }
+            }
+            iPlaylistView.onUpdateUI(list);
+            iPlaylistView.onHideProgres();
         }
     }
 }

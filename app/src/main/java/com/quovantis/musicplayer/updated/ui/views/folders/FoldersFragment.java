@@ -1,14 +1,19 @@
 package com.quovantis.musicplayer.updated.ui.views.folders;
 
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -29,20 +34,30 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.SEARCH_SERVICE;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FoldersFragment extends Fragment implements IFolderView, IFolderClickListener,
-        IQueueOptionsDialog.onFolderClickListener {
+        IQueueOptionsDialog.onFolderClickListener, SearchView.OnQueryTextListener {
 
     @BindView(R.id.rv_folders_list)
     RecyclerView mFoldersListRV;
     @BindView(R.id.pb_progress_bar)
     ProgressBar mProgressBar;
     private RecyclerView.Adapter mAdapter;
+    private ArrayList<SongPathModel> mOriginalList = new ArrayList<>();
     private ArrayList<SongPathModel> mFoldersList = new ArrayList<>();
     private IHomeAndFolderCommunicator iHomeAndFolderCommunicator;
     private IFoldersPresenter iFoldersPresenter;
+    private SearchView mSearchView;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +75,15 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         initPresenter();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.folders_fragments_menu, menu);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView.setOnQueryTextListener(this);
+    }
+
     private void initPresenter() {
         iFoldersPresenter = new FoldersPresenterImp(this);
         iFoldersPresenter.updateUI(getActivity(), getActivity());
@@ -70,6 +94,16 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         mFoldersListRV.setLayoutManager(layoutManager);
         mAdapter = new FoldersAdapter(getActivity(), mFoldersList, this);
         mFoldersListRV.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onFetchingAllFoldersList(List<SongPathModel> foldersList) {
+        mOriginalList.clear();
+        mOriginalList.addAll(foldersList);
+        mFoldersList.clear();
+        mFoldersList.addAll(mOriginalList);
+        mAdapter.notifyDataSetChanged();
+        hideProgress();
     }
 
     /**
@@ -144,5 +178,18 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         iFoldersPresenter.onDestroy();
         iFoldersPresenter = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        iFoldersPresenter.filterResults(mOriginalList, query);
+        mSearchView.clearFocus();
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        iFoldersPresenter.filterResults(mOriginalList, newText);
+        return true;
     }
 }

@@ -1,10 +1,13 @@
 package com.quovantis.musicplayer.updated.ui.views.home;
 
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -24,7 +27,6 @@ import com.quovantis.musicplayer.updated.ui.views.folders.FoldersFragment;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.playlists.PlaylistFragment;
-import com.quovantis.musicplayer.updated.ui.views.search.SearchActivity;
 
 import java.util.List;
 
@@ -113,12 +115,6 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.search) {
-            Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 

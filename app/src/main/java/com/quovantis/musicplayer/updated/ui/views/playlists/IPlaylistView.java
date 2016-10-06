@@ -1,6 +1,5 @@
 package com.quovantis.musicplayer.updated.ui.views.playlists;
 
-import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
 import java.util.List;
@@ -10,7 +9,12 @@ import java.util.List;
  */
 public interface IPlaylistView {
     void onUpdateUI(List<UserPlaylistModel> list);
+
+    void onFetchingPlaylist(List<UserPlaylistModel> playlistList);
+
     void onShowProgress();
+
     void onHideProgres();
+
     void onNoPlaylist();
 }

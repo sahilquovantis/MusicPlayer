@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +35,25 @@ public class AllSongsPresenterImp implements IAllSongsPresenter, IAllSongsIntera
     @Override
     public void onGettingSongsList(List<SongDetailsModel> list) {
         if (iAllSongsView != null) {
+            iAllSongsView.onFetchingAllSongsList(list);
+            iAllSongsView.hideProgress();
+        }
+    }
+
+    @Override
+    public void filterResults(List<SongDetailsModel> list1, String query) {
+        if (iAllSongsView != null) {
+            iAllSongsView.showProgress();
+            ArrayList<SongDetailsModel> list = new ArrayList<>();
+            if (!list1.isEmpty()) {
+                for (SongDetailsModel model : list1) {
+                    String title = model.getSongTitle().toLowerCase();
+                    query = query.toLowerCase();
+                    if (title.contains(query)) {
+                        list.add(model);
+                    }
+                }
+            }
             iAllSongsView.updateUi(list);
             iAllSongsView.hideProgress();
         }

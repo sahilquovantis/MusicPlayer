@@ -10,6 +10,8 @@ import java.util.List;
 public interface IFolderView {
     void onUpdateFoldersList(List<SongPathModel> foldersList);
 
+    void onFetchingAllFoldersList(List<SongPathModel> foldersList);
+
     void showProgress();
 
     void hideProgress();

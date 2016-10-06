@@ -1,13 +1,18 @@
 package com.quovantis.musicplayer.updated.ui.views.allsongs;
 
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -30,8 +35,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.SEARCH_SERVICE;
+
 public class AllSongsFragment extends Fragment implements IMusicListClickListener,
-        IQueueOptionsDialog.onSongClickListener, IAllSongsView {
+        IQueueOptionsDialog.onSongClickListener, IAllSongsView, SearchView.OnQueryTextListener {
 
     @BindView(R.id.rv_songs_list)
     RecyclerView mSongsListRV;
@@ -42,9 +49,17 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
     private SongsListAdapter mAdapter;
     private IHomeAndMusicCommunicator iHomeAndMusicCommunicator;
     private ArrayList<SongDetailsModel> mSongsList = new ArrayList<>();
+    private ArrayList<SongDetailsModel> mOriginalList = new ArrayList<>();
     private IAllSongsPresenter iAllSongsPresenter;
+    private SearchView mSearchView;
 
     public AllSongsFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -62,6 +77,16 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
         iHomeAndMusicCommunicator = (IHomeAndMusicCommunicator) getActivity();
         initRecyclerView();
         initPresenter();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.folders_fragments_menu, menu);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView.setOnQueryTextListener(this);
+
     }
 
     private void initPresenter() {
@@ -131,5 +156,27 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
         super.onDestroy();
         iAllSongsPresenter.onDestroy();
         iAllSongsPresenter = null;
+    }
+
+    @Override
+    public void onFetchingAllSongsList(List<SongDetailsModel> songsList) {
+        mOriginalList.clear();
+        mOriginalList.addAll(songsList);
+        mSongsList.clear();
+        mSongsList.addAll(mOriginalList);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        iAllSongsPresenter.filterResults(mOriginalList, query);
+        mSearchView.clearFocus();
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        iAllSongsPresenter.filterResults(mOriginalList, newText);
+        return true;
     }
 }

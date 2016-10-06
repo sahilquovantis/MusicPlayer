@@ -1,6 +1,7 @@
 package com.quovantis.musicplayer.updated.ui.views.allsongs;
 
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
+import com.quovantis.musicplayer.updated.models.SongPathModel;
 
 import java.util.List;
 
@@ -9,6 +10,8 @@ import java.util.List;
  */
 public interface IAllSongsView {
     void updateUi(List<SongDetailsModel> list);
+
+    void onFetchingAllSongsList(List<SongDetailsModel> songsList);
 
     void showProgress();
 
