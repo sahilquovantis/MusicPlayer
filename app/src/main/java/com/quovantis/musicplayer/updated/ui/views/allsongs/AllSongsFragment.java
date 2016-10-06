@@ -86,6 +86,7 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnQueryTextListener(this);
+        mSearchView.setQueryHint("Search songs ...");
 
     }
 

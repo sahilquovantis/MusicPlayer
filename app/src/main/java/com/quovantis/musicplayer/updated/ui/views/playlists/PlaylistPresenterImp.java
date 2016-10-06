@@ -1,20 +1,19 @@
 package com.quovantis.musicplayer.updated.ui.views.playlists;
 
-import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by sahil-goel on 30/8/16.
+ * User Playlist Presenter.
  */
-public class PlaylistPresenterImp implements IPlaylistPresenter, IPlaylistInteractor.Listener {
+class PlaylistPresenterImp implements IPlaylistPresenter, IPlaylistInteractor.Listener {
 
     private IPlaylistView iPlaylistView;
     private IPlaylistInteractor iPlaylistInteractor;
 
-    public PlaylistPresenterImp(IPlaylistView iPlaylistView) {
+    PlaylistPresenterImp(IPlaylistView iPlaylistView) {
         this.iPlaylistView = iPlaylistView;
         iPlaylistInteractor = new PlaylistInteractorImp();
     }
@@ -38,7 +37,7 @@ public class PlaylistPresenterImp implements IPlaylistPresenter, IPlaylistIntera
             if (list == null || list.isEmpty()) {
                 iPlaylistView.onNoPlaylist();
             } else {
-                iPlaylistView.onUpdateUI(list);
+                iPlaylistView.onFetchingPlaylist(list);
             }
         }
     }

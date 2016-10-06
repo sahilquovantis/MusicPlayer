@@ -82,6 +82,7 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnQueryTextListener(this);
+        mSearchView.setQueryHint("Search folders ...");
     }
 
     private void initPresenter() {

@@ -84,6 +84,7 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnQueryTextListener(this);
+        mSearchView.setQueryHint("Search playlist ...");
     }
 
     private void initRecyclerView() {
