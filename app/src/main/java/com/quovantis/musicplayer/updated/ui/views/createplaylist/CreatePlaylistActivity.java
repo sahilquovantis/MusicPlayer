@@ -65,6 +65,11 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
         initPresenters();
     }
 
+    @Override
+    protected void updateCurrentSongPlayingStatus(int state) {
+
+    }
+
     private void initRecyclerView() {
         mPlaylistRV.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new CreatePlaylistAdapter(this, mList, this);

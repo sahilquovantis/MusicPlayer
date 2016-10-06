@@ -63,6 +63,11 @@ public class SearchActivity extends MusicBaseActivity implements TextWatcher,
         mSearchQueryET.addTextChangedListener(this);
     }
 
+    @Override
+    protected void updateCurrentSongPlayingStatus(int state) {
+
+    }
+
     private void initRecyclerView() {
         mSearchListRV.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SongsListAdapter(this, iMusicListClickListener, mFilteredList);

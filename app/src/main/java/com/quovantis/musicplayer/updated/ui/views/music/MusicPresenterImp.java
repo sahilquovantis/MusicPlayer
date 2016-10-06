@@ -86,9 +86,9 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         if (iMusicView != null) {
             if (playbackState != null) {
                 int state = playbackState.getState();
+                iMusicView.onUpdateSongState(state);
                 if (state == PlaybackStateCompat.STATE_PLAYING ||
                         state == PlaybackStateCompat.STATE_PAUSED) {
-                    iMusicView.onUpdateSongState(state);
                     iMusicView.onShowMusicLayout();
                 } else {
                     iMusicView.onHideMusicLayout();
@@ -99,10 +99,15 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         }
     }
 
+    @Override
+    public MediaControllerCompat getMediaControllerCompat() {
+        return mMediaController;
+    }
+
     private MediaControllerCompat.Callback mMediaCallback = new MediaControllerCompat.Callback() {
 
         @Override
-        public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
+        public void onPlaybackStateChanged(PlaybackStateCompat state) {
             updateState(state);
         }
 

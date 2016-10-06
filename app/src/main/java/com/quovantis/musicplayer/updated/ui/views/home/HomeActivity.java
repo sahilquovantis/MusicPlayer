@@ -54,6 +54,11 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
         initViewPager();
     }
 
+    @Override
+    protected void updateCurrentSongPlayingStatus(int state) {
+
+    }
+
     private void initToolbar() {
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null)

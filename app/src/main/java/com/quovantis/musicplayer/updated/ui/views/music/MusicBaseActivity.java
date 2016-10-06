@@ -58,6 +58,7 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
         mSelectedSongArtistTV.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         mSelectedSongArtistTV.setSelected(true);
         mSelectedSongArtistTV.setSingleLine(true);
+        updateCurrentSongPlayingStatus(1);
     }
 
     @Override
@@ -67,7 +68,10 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
         } else {
             mPlayPauseIV.setImageResource(R.drawable.ic_action_play);
         }
+        updateCurrentSongPlayingStatus(0);
     }
+
+    protected abstract void updateCurrentSongPlayingStatus(int val);
 
     @Override
     public void onHideMusicLayout() {

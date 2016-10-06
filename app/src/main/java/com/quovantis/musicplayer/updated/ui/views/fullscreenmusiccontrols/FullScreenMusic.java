@@ -62,6 +62,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     private CurrentPlaylistAdapter mAdapter;
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
     private Dialog mDialog;
+    private int mCurrentState = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode!= KeyEvent.KEYCODE_MENU) {
+        if (keyCode != KeyEvent.KEYCODE_MENU) {
             return super.onKeyDown(keyCode, event);
         }
         return true;
@@ -156,7 +157,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     @Override
     public void onCurrentPlayingSongRemoved() {
         if (iMusicPresenter != null)
-            iMusicPresenter.onSkipToNext();
+            iMusicPresenter.playSong();
     }
 
     @Override
@@ -283,15 +284,19 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     };
 
     @Override
-    public void onUpdateSongState(int state) {
-        super.onUpdateSongState(state);
-        if (mAdapter != null) {
-            if (state == PlaybackStateCompat.STATE_PLAYING) {
-                mAdapter.setIsPlaying(true);
-            } else {
-                mAdapter.setIsPlaying(false);
+    public void updateCurrentSongPlayingStatus(int changed) {
+        int state = iMusicPresenter.getMediaControllerCompat().getPlaybackState().getState();
+        if (mCurrentState != state || changed == 1) {
+            if (mAdapter != null) {
+                if (state == PlaybackStateCompat.STATE_PLAYING) {
+                    mAdapter.setIsPlaying(true);
+                } else {
+                    mAdapter.setIsPlaying(false);
+                }
+                mAdapter.notifyDataSetChanged();
+                //mAdapter.notifyItemChanged(MusicHelper.getInstance().getCurrentPosition());
             }
-            mAdapter.notifyItemChanged(MusicHelper.getInstance().getCurrentPosition());
         }
+        mCurrentState = state;
     }
 }

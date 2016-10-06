@@ -29,9 +29,6 @@ class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter {
         int size = MusicHelper.getInstance().getCurrentPlaylist().size();
         int currPos = MusicHelper.getInstance().getCurrentPosition();
         if (position == currPos) {
-            if (AppMusicKeys.REPEAT_STATE == AppMusicKeys.REPEAT_OFF) {
-                MusicHelper.getInstance().setCurrentPosition(position - 1);
-            }
             mView.onCurrentPlayingSongRemoved();
         } else if (position < currPos) {
             MusicHelper.getInstance().setCurrentPosition(currPos - 1);
@@ -43,5 +40,4 @@ class CurrentPlaylistPresenterImp implements ICurrentPlaylistPresenter {
         }
         mView.onSuccessfullyRemovedSong();
     }
-
 }

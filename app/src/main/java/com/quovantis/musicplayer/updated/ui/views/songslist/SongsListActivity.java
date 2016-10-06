@@ -51,6 +51,11 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         initBundle();
     }
 
+    @Override
+    protected void updateCurrentSongPlayingStatus(int state) {
+
+    }
+
     private void initBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
