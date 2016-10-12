@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
@@ -19,8 +20,10 @@ import com.quovantis.musicplayer.updated.helper.DepthPageTransformerHelper;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndFolderCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
+import com.quovantis.musicplayer.updated.interfaces.IHomeAndPlaylistCommunicator;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
+import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 import com.quovantis.musicplayer.updated.services.MusicService;
 import com.quovantis.musicplayer.updated.ui.views.allsongs.AllSongsFragment;
 import com.quovantis.musicplayer.updated.ui.views.folders.FoldersFragment;
@@ -34,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCommunicator,
-        IHomeAndMusicCommunicator, IHomeView {
+        IHomeAndMusicCommunicator, IHomeAndPlaylistCommunicator, IHomeView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -174,9 +177,23 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode!= KeyEvent.KEYCODE_MENU) {
+        if (keyCode != KeyEvent.KEYCODE_MENU) {
             return super.onKeyDown(keyCode, event);
         }
         return true;
+    }
+
+    @Override
+    public void onOptionsDialogClickFromPlaylist(UserPlaylistModel model, boolean isClearQueue, boolean isPlaythisSong) {
+        if (model != null) {
+            List<SongDetailsModel> list = model.getPlaylist();
+            if (list != null && !list.isEmpty() && list.size() > 0) {
+                MusicHelper.getInstance().addSongToPlaylist(list, isClearQueue);
+                if (isPlaythisSong) {
+                    iMusicPresenter.playSong();
+                }
+                Toast.makeText(this, "Successfully Added", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

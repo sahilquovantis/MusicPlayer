@@ -2,7 +2,11 @@ package com.quovantis.musicplayer.updated.services;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -12,7 +16,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import com.quovantis.musicplayer.R;
@@ -48,6 +51,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
     @Override
     public void onCreate() {
         super.onCreate();
+        registerReceiver(mNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
         LoggerHelper.debug("Music Service Created");
         MusicHelper.getInstance();
         mMediaSession = new MediaSessionCompat(this, "Music");
@@ -223,10 +227,22 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
         mMediaController = null;
         if (mNotification != null)
             stopForeground(true);
+        if (mNoisyReceiver != null)
+            unregisterReceiver(mNoisyReceiver);
         super.onDestroy();
         LoggerHelper.debug("Music Service Destroyed");
         android.os.Process.killProcess(android.os.Process.myPid());
     }
+
+    private BroadcastReceiver mNoisyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && intent.getAction() != null
+                    && intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
+                mMediaController.getTransportControls().pause();
+            }
+        }
+    };
 
     private void initCurrentPlaylist() {
         Realm realm = Realm.getDefaultInstance();

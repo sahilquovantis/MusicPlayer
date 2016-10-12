@@ -33,12 +33,6 @@
             android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".updated.ui.views.home.HomeActivity" />
 
-        <receiver android:name=".updated.receivers.NoisyReceiver">
-            <intent-filter>
-                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
-            </intent-filter>
-        </receiver>
-
         <activity android:name=".updated.ui.views.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

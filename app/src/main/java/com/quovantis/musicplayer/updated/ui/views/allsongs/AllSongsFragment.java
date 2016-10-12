@@ -145,7 +145,7 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
     @Override
     public void onAddToPlaylist(SongDetailsModel model) {
         Bundle bundle = new Bundle();
-        bundle.putString("Id", model.getSongPath());
+        bundle.putString(AppKeys.CREATE_PLAYLIST_INTENT_PATH, model.getSongPath());
         Intent intent = new Intent(getActivity(), CreatePlaylistActivity.class);
         intent.setAction(AppKeys.SONG_LIST);
         intent.putExtras(bundle);

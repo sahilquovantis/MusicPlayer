@@ -47,7 +47,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         final UserPlaylistModel model = mUserPlaylistList.get(position);
         final String title = model.getPlaylistName();
-        long tracks = model.getPlaylist() == null ? 0 : model.getPlaylist().size();
+        final long tracks = model.getPlaylist() == null ? 0 : model.getPlaylist().size();
         holder.mPlaylistNameTV.setText(title);
         holder.mTotalTracksTV.setText(tracks + " tracks");
         if (tracks > 0)
@@ -56,6 +56,13 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 iPlaylistClickListener.onClick(model.getPlaylistId(), title);
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                iPlaylistClickListener.onLongPress(model);
+                return true;
             }
         });
     }

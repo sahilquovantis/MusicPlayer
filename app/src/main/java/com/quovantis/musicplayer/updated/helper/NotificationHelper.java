@@ -23,8 +23,6 @@ import com.quovantis.musicplayer.updated.services.MusicService;
 public class NotificationHelper {
 
     private Context mContext;
-    private NotificationManager mNotificationManager;
-
     public NotificationHelper(Context context) {
         mContext = context;
     }
@@ -49,7 +47,6 @@ public class NotificationHelper {
             style.setMediaSession(token);
 
             Intent showActivityIntent = new Intent(mContext, HomeActivity.class);
-            //  showActivityIntent.setAction(Utils.LAUNCHED_FROM_NOTIFICATION);
             showActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent showActivityPendingIntent = PendingIntent.getActivity(mContext, 1, showActivityIntent, 0);
 
@@ -73,15 +70,6 @@ public class NotificationHelper {
             mNotificationManager.notify(1, builder.build());*/
         }
         return null;
-    }
-
-    /**
-     * It Cancel the Notification.
-     */
-    public void cancelNotification() {
-        if (mNotificationManager != null) {
-            mNotificationManager.cancelAll();
-        }
     }
 
     /**

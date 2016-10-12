@@ -1,6 +1,8 @@
 package com.quovantis.musicplayer.updated.ui.views.playlists;
 
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,10 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
+import com.quovantis.musicplayer.updated.dialogs.PlaylistOptionsDialog;
+import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
+import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
+import com.quovantis.musicplayer.updated.interfaces.IHomeAndPlaylistCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
+import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
+import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
 
@@ -29,6 +38,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 import static android.content.Context.SEARCH_SERVICE;
 
@@ -36,7 +46,7 @@ import static android.content.Context.SEARCH_SERVICE;
  * A simple {@link Fragment} subclass.
  */
 public class PlaylistFragment extends Fragment implements IPlaylistView,
-        IPlaylistClickListener, SearchView.OnQueryTextListener {
+        IPlaylistClickListener, SearchView.OnQueryTextListener, IQueueOptionsDialog.onPlaylistClickListener {
 
     @BindView(R.id.tv_no_playlist)
     TextView mEmptyPlaylistTV;
@@ -49,6 +59,7 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     private ArrayList<UserPlaylistModel> mOriginalList = new ArrayList<>();
     private IPlaylistPresenter iPlaylistPresenter;
     private SearchView mSearchView;
+    private IHomeAndPlaylistCommunicator iHomeAndPlaylistCommunicator;
 
     public PlaylistFragment() {
         // Required empty public constructor
@@ -72,6 +83,7 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        iHomeAndPlaylistCommunicator = (IHomeAndPlaylistCommunicator) getActivity();
         mPlaylistsList = new ArrayList<>();
         initRecyclerView();
         initPresenters();
@@ -131,6 +143,9 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     public void onNoPlaylist() {
         mPlaylistsListRV.setVisibility(View.GONE);
         mEmptyPlaylistTV.setVisibility(View.VISIBLE);
+        mOriginalList.clear();
+        mPlaylistsList.clear();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -151,6 +166,12 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
         startActivity(intent);
     }
 
+    @Override
+    public void onLongPress(UserPlaylistModel model) {
+        PlaylistOptionsDialog dialog = new PlaylistOptionsDialog(getActivity(), model, this);
+        dialog.show();
+    }
+
     public void onNotifyFromHome() {
         if (iPlaylistPresenter != null)
             iPlaylistPresenter.updateUI();
@@ -163,18 +184,55 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
         mPlaylistsList.clear();
         mPlaylistsList.addAll(mOriginalList);
         mAdapter.notifyDataSetChanged();
+        if (!playlistList.isEmpty()) {
+            mPlaylistsListRV.setVisibility(View.VISIBLE);
+            mEmptyPlaylistTV.setVisibility(View.GONE);
+        } else {
+            mPlaylistsListRV.setVisibility(View.GONE);
+            mEmptyPlaylistTV.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        iPlaylistPresenter.filterResults(mOriginalList, query);
+        if (mOriginalList != null && mOriginalList.size() > 0) {
+            iPlaylistPresenter.filterResults(mOriginalList, query);
+        } else {
+            onNoPlaylist();
+        }
         mSearchView.clearFocus();
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        iPlaylistPresenter.filterResults(mOriginalList, newText);
+        if (mOriginalList != null && mOriginalList.size() > 0) {
+            iPlaylistPresenter.filterResults(mOriginalList, newText);
+        } else {
+            onNoPlaylist();
+        }
         return true;
+    }
+
+    @Override
+    public void onClickFromPlaylistOptionsDialog(UserPlaylistModel model, boolean isClearQueue, boolean isPlaythisSong) {
+        iHomeAndPlaylistCommunicator.onOptionsDialogClickFromPlaylist(model, isClearQueue, isPlaythisSong);
+    }
+
+    @Override
+    public void onDelete(final UserPlaylistModel model) {
+        Realm realm = Realm.getDefaultInstance();
+        Dialog dialog = ProgresDialog.showProgressDialog(getActivity());
+        if (model != null) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    model.deleteFromRealm();
+                    Toast.makeText(getActivity(), "Playlist Deleted", Toast.LENGTH_LONG).show();
+                    onNotifyFromHome();
+                }
+            });
+        }
+        dialog.cancel();
     }
 }
