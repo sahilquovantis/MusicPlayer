@@ -17,16 +17,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
+import com.quovantis.musicplayer.updated.dialogs.CreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.dialogs.PlaylistOptionsDialog;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
+import com.quovantis.musicplayer.updated.dialogs.RenamePlaylistDialog;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndPlaylistCommunicator;
+import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialogListener;
 import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -46,7 +50,7 @@ import static android.content.Context.SEARCH_SERVICE;
  * A simple {@link Fragment} subclass.
  */
 public class PlaylistFragment extends Fragment implements IPlaylistView,
-        IPlaylistClickListener, SearchView.OnQueryTextListener, IQueueOptionsDialog.onPlaylistClickListener {
+        IPlaylistClickListener, SearchView.OnQueryTextListener, RenamePlaylistDialog.IRenamePlaylist, IQueueOptionsDialog.onPlaylistClickListener {
 
     @BindView(R.id.tv_no_playlist)
     TextView mEmptyPlaylistTV;
@@ -60,6 +64,7 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     private IPlaylistPresenter iPlaylistPresenter;
     private SearchView mSearchView;
     private IHomeAndPlaylistCommunicator iHomeAndPlaylistCommunicator;
+    private Dialog mProgressDialog;
 
     public PlaylistFragment() {
         // Required empty public constructor
@@ -234,5 +239,29 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
             });
         }
         dialog.cancel();
+    }
+
+    @Override
+    public void onRename(UserPlaylistModel model) {
+        RenamePlaylistDialog dialog = new RenamePlaylistDialog(getActivity(), model, this);
+        dialog.show();
+        dialog.setPlaylistName(model.getPlaylistName());
+        if (dialog.getWindow() != null)
+            dialog.getWindow().clearFlags(
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                            | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+    }
+
+    @Override
+    public void onRenamePlaylist(UserPlaylistModel model, String newName) {
+        mProgressDialog = ProgresDialog.showProgressDialog(getActivity());
+        iPlaylistPresenter.renamePlaylist(model, newName);
+    }
+
+    @Override
+    public void onSuccessfullyRenaming() {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
+        onNotifyFromHome();
     }
 }

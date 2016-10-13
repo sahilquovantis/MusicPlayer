@@ -7,10 +7,14 @@ import java.util.List;
 /**
  * Created by sahil-goel on 30/8/16.
  */
-public interface IPlaylistInteractor {
+interface IPlaylistInteractor {
     void getPlaylists(IPlaylistInteractor.Listener listener);
+
+    void renamePlaylist(UserPlaylistModel model, String newName, Listener listener);
 
     interface Listener {
         void onGettingPlaylists(List<UserPlaylistModel> list);
+
+        void onSuccessfullyRenaming();
     }
 }

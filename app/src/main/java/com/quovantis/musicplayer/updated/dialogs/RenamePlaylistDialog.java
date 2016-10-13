@@ -5,33 +5,33 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialogListener;
+import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
+import com.quovantis.musicplayer.updated.ui.views.playlists.PlaylistFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
- * Custom Create Playlist Dialog
+ * Rename Playlist Name
  */
-public class CreatePlaylistDialog extends AlertDialog implements View.OnClickListener {
+
+public class RenamePlaylistDialog extends AlertDialog {
 
     @BindView(R.id.et_playlist_name)
     EditText mPlaylistNameET;
-    @BindView(R.id.tv_cancel)
-    TextView mCancelTV;
-    @BindView(R.id.tv_create_playlist)
-    TextView mCreatePlaylistTV;
-    private IOnCreatePlaylistDialogListener iOnCreatePlaylistListener;
+    private IRenamePlaylist iListener;
+    private UserPlaylistModel mPlaylistModel;
 
-    public CreatePlaylistDialog(Context context, IOnCreatePlaylistDialogListener playlistDialog) {
+    public RenamePlaylistDialog(Context context, UserPlaylistModel model, IRenamePlaylist iRenamePlaylist) {
         super(context);
-        iOnCreatePlaylistListener = playlistDialog;
+        mPlaylistModel = model;
+        iListener = iRenamePlaylist;
         setDialogTitle();
         setCancelable(true);
     }
@@ -47,27 +47,35 @@ public class CreatePlaylistDialog extends AlertDialog implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.custom_create_playlist_dialog);
+        setContentView(R.layout.custom_rename_playlist_dialog);
         ButterKnife.bind(this);
-        mCancelTV.setOnClickListener(this);
-        mCreatePlaylistTV.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View view) {
+    @OnClick({R.id.tv_cancel, R.id.tv_rename_playlist})
+    public void onClick(TextView view) {
         int id = view.getId();
         switch (id) {
             case R.id.tv_cancel:
                 dismiss();
                 break;
-            case R.id.tv_create_playlist:
+            case R.id.tv_rename_playlist:
                 String playlistName = mPlaylistNameET.getText().toString();
                 if (playlistName.trim().length() > 0) {
-                    iOnCreatePlaylistListener.onCreatePlaylist(playlistName.trim());
+                    iListener.onRenamePlaylist(mPlaylistModel, playlistName);
                     dismiss();
                 } else
                     mPlaylistNameET.setError("Can not be blanked");
+
                 break;
         }
+    }
+
+    public void setPlaylistName(String name) {
+        mPlaylistNameET.setText(name);
+        mPlaylistNameET.extendSelection(mPlaylistNameET.getText().length());
+    }
+
+    public interface IRenamePlaylist {
+        void onRenamePlaylist(UserPlaylistModel model, String newName);
     }
 }

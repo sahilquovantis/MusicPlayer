@@ -60,4 +60,16 @@ class PlaylistPresenterImp implements IPlaylistPresenter, IPlaylistInteractor.Li
             iPlaylistView.onHideProgres();
         }
     }
+
+    @Override
+    public void renamePlaylist(UserPlaylistModel model, String newName) {
+        iPlaylistInteractor.renamePlaylist(model, newName, this);
+    }
+
+    @Override
+    public void onSuccessfullyRenaming() {
+        if (iPlaylistView != null) {
+            iPlaylistView.onSuccessfullyRenaming();
+        }
+    }
 }

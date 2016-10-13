@@ -24,5 +24,7 @@ public interface IQueueOptionsDialog {
         void onClickFromPlaylistOptionsDialog(UserPlaylistModel model, boolean isClearQueue, boolean isPlaythisSong);
 
         void onDelete(UserPlaylistModel model);
+
+        void onRename(UserPlaylistModel model);
     }
 }

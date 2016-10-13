@@ -17,4 +17,6 @@ public interface IPlaylistView {
     void onHideProgres();
 
     void onNoPlaylist();
+
+    void onSuccessfullyRenaming();
 }

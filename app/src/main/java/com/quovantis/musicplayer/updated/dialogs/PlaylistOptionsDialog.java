@@ -52,6 +52,8 @@ public class PlaylistOptionsDialog extends AlertDialog {
                 dismiss();
                 break;
             case R.id.ll_rename_playlist:
+                iListener.onRename(mPlaylistModel);
+                dismiss();
                 break;
             case R.id.ll_delete_playlist:
                 iListener.onDelete(mPlaylistModel);
