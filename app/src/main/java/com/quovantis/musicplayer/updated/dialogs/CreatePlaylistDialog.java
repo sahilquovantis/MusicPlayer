@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialogListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,5 +68,9 @@ public class CreatePlaylistDialog extends AlertDialog implements View.OnClickLis
                     mPlaylistNameET.setError("Can not be blanked");
                 break;
         }
+    }
+
+    public interface IOnCreatePlaylistDialogListener {
+        void onCreatePlaylist(String playlistName);
     }
 }

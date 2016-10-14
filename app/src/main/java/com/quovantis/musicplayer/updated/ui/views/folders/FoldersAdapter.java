@@ -3,12 +3,8 @@ package com.quovantis.musicplayer.updated.ui.views.folders;
 import android.content.ContentUris;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
@@ -25,25 +21,23 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by sahil-goel on 23/8/16.
+ * Adapter for displaying folders {@link FoldersFragment}
  */
-public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHolder> {
+class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHolder> {
     private Uri mArtworkUri;
     private Context mContext;
     private IFolderClickListener iFolderClickListener;
     private ArrayList<SongPathModel> mSongPathModelArrayList = new ArrayList<>();
 
-    public FoldersAdapter(Context context, ArrayList<SongPathModel> songPathModelList,
+    FoldersAdapter(Context context, ArrayList<SongPathModel> songPathModelList,
                           IFolderClickListener iFolderClickListener) {
         mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         mContext = context;
@@ -144,5 +138,11 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.ViewHold
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    interface IFolderClickListener {
+        void onFoldersLongPress(SongPathModel songPathModel);
+
+        void onFoldersSinglePress(String path, String directoryName);
     }
 }

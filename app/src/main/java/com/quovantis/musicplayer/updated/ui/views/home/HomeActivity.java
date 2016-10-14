@@ -1,6 +1,5 @@
 package com.quovantis.musicplayer.updated.ui.views.home;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,12 +11,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
+import com.quovantis.musicplayer.updated.dialogs.CustomProgressDialog;
 import com.quovantis.musicplayer.updated.helper.DepthPageTransformerHelper;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
-import com.quovantis.musicplayer.updated.interfaces.IHomeAndFolderCommunicator;
-import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
-import com.quovantis.musicplayer.updated.interfaces.IHomeAndPlaylistCommunicator;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
@@ -33,8 +29,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCommunicator,
-        IHomeAndMusicCommunicator, IHomeAndPlaylistCommunicator, IHomeView {
+public class HomeActivity extends MusicBaseActivity implements FoldersFragment.IHomeAndFolderCommunicator,
+        AllSongsFragment.IHomeAndMusicCommunicator, PlaylistFragment.IHomeAndPlaylistCommunicator, IHomeView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -42,7 +38,7 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
     ViewPager mViewPager;
     @BindView(R.id.tabs)
     TabLayout mTabs;
-    private Dialog mDialog;
+    private CustomProgressDialog mProgressDialog;
     private HomeAdapter mHomeAdapter;
     private IHomePresenter iHomePresenter;
 
@@ -92,8 +88,10 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
     @Override
     public void cancelDialog() {
         super.cancelDialog();
-        if (mDialog != null)
-            mDialog.dismiss();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 
     @Override
@@ -146,13 +144,16 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
 
     @Override
     public void showProgressDialog() {
-        mDialog = ProgresDialog.showProgressDialog(this);
+        mProgressDialog = new CustomProgressDialog(this);
+        mProgressDialog.show();
     }
 
     @Override
     public void hideProgressDialog() {
-        if (mDialog != null)
-            mDialog.dismiss();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 
     @Override
@@ -163,6 +164,7 @@ public class HomeActivity extends MusicBaseActivity implements IHomeAndFolderCom
             if (isPlaythisSong) {
                 iMusicPresenter.playSong();
             }
+            Toast.makeText(this, "Queue Updated", Toast.LENGTH_LONG).show();
         }
     }
 

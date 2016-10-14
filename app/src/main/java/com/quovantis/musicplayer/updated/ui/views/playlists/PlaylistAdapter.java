@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
 import java.util.ArrayList;
@@ -94,5 +93,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    interface IPlaylistClickListener {
+        void onClick(long id, String name);
+
+        void onLongPress(UserPlaylistModel model);
     }
 }

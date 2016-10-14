@@ -2,7 +2,6 @@ package com.quovantis.musicplayer.updated.ui.views.allsongs;
 
 
 import android.app.SearchManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,7 +22,6 @@ import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
-import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
@@ -183,5 +181,11 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
     public boolean onQueryTextChange(String newText) {
         iAllSongsPresenter.filterResults(mOriginalList, newText);
         return true;
+    }
+
+    public interface IHomeAndMusicCommunicator {
+        void onMusicListClick();
+
+        void onOptionsDialogClickFromAllTracks(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong);
     }
 }

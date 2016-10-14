@@ -5,7 +5,7 @@ import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
 /**
- * Created by sahil-goel on 26/8/16.
+ * Options Dialog Listener For Folders, Songs and Playlist
  */
 public interface IQueueOptionsDialog {
     interface onSongClickListener {
@@ -18,13 +18,5 @@ public interface IQueueOptionsDialog {
         void onClickFromFolderOptionsDialog(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong);
 
         void onAddToPlaylist(SongPathModel model);
-    }
-
-    interface onPlaylistClickListener {
-        void onClickFromPlaylistOptionsDialog(UserPlaylistModel model, boolean isClearQueue, boolean isPlaythisSong);
-
-        void onDelete(UserPlaylistModel model);
-
-        void onRename(UserPlaylistModel model);
     }
 }

@@ -85,6 +85,28 @@
                 android:theme="@style/DialogTextStyle" />
         </LinearLayout>
 
+        <View
+            android:id="@+id/remove_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey" />
+
+        <LinearLayout
+            android:id="@+id/ll_remove_from_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_10">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/remove"
+                android:theme="@style/DialogTextStyle" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

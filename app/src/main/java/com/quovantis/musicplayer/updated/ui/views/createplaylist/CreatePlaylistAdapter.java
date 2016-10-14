@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
-import com.quovantis.musicplayer.updated.interfaces.IAddToExistingPlaylistClickListener;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 
 import java.util.ArrayList;
@@ -75,5 +74,9 @@ public class CreatePlaylistAdapter extends RecyclerView.Adapter<CreatePlaylistAd
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+     interface IAddToExistingPlaylistClickListener {
+        void onAddToExistingPlaylist(UserPlaylistModel model);
     }
 }

@@ -1,10 +1,7 @@
 package com.quovantis.musicplayer.updated.ui.views.playlists;
 
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,19 +22,11 @@ import android.widget.Toast;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.controller.AppActionController;
-import com.quovantis.musicplayer.updated.dialogs.CreatePlaylistDialog;
+import com.quovantis.musicplayer.updated.dialogs.CustomProgressDialog;
 import com.quovantis.musicplayer.updated.dialogs.PlaylistOptionsDialog;
-import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
-import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.dialogs.RenamePlaylistDialog;
-import com.quovantis.musicplayer.updated.interfaces.IHomeAndPlaylistCommunicator;
-import com.quovantis.musicplayer.updated.interfaces.IOnCreatePlaylistDialogListener;
-import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
-import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
-import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
 import com.quovantis.musicplayer.updated.ui.views.playlistsongslist.PlaylistSongsActivity;
-import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +41,7 @@ import static android.content.Context.SEARCH_SERVICE;
  * A simple {@link Fragment} subclass.
  */
 public class PlaylistFragment extends Fragment implements IPlaylistView,
-        IPlaylistClickListener, SearchView.OnQueryTextListener, RenamePlaylistDialog.IRenamePlaylist, IQueueOptionsDialog.onPlaylistClickListener {
+        PlaylistAdapter.IPlaylistClickListener, SearchView.OnQueryTextListener, RenamePlaylistDialog.IRenamePlaylist, PlaylistOptionsDialog.OnPlaylistClickListener {
 
     @BindView(R.id.tv_no_playlist)
     TextView mEmptyPlaylistTV;
@@ -66,7 +55,7 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     private IPlaylistPresenter iPlaylistPresenter;
     private SearchView mSearchView;
     private IHomeAndPlaylistCommunicator iHomeAndPlaylistCommunicator;
-    private Dialog mProgressDialog;
+    private CustomProgressDialog mProgressDialog;
 
     public PlaylistFragment() {
         // Required empty public constructor
@@ -232,7 +221,8 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     @Override
     public void onDelete(final UserPlaylistModel model) {
         Realm realm = Realm.getDefaultInstance();
-        Dialog dialog = ProgresDialog.showProgressDialog(getActivity());
+        mProgressDialog = new CustomProgressDialog(getActivity());
+        mProgressDialog.show();
         if (model != null) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
@@ -243,7 +233,10 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
                 }
             });
         }
-        dialog.cancel();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 
     @Override
@@ -259,14 +252,22 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
 
     @Override
     public void onRenamePlaylist(UserPlaylistModel model, String newName) {
-        mProgressDialog = ProgresDialog.showProgressDialog(getActivity());
+        mProgressDialog = new CustomProgressDialog(getActivity());
+        mProgressDialog.show();
         iPlaylistPresenter.renamePlaylist(model, newName);
     }
 
     @Override
     public void onSuccessfullyRenaming() {
-        if (mProgressDialog != null)
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
         onNotifyFromHome();
     }
+
+    public interface IHomeAndPlaylistCommunicator {
+        void onOptionsDialogClickFromPlaylist(UserPlaylistModel model, boolean isClearQueue, boolean isPlaythisSong);
+    }
+
 }

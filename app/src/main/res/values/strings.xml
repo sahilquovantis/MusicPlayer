@@ -40,4 +40,6 @@
     <string name="rename">Rename</string>
     <string name="delete">Delete</string>
     <string name="action_overflow">Options</string>
+    <string name="remove">Remove</string>
+    <string name="processing">Processing ...</string>
 </resources>

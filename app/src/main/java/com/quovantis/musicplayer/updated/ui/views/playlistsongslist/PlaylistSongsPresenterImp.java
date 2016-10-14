@@ -39,6 +39,11 @@ public class PlaylistSongsPresenterImp implements IPlaylistSongsPresenter, IPlay
     }
 
     @Override
+    public void removeFromPlaylist(long playlistId, SongDetailsModel model) {
+        iSongsInteractor.removeSongFromPlaylist(playlistId, model, this);
+    }
+
+    @Override
     public void onDestroy() {
         iSongsView = null;
     }

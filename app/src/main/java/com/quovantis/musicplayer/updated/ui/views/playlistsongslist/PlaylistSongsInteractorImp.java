@@ -12,14 +12,38 @@ import io.realm.RealmResults;
  * Created by sahil-goel on 14/10/16.
  */
 
-public class PlaylistSongsInteractorImp implements IPlaylistSongsInteractor {
+class PlaylistSongsInteractorImp implements IPlaylistSongsInteractor {
 
     @Override
     public void getSongsList(long id, Listener listener) {
         Realm realm = Realm.getDefaultInstance();
         ArrayList<SongDetailsModel> lists = new ArrayList<>();
         RealmResults<UserPlaylistModel> list = realm.where(UserPlaylistModel.class).equalTo("mPlaylistId", id).findAll();
-        lists.addAll(list.get(0).getPlaylist());
+        if (!list.isEmpty())
+            lists.addAll(list.get(0).getPlaylist());
         listener.onUpdateSongsList(lists);
     }
+
+    @Override
+    public void removeSongFromPlaylist(long playlistId, SongDetailsModel model, final Listener listener) {
+        final Realm realm = Realm.getDefaultInstance();
+        RealmResults<UserPlaylistModel> list = realm.where(UserPlaylistModel.class).equalTo("mPlaylistId", playlistId).findAll();
+        if (!list.isEmpty()) {
+            final UserPlaylistModel playlistModel = list.get(0);
+            final ArrayList<SongDetailsModel> songsList = new ArrayList<>();
+            songsList.addAll(playlistModel.getPlaylist());
+            if (!songsList.isEmpty())
+                songsList.remove(model);
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm1) {
+                    playlistModel.getPlaylist().clear();
+                    playlistModel.getPlaylist().addAll(songsList);
+                    realm.copyToRealmOrUpdate(playlistModel);
+                }
+            });
+            getSongsList(playlistId, listener);
+        }
+    }
+
 }

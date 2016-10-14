@@ -2,7 +2,6 @@ package com.quovantis.musicplayer.updated.ui.views.folders;
 
 
 import android.app.SearchManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,8 +21,6 @@ import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
-import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
-import com.quovantis.musicplayer.updated.interfaces.IHomeAndFolderCommunicator;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
@@ -40,7 +37,7 @@ import static android.content.Context.SEARCH_SERVICE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FoldersFragment extends Fragment implements IFolderView, IFolderClickListener,
+public class FoldersFragment extends Fragment implements IFolderView, FoldersAdapter.IFolderClickListener,
         IQueueOptionsDialog.onFolderClickListener, SearchView.OnQueryTextListener {
 
     @BindView(R.id.rv_folders_list)
@@ -110,8 +107,7 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
 
     /**
      * Update UI and show Folders List
-     *
-     * @param foldersList List of Folders
+     * <p/>@param foldersList List of Folders
      */
     @Override
     public void onUpdateFoldersList(List<SongPathModel> foldersList) {
@@ -199,5 +195,9 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     public boolean onQueryTextChange(String newText) {
         iFoldersPresenter.filterResults(mOriginalList, newText);
         return true;
+    }
+
+    public interface IHomeAndFolderCommunicator {
+        void onOptionsDialogClickFromFolders(SongPathModel model, boolean isClearQueue, boolean isPlaythisSong);
     }
 }

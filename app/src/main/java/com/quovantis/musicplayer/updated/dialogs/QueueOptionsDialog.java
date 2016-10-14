@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
@@ -15,7 +16,7 @@ import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.SongPathModel;
 
 /**
- * Created by sahil-goel on 25/8/16.
+ * Shows Options Dialog for Folders and for Particular Song.
  */
 public class QueueOptionsDialog extends AlertDialog implements View.OnClickListener {
 

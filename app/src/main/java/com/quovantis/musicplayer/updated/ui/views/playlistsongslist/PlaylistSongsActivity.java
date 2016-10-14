@@ -1,5 +1,6 @@
 package com.quovantis.musicplayer.updated.ui.views.playlistsongslist;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +12,10 @@ import android.widget.ProgressBar;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.controller.AppActionController;
-import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
+import com.quovantis.musicplayer.updated.dialogs.PlaylistSongsOptionsDialog;
+import com.quovantis.musicplayer.updated.dialogs.CustomProgressDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
-import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlaylistSongsActivity extends MusicBaseActivity implements IQueueOptionsDialog.onSongClickListener,
+public class PlaylistSongsActivity extends MusicBaseActivity implements PlaylistSongsOptionsDialog.OnPlaylistSongsDialogClickListener,
         IMusicListClickListener, IPlaylistSongsView {
 
     @BindView(R.id.toolbar)
@@ -37,6 +38,8 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IQueueOp
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongDetailsModel> mSongList;
     private IPlaylistSongsPresenter iPresenter;
+    private CustomProgressDialog mProgressDialog;
+    private long mPlaylistID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IQueueOp
         String title = null;
         if (bundle != null) {
             id = bundle.getLong(AppKeys.FOLDER_ID_KEY, 1);
+            mPlaylistID = id;
             title = bundle.getString(AppKeys.DIRECTORY_NAME_KEY);
         }
         initToolbar(title);
@@ -90,6 +94,10 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IQueueOp
         mSongList.clear();
         mSongList.addAll(list);
         mAdapter.notifyDataSetChanged();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 
     @Override
@@ -104,7 +112,12 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IQueueOp
 
     @Override
     public void onEmptyList() {
-
+        mSongList.clear();
+        mAdapter.notifyDataSetChanged();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 
     @Override
@@ -121,7 +134,7 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IQueueOp
 
     @Override
     public void onActionOverFlowClick(SongDetailsModel model) {
-        QueueOptionsDialog dialog = new QueueOptionsDialog(this, model, this);
+        PlaylistSongsOptionsDialog dialog = new PlaylistSongsOptionsDialog(this, model, this);
         dialog.show();
     }
 
@@ -129,6 +142,13 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements IQueueOp
     public void onClickFromSpecificSongOptionsDialog(SongDetailsModel model, boolean isClearQueue, boolean isPlaythisSong) {
         if (iMusicPresenter != null)
             iMusicPresenter.addSongToPlaylist(model, isClearQueue, isPlaythisSong);
+    }
+
+    @Override
+    public void onRemove(SongDetailsModel model) {
+        mProgressDialog = new CustomProgressDialog(this);
+        mProgressDialog.show();
+        iPresenter.removeFromPlaylist(mPlaylistID, model);
     }
 
     @Override

@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
-import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
+import com.quovantis.musicplayer.updated.dialogs.CustomProgressDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
 import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
@@ -61,7 +61,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     protected SeekBar mSeekbarSB;
     private CurrentPlaylistAdapter mAdapter;
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
-    private Dialog mDialog;
+    private CustomProgressDialog mProgressDialog;
     private int mCurrentState = -1;
 
     @Override
@@ -140,7 +140,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onSongRemove(int position) {
-        mDialog = ProgresDialog.showProgressDialog(this);
+        mProgressDialog = new CustomProgressDialog(this);
+        mProgressDialog.show();
         MusicHelper.getInstance().getCurrentPlaylist().remove(position);
         mAdapter.notifyItemRemoved(position);
         iCurrentPlaylistPresenter.songRemoved(position);
@@ -148,9 +149,9 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onSuccessfullyRemovedSong() {
-        if (mDialog != null) {
-            mDialog.dismiss();
-            mDialog = null;
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
         }
     }
 

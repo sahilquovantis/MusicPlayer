@@ -18,15 +18,16 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by sahil-goel on 12/10/16.
+ * Show Dialog Options for playlist
+ * <p>when Playlist is long pressed or options clicked.
  */
 
 public class PlaylistOptionsDialog extends AlertDialog {
 
     private UserPlaylistModel mPlaylistModel;
-    private IQueueOptionsDialog.onPlaylistClickListener iListener;
+    private OnPlaylistClickListener iListener;
 
-    public PlaylistOptionsDialog(Context context, UserPlaylistModel model, IQueueOptionsDialog.onPlaylistClickListener listener) {
+    public PlaylistOptionsDialog(Context context, UserPlaylistModel model, OnPlaylistClickListener listener) {
         super(context);
         iListener = listener;
         mPlaylistModel = model;
@@ -72,5 +73,13 @@ public class PlaylistOptionsDialog extends AlertDialog {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
+    }
+
+    public interface OnPlaylistClickListener {
+        void onClickFromPlaylistOptionsDialog(UserPlaylistModel model, boolean isClearQueue, boolean isPlaythisSong);
+
+        void onDelete(UserPlaylistModel model);
+
+        void onRename(UserPlaylistModel model);
     }
 }

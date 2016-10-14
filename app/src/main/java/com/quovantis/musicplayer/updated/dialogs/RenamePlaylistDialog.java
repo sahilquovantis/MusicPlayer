@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Rename Playlist Name
+ * Show Dialog For Renaming Playlist Name
  */
 
 public class RenamePlaylistDialog extends AlertDialog {
