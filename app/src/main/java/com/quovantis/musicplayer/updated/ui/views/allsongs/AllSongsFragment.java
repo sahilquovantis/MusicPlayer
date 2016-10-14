@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
+import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndMusicCommunicator;
@@ -146,10 +147,13 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
     public void onAddToPlaylist(SongDetailsModel model) {
         Bundle bundle = new Bundle();
         bundle.putString(AppKeys.CREATE_PLAYLIST_INTENT_PATH, model.getSongPath());
-        Intent intent = new Intent(getActivity(), CreatePlaylistActivity.class);
-        intent.setAction(AppKeys.SONG_LIST);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, AppKeys.UPDATE_PLAYLIST_RESULT_CODE);
+        new AppActionController.Builder(getActivity())
+                .from(getActivity())
+                .setBundle(bundle)
+                .setIntentAction(AppKeys.SONG_LIST)
+                .setTargetActivityForResult(CreatePlaylistActivity.class, AppKeys.UPDATE_PLAYLIST_RESULT_CODE)
+                .build()
+                .execute();
     }
 
     @Override

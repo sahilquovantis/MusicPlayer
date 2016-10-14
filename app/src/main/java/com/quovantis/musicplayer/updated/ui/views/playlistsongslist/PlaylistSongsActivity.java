@@ -1,4 +1,4 @@
-package com.quovantis.musicplayer.updated.ui.views.songslist;
+package com.quovantis.musicplayer.updated.ui.views.playlistsongslist;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SongsListActivity extends MusicBaseActivity implements ISongsView,
-        IMusicListClickListener, IQueueOptionsDialog.onSongClickListener {
+public class PlaylistSongsActivity extends MusicBaseActivity implements IQueueOptionsDialog.onSongClickListener,
+        IMusicListClickListener, IPlaylistSongsView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -36,41 +36,41 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     ProgressBar mProgressBar;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<SongDetailsModel> mSongList;
-    private ISongsPresenter iSongsPresenter;
+    private IPlaylistSongsPresenter iPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_songs_list);
+        setContentView(R.layout.activity_playlist_songs);
         mSongList = new ArrayList<>();
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
-        String title = null, path = null;
+        long id = 1;
+        String title = null;
         if (bundle != null) {
+            id = bundle.getLong(AppKeys.FOLDER_ID_KEY, 1);
             title = bundle.getString(AppKeys.DIRECTORY_NAME_KEY);
-            path = bundle.getString(AppKeys.FOLDER_ID_KEY, null);
         }
         initToolbar(title);
         initRecyclerView();
-        initPresenters(path);
+        initPresenters(id);
     }
 
     @Override
-    protected void updateCurrentSongPlayingStatus(int state) {
+    protected void updateCurrentSongPlayingStatus(int val) {
 
     }
 
-    private void initPresenters(String path) {
-        iSongsPresenter = new SongsPresenterImp(this);
-        iMusicPresenter = new MusicPresenterImp(this, SongsListActivity.this);
+    private void initPresenters(long id) {
+        iPresenter = new PlaylistSongsPresenterImp(this, this);
+        iMusicPresenter = new MusicPresenterImp(this, PlaylistSongsActivity.this);
         iMusicPresenter.bindService();
-        if (path != null)
-            iSongsPresenter.updateUI(path, this);
+        iPresenter.updateUI(id);
     }
 
     private void initRecyclerView() {
         mSongsListRV.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new SongsListAdapter(this, this, mSongList);
+        mAdapter = new PlaylistSongsAdapter(this, this, mSongList);
         mSongsListRV.setAdapter(mAdapter);
     }
 
@@ -85,6 +85,27 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         }
     }
 
+    @Override
+    public void onUpdateUI(ArrayList<SongDetailsModel> list) {
+        mSongList.clear();
+        mSongList.addAll(list);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onShowProgress() {
+        mProgressBar.setProgress(View.VISIBLE);
+    }
+
+    @Override
+    public void onHideProgress() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onEmptyList() {
+
+    }
 
     @Override
     public void onMusicListClick(int pos) {
@@ -102,15 +123,6 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     public void onActionOverFlowClick(SongDetailsModel model) {
         QueueOptionsDialog dialog = new QueueOptionsDialog(this, model, this);
         dialog.show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        iMusicPresenter.onDestroy();
-        iMusicPresenter = null;
-        iSongsPresenter.onDestroy();
-        iSongsPresenter = null;
-        super.onDestroy();
     }
 
     @Override
@@ -142,24 +154,11 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     }
 
     @Override
-    public void onUpdateUI(ArrayList<SongDetailsModel> list) {
-        mSongList.clear();
-        mSongList.addAll(list);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onShowProgress() {
-        mProgressBar.setProgress(View.VISIBLE);
-    }
-
-    @Override
-    public void onHideProgress() {
-        mProgressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onEmptyList() {
-
+    protected void onDestroy() {
+        iMusicPresenter.onDestroy();
+        iMusicPresenter = null;
+        iPresenter.onDestroy();
+        iPresenter = null;
+        super.onDestroy();
     }
 }

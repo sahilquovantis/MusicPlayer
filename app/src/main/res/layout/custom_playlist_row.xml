@@ -15,8 +15,9 @@
             app:civ_border_width="1dp" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/tv_playlist_name"
@@ -31,6 +32,17 @@
                 android:layout_below="@+id/tv_playlist_name"
                 android:text="@string/dummy_artist" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_action"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:contentDescription="@string/action_overflow"
+                style="@style/AppOptionImageView"
+                android:src="@drawable/action_overflow" />
+        </LinearLayout>
     </LinearLayout>
 
     <View

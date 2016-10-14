@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
+import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.helper.PermissionHelper;
 import com.quovantis.musicplayer.updated.ui.views.home.HomeActivity;
 
@@ -39,8 +40,11 @@ public class SplashActivity extends AppCompatActivity {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
-            startActivity(intent);
+            AppActionController actionController = new AppActionController.Builder(SplashActivity.this)
+                    .from(SplashActivity.this)
+                    .setTargetActivity(HomeActivity.class)
+                    .build();
+            actionController.execute();
             finish();
         }
     };

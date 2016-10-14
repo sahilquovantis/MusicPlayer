@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
+import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.dialogs.QueueOptionsDialog;
 import com.quovantis.musicplayer.updated.interfaces.IFolderClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IHomeAndFolderCommunicator;
@@ -153,10 +154,13 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
         Bundle bundle = new Bundle();
         bundle.putString(AppKeys.FOLDER_ID_KEY, path);
         bundle.putString(AppKeys.DIRECTORY_NAME_KEY, directoryName);
-        Intent intent = new Intent(getActivity(), SongsListActivity.class);
-        intent.setAction(AppKeys.FOLDERS_ACTION);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        new AppActionController.Builder(getActivity())
+                .from(getActivity())
+                .setBundle(bundle)
+                .setTargetActivity(SongsListActivity.class)
+                .setIntentAction(AppKeys.FOLDERS_ACTION)
+                .build()
+                .execute();
     }
 
     @Override
@@ -168,10 +172,13 @@ public class FoldersFragment extends Fragment implements IFolderView, IFolderCli
     public void onAddToPlaylist(SongPathModel model) {
         Bundle bundle = new Bundle();
         bundle.putString(AppKeys.CREATE_PLAYLIST_INTENT_PATH, model.getPath());
-        Intent intent = new Intent(getActivity(), CreatePlaylistActivity.class);
-        intent.setAction(AppKeys.FOLDER_LIST);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, AppKeys.UPDATE_PLAYLIST_RESULT_CODE);
+        new AppActionController.Builder(getActivity())
+                .from(getActivity())
+                .setBundle(bundle)
+                .setIntentAction(AppKeys.FOLDER_LIST)
+                .setTargetActivityForResult(CreatePlaylistActivity.class, AppKeys.UPDATE_PLAYLIST_RESULT_CODE)
+                .build()
+                .execute();
     }
 
     @Override

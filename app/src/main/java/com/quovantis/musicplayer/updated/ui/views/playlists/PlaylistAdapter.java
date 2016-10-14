@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -65,6 +66,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                 return true;
             }
         });
+        holder.mOptionsLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iPlaylistClickListener.onLongPress(model);
+            }
+        });
     }
 
     @Override
@@ -80,6 +87,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         TextView mPlaylistNameTV;
         @BindView(R.id.tv_playlist_tracks)
         TextView mTotalTracksTV;
+        @BindView(R.id.ll_action)
+        LinearLayout mOptionsLL;
 
         public ViewHolder(View itemView) {
             super(itemView);

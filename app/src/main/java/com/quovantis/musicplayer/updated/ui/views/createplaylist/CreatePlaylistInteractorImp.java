@@ -99,11 +99,12 @@ public class CreatePlaylistInteractorImp implements ICreatePlaylistInteractor, L
         mActivity.getLoaderManager().restartLoader(5, bundle, this);
     }
 
-    private int getKey(Realm realm) {
+    private int getKey() {
+        Realm realm = Realm.getDefaultInstance();
         int key;
         try {
             key = realm.where(UserPlaylistModel.class).max("mPlaylistId").intValue() + 1;
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (NullPointerException | ArrayIndexOutOfBoundsException ex) {
             key = 1;
         }
         return key;
@@ -180,10 +181,10 @@ public class CreatePlaylistInteractorImp implements ICreatePlaylistInteractor, L
         }
         realm.executeTransaction(new Realm.Transaction() {
             @Override
-            public void execute(Realm realm) {
+            public void execute(Realm realm1) {
                 UserPlaylistModel userPlaylistModel = new UserPlaylistModel();
                 userPlaylistModel.setPlaylistName(name);
-                userPlaylistModel.setPlaylistId(getKey(realm));
+                userPlaylistModel.setPlaylistId(getKey());
                 userPlaylistModel.getPlaylist().addAll(list);
                 realm.copyToRealm(userPlaylistModel);
                 listener.onPlaylistCreated(true);

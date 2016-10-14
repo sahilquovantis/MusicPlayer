@@ -99,7 +99,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
                     break;
             }
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     private MediaSessionCompat.Callback mMediaCallback = new MediaSessionCompat.Callback() {

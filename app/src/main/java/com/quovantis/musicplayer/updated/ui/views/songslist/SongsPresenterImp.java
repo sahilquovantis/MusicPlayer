@@ -15,19 +15,16 @@ class SongsPresenterImp implements ISongsPresenter, ISongsInteractor.Listener {
     private ISongsView iSongsView;
     private ISongsInteractor iSongsInteractor;
 
-    SongsPresenterImp(Context context, ISongsView iSongsView) {
+    SongsPresenterImp(ISongsView iSongsView) {
         this.iSongsView = iSongsView;
-        iSongsInteractor = new SongsInteractorImp(context);
+        iSongsInteractor = new SongsInteractorImp();
     }
 
     @Override
-    public void updateUI(long id, String action, String path, Activity activity) {
+    public void updateUI(String path, Activity activity) {
         if (iSongsView != null) {
             iSongsView.onShowProgress();
-            if (action.equalsIgnoreCase(AppKeys.PLAYLIST_ACTION))
-                iSongsInteractor.getSongsList(id, action, this);
-            else if (action.equalsIgnoreCase(AppKeys.FOLDERS_ACTION))
-                iSongsInteractor.getSongsList(path, action, this, activity);
+            iSongsInteractor.getSongsList(path, this, activity);
         }
     }
 
@@ -38,7 +35,7 @@ class SongsPresenterImp implements ISongsPresenter, ISongsInteractor.Listener {
                 iSongsView.onEmptyList();
             else
                 iSongsView.onUpdateUI(list);
-            iSongsView.onHideProgres();
+            iSongsView.onHideProgress();
         }
     }
 

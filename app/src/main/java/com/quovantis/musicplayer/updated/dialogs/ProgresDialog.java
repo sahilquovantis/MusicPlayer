@@ -41,9 +41,4 @@ public class ProgresDialog {
         dialog.getWindow().setAttributes(mDialogLayoutParams);
         return dialog;
     }
-
-    public static void cancelProgressDialog(android.app.ProgressDialog dialog) {
-        if (dialog != null)
-            dialog.dismiss();
-    }
 }

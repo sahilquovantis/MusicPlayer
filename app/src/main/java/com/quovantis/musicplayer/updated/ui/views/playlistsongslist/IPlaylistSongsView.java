@@ -1,13 +1,14 @@
-package com.quovantis.musicplayer.updated.ui.views.songslist;
+package com.quovantis.musicplayer.updated.ui.views.playlistsongslist;
 
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.ArrayList;
 
 /**
- * Created by sahil-goel on 24/8/16.
+ * Created by sahil-goel on 14/10/16.
  */
-public interface ISongsView {
+
+public interface IPlaylistSongsView {
     void onUpdateUI(ArrayList<SongDetailsModel> list);
 
     void onShowProgress();

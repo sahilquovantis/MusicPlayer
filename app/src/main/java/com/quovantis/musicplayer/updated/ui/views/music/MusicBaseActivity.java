@@ -1,6 +1,5 @@
 package com.quovantis.musicplayer.updated.ui.views.music;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -12,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 
 import butterknife.BindView;
@@ -99,8 +99,11 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
         if (this instanceof FullScreenMusic) {
             return;
         }
-        Intent intent = new Intent(this, FullScreenMusic.class);
-        startActivity(intent);
+        new AppActionController.Builder(this)
+                .from(this)
+                .setTargetActivity(FullScreenMusic.class)
+                .build()
+                .execute();
     }
 
     @Override

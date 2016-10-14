@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
+import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.dialogs.CreatePlaylistDialog;
 import com.quovantis.musicplayer.updated.dialogs.PlaylistOptionsDialog;
 import com.quovantis.musicplayer.updated.dialogs.ProgresDialog;
@@ -35,6 +36,7 @@ import com.quovantis.musicplayer.updated.interfaces.IPlaylistClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
+import com.quovantis.musicplayer.updated.ui.views.playlistsongslist.PlaylistSongsActivity;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListActivity;
 
 import java.util.ArrayList;
@@ -165,10 +167,13 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
         Bundle bundle = new Bundle();
         bundle.putLong(AppKeys.FOLDER_ID_KEY, id);
         bundle.putString(AppKeys.DIRECTORY_NAME_KEY, name);
-        Intent intent = new Intent(getActivity(), SongsListActivity.class);
-        intent.setAction(AppKeys.PLAYLIST_ACTION);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        new AppActionController.Builder(getActivity())
+                .from(getActivity())
+                .setBundle(bundle)
+                .setIntentAction(AppKeys.PLAYLIST_ACTION)
+                .setTargetActivity(PlaylistSongsActivity.class)
+                .build()
+                .execute();
     }
 
     @Override

@@ -21,28 +21,16 @@ import io.realm.RealmResults;
 /**
  * Created by sahil-goel on 24/8/16.
  */
-public class SongsInteractorImp implements ISongsInteractor,
+class SongsInteractorImp implements ISongsInteractor,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private Context mContext;
     private ISongsInteractor.Listener listener;
 
-    public SongsInteractorImp(Context mContext) {
-        this.mContext = mContext;
-    }
-
     @Override
-    public void getSongsList(long id, String action, Listener listener) {
-        Realm realm = Realm.getDefaultInstance();
-        ArrayList<SongDetailsModel> lists = new ArrayList<>();
-        RealmResults<UserPlaylistModel> list = realm.where(UserPlaylistModel.class).equalTo("mPlaylistId", id).findAll();
-        lists.addAll(list.get(0).getPlaylist());
-        listener.onUpdateSongsList(lists);
-    }
-
-    @Override
-    public void getSongsList(String path, String action, Listener listener, Activity activity) {
+    public void getSongsList(String path, Listener listener, Activity activity) {
         this.listener = listener;
+        mContext = activity;
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
         activity.getLoaderManager().restartLoader(7, bundle, this);

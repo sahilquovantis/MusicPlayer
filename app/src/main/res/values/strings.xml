@@ -39,4 +39,5 @@
     <string name="save_as_playlist">Save as playlist</string>
     <string name="rename">Rename</string>
     <string name="delete">Delete</string>
+    <string name="action_overflow">Options</string>
 </resources>
