@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppRelativeLayoutMatchParent"
+    tools:context="com.quovantis.musicplayer.updated.ui.views.settings.SettingsActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/AppToolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+
+        <LinearLayout
+            style="@style/AppLinearLayoutMatchVertical"
+            android:layout_marginTop="@dimen/dp_10">
+
+            <TextView
+                style="@style/AppSettingsTextViewTitle"
+                android:text="@string/general"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/ll_sleep_timer"
+                android:padding="@dimen/dp_10"
+                android:background="@drawable/selector"
+                style="@style/AppLinearLayoutMatchVertical">
+
+                <TextView
+                    style="@style/AppSettingsTextViewSubTitle"
+                    android:text="@string/sleep_timer"/>
+                <TextView
+                    style="@style/AppSettingsTextViewSubTitleExplanation"
+                    android:text="@string/sleep_timer_explanation"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

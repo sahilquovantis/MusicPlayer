@@ -42,4 +42,7 @@
     <string name="action_overflow">Options</string>
     <string name="remove">Remove</string>
     <string name="processing">Processing ...</string>
+    <string name="general">GENERAL</string>
+    <string name="sleep_timer">Sleep Timer</string>
+    <string name="sleep_timer_explanation">Set a time to stop your music player.</string>
 </resources>

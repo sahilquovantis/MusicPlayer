@@ -39,7 +39,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".updated.ui.views.playlistsongslist.PlaylistSongsActivity"></activity>
+        <activity android:name=".updated.ui.views.playlistsongslist.PlaylistSongsActivity" />
+        <activity android:name=".updated.ui.views.settings.SettingsActivity"/>
+        <receiver android:name=".updated.receiver.SleepTimerReceiver"/>
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.dialogs.CustomProgressDialog;
 import com.quovantis.musicplayer.updated.helper.DepthPageTransformerHelper;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
@@ -23,6 +24,7 @@ import com.quovantis.musicplayer.updated.ui.views.folders.FoldersFragment;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 import com.quovantis.musicplayer.updated.ui.views.playlists.PlaylistFragment;
+import com.quovantis.musicplayer.updated.ui.views.settings.SettingsActivity;
 
 import java.util.List;
 
@@ -113,6 +115,14 @@ public class HomeActivity extends MusicBaseActivity implements FoldersFragment.I
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.settings) {
+            new AppActionController.Builder(this)
+                    .from(this)
+                    .setTargetActivity(SettingsActivity.class)
+                    .build()
+                    .execute();
+        }
         return super.onOptionsItemSelected(item);
     }
 
