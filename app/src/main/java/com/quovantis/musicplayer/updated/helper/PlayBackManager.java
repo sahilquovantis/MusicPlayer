@@ -62,6 +62,9 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             mAudioManager.abandonAudioFocus(this);
             mAudioManager = null;
         }
+        if (mHandler != null)
+            mHandler.removeCallbacks(mProgressTimer);
+        mHandler = null;
         mCurrentMedia = null;
         updatePlaybackState(PlaybackStateCompat.STATE_STOPPED);
     }
@@ -141,7 +144,8 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             mMediaPlayer.pause();
             updatePlaybackState(PlaybackStateCompat.STATE_PAUSED);
             isPauseWithMetaDataCalled = true;
-            mHandler.postDelayed(mProgressTimer, 1000);
+            if (mHandler != null)
+                mHandler.postDelayed(mProgressTimer, 1000);
         } catch (IOException e) {
             mCurrentMedia = null;
             Toast.makeText(mContext, "File not found", Toast.LENGTH_LONG).show();
@@ -216,7 +220,8 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
         if (mMediaPlayer != null) {
             mMediaPlayer.start();
             mMediaPlayer.setOnCompletionListener(this);
-            mHandler.postDelayed(mProgressTimer, 1000);
+            if (mHandler != null)
+                mHandler.postDelayed(mProgressTimer, 1000);
             updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
         }
     }
@@ -269,7 +274,8 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
                 int total = mMediaPlayer.getDuration();
                 int current = mMediaPlayer.getCurrentPosition();
                 iProgressCallback.onProgress(current, total);
-                mHandler.postDelayed(mProgressTimer, 1000);
+                if (mHandler != null)
+                    mHandler.postDelayed(mProgressTimer, 1000);
             }
         }
     };

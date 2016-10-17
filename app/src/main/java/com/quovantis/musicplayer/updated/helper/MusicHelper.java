@@ -182,7 +182,6 @@ public class MusicHelper {
         mCurrentPositionHelper.setCurrentPosition(pos);
     }
 
-
     public int getCurrentPosition() {
         return mCurrentPositionHelper.getCurrentPosition();
     }

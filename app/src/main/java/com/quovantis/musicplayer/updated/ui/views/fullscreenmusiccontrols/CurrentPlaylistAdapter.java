@@ -7,18 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
-import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IItemTouchHelperAdapter;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.utility.CircleImageView;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,6 +61,12 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
                     iCurrentPlaylistClickListener.onClick(holder.getAdapterPosition());
                 }
             });
+            holder.mOptionsIV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    iCurrentPlaylistClickListener.onOptionsIconClick(model, holder.getAdapterPosition());
+                }
+            });
             Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, model.getAlbumId())).asBitmap().placeholder(R.drawable.music).into(holder.mImage);
             if (position == MusicHelper.getInstance().getCurrentPosition()) {
                 holder.mEqualizer.setVisibility(View.VISIBLE);
@@ -103,10 +106,22 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
         TextView mQueueSongArtist;
         @BindView(R.id.equalizer_view)
         EqualizerView mEqualizer;
+        @BindView(R.id.iv_options)
+        ImageView mOptionsIV;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface ICurrentPlaylistClickListener {
+        void onClick(int pos);
+
+        void onSongRemove(int pos);
+
+        void onSongsMoved(int from, int to);
+
+        void onOptionsIconClick(SongDetailsModel model, int songPosition);
     }
 }

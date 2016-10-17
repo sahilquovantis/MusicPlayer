@@ -48,7 +48,5 @@ public class AnimationHelper {
         } else {
             myView.setVisibility(View.INVISIBLE);
         }
-
-
     }
 }

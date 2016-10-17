@@ -1,6 +1,5 @@
 package com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,11 +24,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
+import com.quovantis.musicplayer.updated.controller.AppActionController;
+import com.quovantis.musicplayer.updated.dialogs.CurrentQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.dialogs.CustomProgressDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
-import com.quovantis.musicplayer.updated.interfaces.ICurrentPlaylistClickListener;
+import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
@@ -41,7 +43,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlaylistView,
-        ICurrentPlaylistClickListener, SeekBar.OnSeekBarChangeListener {
+        CurrentPlaylistAdapter.ICurrentPlaylistClickListener, CurrentQueueOptionsDialog.IOnCurrentQueueSongsDialogClickListener,
+        SeekBar.OnSeekBarChangeListener {
 
     @BindView(R.id.iv_repeat_song)
     protected ImageView mRepeatSongIV;
@@ -63,6 +66,7 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     private ICurrentPlaylistPresenter iCurrentPlaylistPresenter;
     private CustomProgressDialog mProgressDialog;
     private int mCurrentState = -1;
+    private boolean isCanClick = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,10 +136,14 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
 
     @Override
     public void onClick(int pos) {
-        MusicHelper.getInstance().setCurrentPosition(pos);
-        mAdapter.notifyDataSetChanged();
-        if (iMusicPresenter != null)
-            iMusicPresenter.playSong();
+        if (isCanClick) {
+            isCanClick = false;
+            MusicHelper.getInstance().setCurrentPosition(pos);
+            mAdapter.notifyDataSetChanged();
+            if (iMusicPresenter != null)
+                iMusicPresenter.playSong();
+            isCanClick = true;
+        }
     }
 
     @Override
@@ -171,6 +179,12 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
             pos = to;
         MusicHelper.getInstance().setCurrentPosition(pos);
         mAdapter.notifyItemMoved(from, to);
+    }
+
+    @Override
+    public void onOptionsIconClick(SongDetailsModel model, int position) {
+        CurrentQueueOptionsDialog dialog = new CurrentQueueOptionsDialog(this, model, position, this);
+        dialog.show();
     }
 
     @OnClick(R.id.iv_shuffle_song)
@@ -294,10 +308,28 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
                 } else {
                     mAdapter.setIsPlaying(false);
                 }
-                mAdapter.notifyDataSetChanged();
-                //mAdapter.notifyItemChanged(MusicHelper.getInstance().getCurrentPosition());
+                //mAdapter.notifyDataSetChanged();
+                mAdapter.notifyItemRangeChanged(MusicHelper.getInstance().getCurrentPosition(), MusicHelper.getInstance().getCurrentPlaylist().size());
             }
         }
         mCurrentState = state;
+    }
+
+    @Override
+    public void onRemove(int position) {
+        onSongRemove(position);
+    }
+
+    @Override
+    public void onAddToPlaylist(SongDetailsModel model) {
+        Bundle bundle = new Bundle();
+        bundle.putString(AppKeys.CREATE_PLAYLIST_INTENT_PATH, model.getSongPath());
+        new AppActionController.Builder(this)
+                .from(this)
+                .setTargetActivity(CreatePlaylistActivity.class)
+                .setBundle(bundle)
+                .setIntentAction(AppKeys.SONG_LIST)
+                .build()
+                .execute();
     }
 }
