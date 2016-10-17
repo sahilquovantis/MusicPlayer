@@ -115,7 +115,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
         }
     }
 
-    public interface ICurrentPlaylistClickListener {
+    interface ICurrentPlaylistClickListener {
         void onClick(int pos);
 
         void onSongRemove(int pos);

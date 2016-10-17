@@ -139,7 +139,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
         if (isCanClick) {
             isCanClick = false;
             MusicHelper.getInstance().setCurrentPosition(pos);
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(MusicHelper.getInstance().getCurrentPosition());
+            mAdapter.notifyItemChanged(MusicHelper.getInstance().getPreviousPosition());
             if (iMusicPresenter != null)
                 iMusicPresenter.playSong();
             isCanClick = true;
@@ -308,8 +309,8 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
                 } else {
                     mAdapter.setIsPlaying(false);
                 }
-                //mAdapter.notifyDataSetChanged();
-                mAdapter.notifyItemRangeChanged(MusicHelper.getInstance().getCurrentPosition(), MusicHelper.getInstance().getCurrentPlaylist().size());
+                mAdapter.notifyItemChanged(MusicHelper.getInstance().getCurrentPosition());
+                mAdapter.notifyItemChanged(MusicHelper.getInstance().getPreviousPosition());
             }
         }
         mCurrentState = state;

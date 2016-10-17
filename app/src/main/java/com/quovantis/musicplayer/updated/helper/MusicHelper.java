@@ -154,10 +154,9 @@ public class MusicHelper {
 
     /**
      * This Method used to Get the Thumbnail of Current Song.
-     *
-     * @param context Context
-     * @param data    Byte Data Contains the Picture's Blob.
-     * @return Returns Bitmap of Current Song.
+     * </p>@param context Context
+     * </p>@param data Byte Data Contains the Picture's Blob.
+     * </p>@return Returns Bitmap of Current Song.
      */
     private Bitmap getAlbumBitmap(Context context, byte[] data) {
         Bitmap bitmap;
@@ -184,6 +183,10 @@ public class MusicHelper {
 
     public int getCurrentPosition() {
         return mCurrentPositionHelper.getCurrentPosition();
+    }
+
+    public int getPreviousPosition() {
+        return mCurrentPositionHelper.getPreviousPosition();
     }
 
     public boolean isSongStartedPlaying() {

@@ -10,20 +10,32 @@ import java.util.Random;
 class CurrentPositionHelper {
 
     private int mCurrentPosition;
+    private int mPreviousPosition;
 
     CurrentPositionHelper() {
         mCurrentPosition = 0;
+        mPreviousPosition = -1;
     }
 
     int getCurrentPosition() {
         return mCurrentPosition;
     }
 
+    int getPreviousPosition() {
+        return mPreviousPosition;
+    }
+
     void setCurrentPosition(int mCurrentPosition) {
+        setPreviousPosition(this.mCurrentPosition);
         this.mCurrentPosition = mCurrentPosition;
     }
 
+    private void setPreviousPosition(int mCurrentPosition) {
+        this.mPreviousPosition = mCurrentPosition;
+    }
+
     int getPreviousSong(int size) {
+        setPreviousPosition(mCurrentPosition);
         if (mCurrentPosition == 0 || mCurrentPosition < 0)
             mCurrentPosition = size - 1;
         else
@@ -32,6 +44,7 @@ class CurrentPositionHelper {
     }
 
     int getNextSong(int size) {
+        setPreviousPosition(mCurrentPosition);
         if (AppMusicKeys.REPEAT_STATE == AppMusicKeys.REPEAT_ON) {
             return mCurrentPosition;
         }
