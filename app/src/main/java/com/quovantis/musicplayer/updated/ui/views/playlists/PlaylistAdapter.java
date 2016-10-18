@@ -55,7 +55,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iPlaylistClickListener.onClick(model.getPlaylistId(), title);
+                iPlaylistClickListener.onClick(model, title);
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -96,7 +96,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     }
 
     interface IPlaylistClickListener {
-        void onClick(long id, String name);
+        void onClick(UserPlaylistModel model, String name);
 
         void onLongPress(UserPlaylistModel model);
     }

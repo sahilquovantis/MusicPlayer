@@ -46,11 +46,11 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     @BindView(R.id.tv_no_playlist)
     TextView mEmptyPlaylistTV;
     @BindView(R.id.rv_playlists_list)
-    RecyclerView mPlaylistsListRV;
+    RecyclerView mPlaylistListRV;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
     private RecyclerView.Adapter mAdapter;
-    private ArrayList<UserPlaylistModel> mPlaylistsList;
+    private ArrayList<UserPlaylistModel> mPlaylistList;
     private ArrayList<UserPlaylistModel> mOriginalList = new ArrayList<>();
     private IPlaylistPresenter iPlaylistPresenter;
     private SearchView mSearchView;
@@ -80,7 +80,7 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         iHomeAndPlaylistCommunicator = (IHomeAndPlaylistCommunicator) getActivity();
-        mPlaylistsList = new ArrayList<>();
+        mPlaylistList = new ArrayList<>();
         initRecyclerView();
         initPresenters();
     }
@@ -96,9 +96,9 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     }
 
     private void initRecyclerView() {
-        mPlaylistsListRV.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new PlaylistAdapter(mPlaylistsList, getActivity(), this);
-        mPlaylistsListRV.setAdapter(mAdapter);
+        mPlaylistListRV.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new PlaylistAdapter(mPlaylistList, getActivity(), this);
+        mPlaylistListRV.setAdapter(mAdapter);
     }
 
     private void initPresenters() {
@@ -119,9 +119,9 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
             onNoPlaylist();
             return;
         }
-        mPlaylistsListRV.setVisibility(View.VISIBLE);
-        mPlaylistsList.clear();
-        mPlaylistsList.addAll(list);
+        mPlaylistListRV.setVisibility(View.VISIBLE);
+        mPlaylistList.clear();
+        mPlaylistList.addAll(list);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -137,10 +137,10 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
 
     @Override
     public void onNoPlaylist() {
-        mPlaylistsListRV.setVisibility(View.GONE);
+        mPlaylistListRV.setVisibility(View.GONE);
         mEmptyPlaylistTV.setVisibility(View.VISIBLE);
         mOriginalList.clear();
-        mPlaylistsList.clear();
+        mPlaylistList.clear();
         mAdapter.notifyDataSetChanged();
     }
 
@@ -152,17 +152,20 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     }
 
     @Override
-    public void onClick(long id, String name) {
-        Bundle bundle = new Bundle();
-        bundle.putLong(AppKeys.FOLDER_ID_KEY, id);
-        bundle.putString(AppKeys.DIRECTORY_NAME_KEY, name);
-        new AppActionController.Builder(getActivity())
-                .from(getActivity())
-                .setBundle(bundle)
-                .setIntentAction(AppKeys.PLAYLIST_ACTION)
-                .setTargetActivity(PlaylistSongsActivity.class)
-                .build()
-                .execute();
+    public void onClick(UserPlaylistModel model, String name) {
+        if (!model.getPlaylist().isEmpty()) {
+            long id = model.getPlaylistId();
+            Bundle bundle = new Bundle();
+            bundle.putLong(AppKeys.FOLDER_ID_KEY, id);
+            bundle.putString(AppKeys.DIRECTORY_NAME_KEY, name);
+            new AppActionController.Builder(getActivity())
+                    .from(getActivity())
+                    .setBundle(bundle)
+                    .setIntentAction(AppKeys.PLAYLIST_ACTION)
+                    .setTargetActivity(PlaylistSongsActivity.class)
+                    .build()
+                    .execute();
+        }
     }
 
     @Override
@@ -180,14 +183,14 @@ public class PlaylistFragment extends Fragment implements IPlaylistView,
     public void onFetchingPlaylist(List<UserPlaylistModel> playlistList) {
         mOriginalList.clear();
         mOriginalList.addAll(playlistList);
-        mPlaylistsList.clear();
-        mPlaylistsList.addAll(mOriginalList);
+        mPlaylistList.clear();
+        mPlaylistList.addAll(mOriginalList);
         mAdapter.notifyDataSetChanged();
         if (!playlistList.isEmpty()) {
-            mPlaylistsListRV.setVisibility(View.VISIBLE);
+            mPlaylistListRV.setVisibility(View.VISIBLE);
             mEmptyPlaylistTV.setVisibility(View.GONE);
         } else {
-            mPlaylistsListRV.setVisibility(View.GONE);
+            mPlaylistListRV.setVisibility(View.GONE);
             mEmptyPlaylistTV.setVisibility(View.VISIBLE);
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sahil-goel on 14/10/16.
@@ -41,6 +42,16 @@ public class PlaylistSongsPresenterImp implements IPlaylistSongsPresenter, IPlay
     @Override
     public void removeFromPlaylist(long playlistId, SongDetailsModel model) {
         iSongsInteractor.removeSongFromPlaylist(playlistId, model, this);
+    }
+
+    @Override
+    public void removeFromPlaylist(long playlistId, int pos) {
+        iSongsInteractor.removeSongFromPlaylist(playlistId, pos, this);
+    }
+
+    @Override
+    public void saveToPlaylist(List<SongDetailsModel> list, long playlistId) {
+        iSongsInteractor.saveToPlaylist(list, playlistId, this);
     }
 
     @Override

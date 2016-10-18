@@ -1,10 +1,10 @@
 package com.quovantis.musicplayer.updated.ui.views.playlistsongslist;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,10 +12,10 @@ import android.widget.ProgressBar;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.controller.AppActionController;
-import com.quovantis.musicplayer.updated.dialogs.PlaylistSongsOptionsDialog;
 import com.quovantis.musicplayer.updated.dialogs.CustomProgressDialog;
+import com.quovantis.musicplayer.updated.dialogs.PlaylistSongsOptionsDialog;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
-import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
+import com.quovantis.musicplayer.updated.helper.QueueItemTouchHelper;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PlaylistSongsActivity extends MusicBaseActivity implements PlaylistSongsOptionsDialog.OnPlaylistSongsDialogClickListener,
-        IMusicListClickListener, IPlaylistSongsView {
+        PlaylistSongsAdapter.IMusicListClickListener, IPlaylistSongsView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -35,7 +35,7 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements Playlist
     RecyclerView mSongsListRV;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
-    private RecyclerView.Adapter mAdapter;
+    private PlaylistSongsAdapter mAdapter;
     private ArrayList<SongDetailsModel> mSongList;
     private IPlaylistSongsPresenter iPresenter;
     private CustomProgressDialog mProgressDialog;
@@ -76,6 +76,9 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements Playlist
         mSongsListRV.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new PlaylistSongsAdapter(this, this, mSongList);
         mSongsListRV.setAdapter(mAdapter);
+        ItemTouchHelper.Callback callback = new QueueItemTouchHelper(mAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(mSongsListRV);
     }
 
 
@@ -130,6 +133,13 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements Playlist
                     iMusicPresenter.playSong();
             }
         }
+    }
+
+    @Override
+    public void onItemMovedCompleted() {
+        mProgressDialog = new CustomProgressDialog(this);
+        mProgressDialog.show();
+        iPresenter.saveToPlaylist(mSongList, mPlaylistID);
     }
 
     @Override

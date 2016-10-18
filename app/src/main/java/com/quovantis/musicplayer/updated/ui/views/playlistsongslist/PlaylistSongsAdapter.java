@@ -14,11 +14,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
+import com.quovantis.musicplayer.updated.interfaces.IItemTouchHelperAdapter;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.utility.CircleImageView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,15 +28,14 @@ import butterknife.ButterKnife;
 /**
  * Created by sahil-goel on 14/10/16.
  */
-
-public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdapter.ViewHolder> {
+class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdapter.ViewHolder> implements
+        IItemTouchHelperAdapter {
     private final Uri mArtworkUri;
     private Context mContext;
     private IMusicListClickListener iMusicListClickListener;
     private ArrayList<SongDetailsModel> mSongList;
-    private String mQuery;
 
-    public PlaylistSongsAdapter(Context context, IMusicListClickListener iMusicListClickListener, ArrayList<SongDetailsModel> mSongList) {
+    PlaylistSongsAdapter(Context context, IMusicListClickListener iMusicListClickListener, ArrayList<SongDetailsModel> mSongList) {
         mContext = context;
         mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         this.iMusicListClickListener = iMusicListClickListener;
@@ -48,9 +49,8 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final int pos = position;
-        final SongDetailsModel songDetailsModel = mSongList.get(pos);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final SongDetailsModel songDetailsModel = mSongList.get(position);
         String title = songDetailsModel.getSongTitle();
         holder.mSongTV.setMaxLines(1);
         holder.mSongTV.setText(title);
@@ -60,14 +60,7 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iMusicListClickListener.onMusicListClick(pos);
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                iMusicListClickListener.onActionOverFlowClick(songDetailsModel);
-                return true;
+                iMusicListClickListener.onMusicListClick(position);
             }
         });
         holder.mPopUpMenuLL.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +81,23 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
         }
     }
 
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(mSongList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        mSongList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onItemMoveCompleted() {
+        iMusicListClickListener.onItemMovedCompleted();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_song_thumbnail)
@@ -103,5 +113,13 @@ public class PlaylistSongsAdapter extends RecyclerView.Adapter<PlaylistSongsAdap
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    interface IMusicListClickListener {
+        void onMusicListClick(int pos);
+
+        void onItemMovedCompleted();
+
+        void onActionOverFlowClick(SongDetailsModel model);
     }
 }

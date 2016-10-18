@@ -32,7 +32,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     private ICurrentPlaylistClickListener iCurrentPlaylistClickListener;
     private Uri mArtworkUri;
 
-    public CurrentPlaylistAdapter(Context mContext,
+    CurrentPlaylistAdapter(Context mContext,
                                   ICurrentPlaylistClickListener iCurrentPlaylistClickListener) {
         mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         this.mContext = mContext;
@@ -91,6 +91,11 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     @Override
     public void onItemDismiss(int position) {
         iCurrentPlaylistClickListener.onSongRemove(position);
+    }
+
+    @Override
+    public void onItemMoveCompleted() {
+
     }
 
     void setIsPlaying(boolean mIsPlaying) {

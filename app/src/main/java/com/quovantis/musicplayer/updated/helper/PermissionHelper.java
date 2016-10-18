@@ -11,7 +11,7 @@ import android.support.v4.content.ContextCompat;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
 
 /**
- * Created by sahil-goel on 15/9/16.
+ * Used for Permissions at Run Time.
  */
 public class PermissionHelper {
     public static boolean checkPermission(Activity activity) {
