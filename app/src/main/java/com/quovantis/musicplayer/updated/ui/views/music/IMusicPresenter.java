@@ -25,6 +25,8 @@ public interface IMusicPresenter {
 
     void bindService();
 
+    void unBindService();
+
     void onPlayPause();
 
     void onSkipToPrevious();

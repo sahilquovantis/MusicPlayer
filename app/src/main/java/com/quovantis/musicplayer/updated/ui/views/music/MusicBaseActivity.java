@@ -1,5 +1,9 @@
 package com.quovantis.musicplayer.updated.ui.views.music;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -11,7 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.controller.AppActionController;
+import com.quovantis.musicplayer.updated.helper.LoggerHelper;
+import com.quovantis.musicplayer.updated.services.MusicService;
 import com.quovantis.musicplayer.updated.ui.views.fullscreenmusiccontrols.FullScreenMusic;
 
 import butterknife.BindView;
@@ -34,6 +41,22 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (iMusicPresenter != null)
+            iMusicPresenter.bindService();
+        registerReceiver(mCloseMusicReceiver, new IntentFilter(AppKeys.CLOSE_MUSIC_ACTION));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (iMusicPresenter != null)
+            iMusicPresenter.unBindService();
+        unregisterReceiver(mCloseMusicReceiver);
     }
 
     @OnClick({R.id.iv_next_song, R.id.iv_previous_song, R.id.iv_play_pause_button})
@@ -110,4 +133,18 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
     public void cancelDialog() {
 
     }
+
+    private BroadcastReceiver mCloseMusicReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action != null && action.equalsIgnoreCase(AppKeys.CLOSE_MUSIC_ACTION)) {
+                if (iMusicPresenter != null)
+                    iMusicPresenter.unBindService();
+                context.stopService(new Intent(context, MusicService.class));
+                onHideMusicLayout();
+                LoggerHelper.debug("Close Music Receiver Called");
+            }
+        }
+    };
 }

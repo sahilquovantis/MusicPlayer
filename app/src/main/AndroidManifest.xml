@@ -19,15 +19,13 @@
         <service
             android:name=".updated.services.MusicService"
             android:exported="false"
-            android:stopWithTask="false" />
+            android:stopWithTask="true" />
 
         <activity android:name=".updated.ui.views.music.MusicBaseActivity" />
         <activity
             android:name=".updated.ui.views.fullscreenmusiccontrols.FullScreenMusic"
             android:theme="@style/FullScreenMusicTheme" />
-        <activity
-            android:name=".updated.ui.views.search.SearchActivity"
-            android:windowSoftInputMode="adjustNothing" />
+
         <activity
             android:name=".updated.ui.views.createplaylist.CreatePlaylistActivity"
             android:windowSoftInputMode="adjustNothing" />

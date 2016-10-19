@@ -27,6 +27,7 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
     private MediaControllerCompat mMediaController;
     private Context mContext;
     private IMusicView iMusicView;
+    private boolean mIsBounded;
 
     public MusicPresenterImp(IMusicView iMusicView, Context mContext) {
         this.iMusicView = iMusicView;
@@ -120,8 +121,6 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
 
     @Override
     public void onDestroy() {
-        mContext.unbindService(this);
-        LoggerHelper.debug("Music Service UnBinded");
         iMusicView = null;
     }
 
@@ -130,6 +129,16 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
         Intent intent = new Intent(mContext, MusicService.class);
         mContext.startService(intent);
         mContext.bindService(intent, this, Context.BIND_AUTO_CREATE);
+        mIsBounded = true;
+    }
+
+    @Override
+    public void unBindService() {
+        if (mContext != null && mIsBounded) {
+            mContext.unbindService(this);
+            LoggerHelper.debug("Music Service Unbounded");
+        }
+        mIsBounded = false;
     }
 
     @Override

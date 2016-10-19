@@ -73,7 +73,6 @@ public class CreatePlaylistActivity extends MusicBaseActivity implements ICreate
     private void initPresenters() {
         iCreatePlaylistPresenter = new CreatePlaylistPresenterImp(this, this, this);
         iMusicPresenter = new MusicPresenterImp(this, this);
-        iMusicPresenter.bindService();
         iCreatePlaylistPresenter.updateUI();
     }
 

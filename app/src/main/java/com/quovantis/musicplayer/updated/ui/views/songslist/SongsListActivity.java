@@ -63,7 +63,6 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
     private void initPresenters(String path) {
         iSongsPresenter = new SongsPresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, SongsListActivity.this);
-        iMusicPresenter.bindService();
         if (path != null)
             iSongsPresenter.updateUI(path, this);
     }

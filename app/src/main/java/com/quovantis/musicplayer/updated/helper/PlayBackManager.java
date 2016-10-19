@@ -54,6 +54,11 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
     }
 
     public void stop() {
+        releasePlayer();
+        updatePlaybackState(PlaybackStateCompat.STATE_STOPPED);
+    }
+
+    public void releasePlayer() {
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
@@ -66,7 +71,6 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             mHandler.removeCallbacks(mProgressTimer);
         mHandler = null;
         mCurrentMedia = null;
-        updatePlaybackState(PlaybackStateCompat.STATE_STOPPED);
     }
 
     public void none() {

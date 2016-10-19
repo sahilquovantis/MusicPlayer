@@ -121,7 +121,6 @@ public class FullScreenMusic extends MusicBaseActivity implements ICurrentPlayli
     private void initPresenters() {
         iCurrentPlaylistPresenter = new CurrentPlaylistPresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, this);
-        iMusicPresenter.bindService();
     }
 
     private void initRecyclerView() {

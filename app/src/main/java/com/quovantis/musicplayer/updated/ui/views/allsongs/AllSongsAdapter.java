@@ -4,6 +4,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -38,9 +39,11 @@ public class AllSongsAdapter extends RecyclerView.Adapter<AllSongsAdapter.ViewHo
     private Cursor mCursor;
     private String mQuery;
     private Uri mArtworkUri;
+    private Typeface mFonts;
 
     public AllSongsAdapter(Context context, IMusicListClickListener iMusicListClickListener, Cursor mCursor) {
         mContext = context;
+        mFonts = Typeface.createFromAsset(mContext.getAssets(), "fonts/robotothin.ttf");
         mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         this.iMusicListClickListener = iMusicListClickListener;
         this.mCursor = mCursor;
@@ -64,6 +67,7 @@ public class AllSongsAdapter extends RecyclerView.Adapter<AllSongsAdapter.ViewHo
         String query = mQuery;
         setSpan(title, query, holder.mSongTV);
         holder.mSongArtistTV.setText(artist);
+        holder.mSongArtistTV.setTypeface(mFonts);
         Glide.with(mContext).load(ContentUris.withAppendedId(mArtworkUri, albumId)).asBitmap().placeholder(R.drawable.music).into(holder.mSongThumbnailIV);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +116,7 @@ public class AllSongsAdapter extends RecyclerView.Adapter<AllSongsAdapter.ViewHo
             mSongTV.setText(title);
             mSongTV.setEllipsize(TextUtils.TruncateAt.END);
         }
+        mSongTV.setTypeface(mFonts);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class CurrentPlaylistAdapter extends RecyclerView.Adapter<CurrentPlaylist
     private ICurrentPlaylistClickListener iCurrentPlaylistClickListener;
     private Uri mArtworkUri;
 
-    CurrentPlaylistAdapter(Context mContext,
+    public CurrentPlaylistAdapter(Context mContext,
                                   ICurrentPlaylistClickListener iCurrentPlaylistClickListener) {
         mArtworkUri = Uri.parse("content://media/external/audio/albumart");
         this.mContext = mContext;

@@ -15,4 +15,5 @@ public interface AppKeys {
     int UPDATE_PLAYLIST_RESULT_CODE = 100;
     int MY_PERMISSIONS_REQUEST_READ_STORAGE = 200;
     String SLEEP_TIMER_ACTION = "com.music.player.sleep.timer";
+    String CLOSE_MUSIC_ACTION = "com.music.player.close.music";
 }

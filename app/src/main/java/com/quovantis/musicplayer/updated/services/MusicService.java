@@ -152,26 +152,29 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
             super.onPlayFromMediaId(mediaId, extras);
             MediaMetadataCompat mediaMetadata = MusicHelper.getInstance().
                     getMetadata(getApplicationContext());
-            if (mediaMetadata == null) {
+            if (mediaMetadata == null && mPlaybackManager != null) {
                 mPlaybackManager.setMediaData(null);
             } else {
-                mMediaSession.setActive(true);
-                mMediaSession.setMetadata(mediaMetadata);
-                mPlaybackManager.playFromMetaData(mediaMetadata);
+                if (mMediaSession != null && mPlaybackManager != null) {
+                    mMediaSession.setActive(true);
+                    mMediaSession.setMetadata(mediaMetadata);
+                    mPlaybackManager.playFromMetaData(mediaMetadata);
+                }
             }
         }
 
         @Override
         public void onPause() {
             super.onPause();
-            mPlaybackManager.pause();
+            if (mPlaybackManager != null)
+                mPlaybackManager.pause();
         }
 
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
             String mediaId = MusicHelper.getInstance().getNextSong();
-            if (mediaId == null) {
+            if (mediaId == null && mPlaybackManager != null) {
                 mPlaybackManager.setMediaData(null);
             } else {
                 onPlayFromMediaId(mediaId, null);
@@ -182,7 +185,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
             String mediaId = MusicHelper.getInstance().getPreviousSong();
-            if (mediaId == null) {
+            if (mediaId == null && mPlaybackManager != null) {
                 mPlaybackManager.setMediaData(null);
             } else {
                 onPlayFromMediaId(mediaId, null);
@@ -192,19 +195,21 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
         @Override
         public void onStop() {
             super.onStop();
+            if(mPlaybackManager != null)
             mPlaybackManager.stop();
         }
 
         @Override
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
+            if(mPlaybackManager != null)
             mPlaybackManager.seekTo(pos);
         }
 
         @Override
         public void onCustomAction(String action, Bundle extras) {
             super.onCustomAction(action, extras);
-            if (action.equals("NONE")) {
+            if (action.equals("NONE") && mPlaybackManager != null) {
                 mPlaybackManager.none();
             }
         }
@@ -219,6 +224,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         updateDefaultPlaylist();
         if (mMediaSession != null) {
             mMediaSession.release();
@@ -229,9 +235,11 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
             stopForeground(true);
         if (mNoisyReceiver != null)
             unregisterReceiver(mNoisyReceiver);
-        super.onDestroy();
+        if (mPlaybackManager != null) {
+            mPlaybackManager.releasePlayer();
+            mPlaybackManager = null;
+        }
         LoggerHelper.debug("Music Service Destroyed");
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     private BroadcastReceiver mNoisyReceiver = new BroadcastReceiver() {

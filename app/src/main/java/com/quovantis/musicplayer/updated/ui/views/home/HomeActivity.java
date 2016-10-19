@@ -68,7 +68,6 @@ public class HomeActivity extends MusicBaseActivity implements FoldersFragment.I
     private void initPresenter() {
         iHomePresenter = new HomePresenterImp(this);
         iMusicPresenter = new MusicPresenterImp(this, this);
-        iMusicPresenter.bindService();
     }
 
     private void initViewPager() {

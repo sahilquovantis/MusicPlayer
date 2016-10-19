@@ -68,7 +68,6 @@ public class PlaylistSongsActivity extends MusicBaseActivity implements Playlist
     private void initPresenters(long id) {
         iPresenter = new PlaylistSongsPresenterImp(this, this);
         iMusicPresenter = new MusicPresenterImp(this, PlaylistSongsActivity.this);
-        iMusicPresenter.bindService();
         iPresenter.updateUI(id);
     }
 

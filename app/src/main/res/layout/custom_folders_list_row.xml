@@ -44,7 +44,7 @@
                         android:layout_width="@dimen/dp_30"
                         android:layout_height="@dimen/dp_30"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/action_overflow" />
+                        android:src="@drawable/action_overflow_white" />
                 </LinearLayout>
 
                 <TextView

@@ -18,7 +18,9 @@ public class SleepTimerReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (action != null && action.equalsIgnoreCase(AppKeys.SLEEP_TIMER_ACTION)) {
             LoggerHelper.debug("Sleep Timer Receiver Called");
-            context.stopService(new Intent(context, MusicService.class));
+            Intent intent1 = new Intent();
+            intent1.setAction(AppKeys.CLOSE_MUSIC_ACTION);
+            context.sendBroadcast(intent1);
         }
     }
 }
