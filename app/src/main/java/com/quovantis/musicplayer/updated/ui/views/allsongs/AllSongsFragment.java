@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.controller.AppActionController;
@@ -26,6 +25,7 @@ import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
+import com.quovantis.musicplayer.updated.ui.views.customviews.CustomFastScroller;
 import com.quovantis.musicplayer.updated.ui.views.songslist.SongsListAdapter;
 
 import java.util.ArrayList;
@@ -43,8 +43,8 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
     RecyclerView mSongsListRV;
     @BindView(R.id.pb_progress_bar)
     ProgressBar mProgressBar;
-    @BindView(R.id.fast_scroll)
-    FastScroller mFastScroll;
+    @BindView(R.id.fast_scroller)
+    CustomFastScroller mScroller;
     private SongsListAdapter mAdapter;
     private IHomeAndMusicCommunicator iHomeAndMusicCommunicator;
     private ArrayList<SongDetailsModel> mSongsList = new ArrayList<>();
@@ -98,7 +98,7 @@ public class AllSongsFragment extends Fragment implements IMusicListClickListene
         mSongsListRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new SongsListAdapter(getActivity(), this, mSongsList);
         mSongsListRV.setAdapter(mAdapter);
-        mFastScroll.setRecyclerView(mSongsListRV);
+        mScroller.setRecyclerView(mSongsListRV);
     }
 
 

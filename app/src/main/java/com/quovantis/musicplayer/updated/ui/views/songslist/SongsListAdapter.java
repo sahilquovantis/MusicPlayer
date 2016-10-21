@@ -16,10 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.helper.RecyclerViewAnimationHelper;
 import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
+import com.quovantis.musicplayer.updated.interfaces.SectionIndexedTitle;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.utility.CircleImageView;
 
@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 /**
  * Created by sahil-goel on 24/8/16.
  */
-public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder> implements SectionTitleProvider {
+public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder> implements SectionIndexedTitle {
     private final Uri mArtworkUri;
     private Context mContext;
     private IMusicListClickListener iMusicListClickListener;
@@ -119,8 +119,11 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.View
     }
 
     @Override
-    public String getSectionTitle(int position) {
-        return mSongList.get(position).getSongTitle().substring(0, 1);
+    public String getSectionedTitle(int position) {
+        if (!mSongList.isEmpty() && mSongList.size() > position) {
+            return mSongList.get(position).getSongTitle().substring(0, 1);
+        }
+        return " ";
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

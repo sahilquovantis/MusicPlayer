@@ -8,15 +8,14 @@
         android:id="@+id/rv_songs_list"
         style="@style/AppRecyclerView"/>
 
-    <com.futuremind.recyclerviewfastscroll.FastScroller
-        android:id="@+id/fast_scroll"
+    <com.quovantis.musicplayer.updated.ui.views.customviews.CustomFastScroller
+        android:id="@+id/fast_scroller"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:orientation="vertical"
-        app:fastscroll__bubbleColor="@color/colorAccent"
-        app:fastscroll__handleColor="@color/colorAccent" />
+        app:bubbleColor="@color/colorPrimary"
+        app:scrollBarColor="@color/colorAccent" />
 
     <ProgressBar
         android:id="@+id/pb_progress_bar"
