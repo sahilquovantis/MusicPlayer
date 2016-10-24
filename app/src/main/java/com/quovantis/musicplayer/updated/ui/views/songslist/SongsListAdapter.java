@@ -30,7 +30,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by sahil-goel on 24/8/16.
+ * Adapter class for Songs list {@link com.quovantis.musicplayer.updated.ui.views.allsongs.AllSongsFragment}
+ * <p> {@link SongsListActivity}
  */
 public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.ViewHolder> implements SectionIndexedTitle {
     private final Uri mArtworkUri;

@@ -17,6 +17,7 @@ import com.quovantis.musicplayer.updated.interfaces.IMusicListClickListener;
 import com.quovantis.musicplayer.updated.interfaces.IQueueOptionsDialog;
 import com.quovantis.musicplayer.updated.models.SongDetailsModel;
 import com.quovantis.musicplayer.updated.ui.views.createplaylist.CreatePlaylistActivity;
+import com.quovantis.musicplayer.updated.ui.views.customviews.CustomFastScroller;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicBaseActivity;
 import com.quovantis.musicplayer.updated.ui.views.music.MusicPresenterImp;
 
@@ -30,6 +31,8 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.fast_scroller)
+    CustomFastScroller mFastScroller;
     @BindView(R.id.rv_songs_list)
     RecyclerView mSongsListRV;
     @BindView(R.id.progress_bar)
@@ -71,6 +74,7 @@ public class SongsListActivity extends MusicBaseActivity implements ISongsView,
         mSongsListRV.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SongsListAdapter(this, this, mSongList);
         mSongsListRV.setAdapter(mAdapter);
+        mFastScroller.setRecyclerView(mSongsListRV);
     }
 
 

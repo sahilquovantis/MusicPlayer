@@ -36,7 +36,9 @@
         <LinearLayout
             android:id="@+id/ll_action"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10">
 
             <ImageView
                 style="@style/AppOptionImageView"

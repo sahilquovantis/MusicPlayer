@@ -59,7 +59,6 @@ public class CustomFastScroller extends LinearLayout {
         layoutInflater.inflate(R.layout.custom_scroller, this);
         mTouchHandle = findViewById(R.id.handle);
         mNewBubble = (CustomBubble) findViewById(R.id.custom_bubble);
-        mTouchHandle.setBackgroundColor(mScrollBarColor);
         mNewBubble.setColor(mBubbleColor);
     }
 

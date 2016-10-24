@@ -19,7 +19,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by sahil-goel on 24/8/16.
+ * Fetches songs from the storage with the help of cursor loader.
  */
 class SongsInteractorImp implements ISongsInteractor,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -47,7 +47,7 @@ class SongsInteractorImp implements ISongsInteractor,
                 path + "%",
                 path + "/%/%"
         };
-        return new CursorLoader(mContext, uri, columns, selection, selectionArgs, null);
+        return new CursorLoader(mContext, uri, columns, selection, selectionArgs, columns[2] + " ASC");
     }
 
     @Override
