@@ -46,8 +46,12 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
     @Override
     protected void onStart() {
         super.onStart();
-        if (iMusicPresenter != null)
-            iMusicPresenter.bindService();
+        if (!MusicService.mIsServiceDestroyed) {
+            if (iMusicPresenter != null)
+                iMusicPresenter.bindService();
+        } else {
+            onBackPressed();
+        }
         registerReceiver(mCloseMusicReceiver, new IntentFilter(AppKeys.CLOSE_MUSIC_ACTION));
     }
 
@@ -60,7 +64,7 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
     }
 
     @OnClick({R.id.iv_next_song, R.id.iv_previous_song, R.id.iv_play_pause_button})
-    public void onMusicButtonsClick(ImageView view) {
+    protected void onMusicButtonsClick(ImageView view) {
         if (view.getId() == R.id.iv_play_pause_button) {
             iMusicPresenter.onPlayPause();
         } else if (view.getId() == R.id.iv_previous_song) {
@@ -143,6 +147,7 @@ public abstract class MusicBaseActivity extends AppCompatActivity implements IMu
                     iMusicPresenter.unBindService();
                 context.stopService(new Intent(context, MusicService.class));
                 onHideMusicLayout();
+                onBackPressed();
                 LoggerHelper.debug("Close Music Receiver Called");
             }
         }

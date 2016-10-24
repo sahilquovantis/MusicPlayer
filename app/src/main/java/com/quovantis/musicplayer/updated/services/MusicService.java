@@ -20,20 +20,11 @@ import android.view.KeyEvent;
 
 import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
-import com.quovantis.musicplayer.updated.constants.AppPreferenceKeys;
 import com.quovantis.musicplayer.updated.helper.LoggerHelper;
 import com.quovantis.musicplayer.updated.helper.MusicHelper;
 import com.quovantis.musicplayer.updated.helper.NotificationHelper;
 import com.quovantis.musicplayer.updated.helper.PlayBackManager;
-import com.quovantis.musicplayer.updated.models.SongDetailsModel;
-import com.quovantis.musicplayer.updated.models.UserPlaylistModel;
-import com.quovantis.musicplayer.updated.utility.SharedPreference;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
+import com.quovantis.musicplayer.updated.utility.Utils;
 
 /**
  * Music Service which runs in Background.
@@ -41,29 +32,28 @@ import io.realm.RealmResults;
 public class MusicService extends Service implements PlayBackManager.ICallback,
         PlayBackManager.ISongProgressCallback {
     private static final int NOTIFICATION_ID = 1;
-    private Binder mBinder = new ServiceBinder();
+    private Binder mBinder;
     private MediaSessionCompat mMediaSession;
     private MediaControllerCompat mMediaController;
     private NotificationHelper mNotificationHelper;
     private PlayBackManager mPlaybackManager;
     private Notification mNotification;
+    public static boolean mIsServiceDestroyed;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mIsServiceDestroyed = false;
+        mBinder = new ServiceBinder();
         registerReceiver(mNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
         LoggerHelper.debug("Music Service Created");
         MusicHelper.getInstance();
         mMediaSession = new MediaSessionCompat(this, "Music");
-        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         mMediaSession.setCallback(mMediaCallback);
         mMediaSession.setActive(true);
         mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                .setActions(
-                        PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE |
-                                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID | PlaybackStateCompat.ACTION_PAUSE |
-                                PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+                .setActions(PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID | PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
                 .setState(PlaybackStateCompat.STATE_NONE, 0, 1, SystemClock.elapsedRealtime())
                 .build());
         try {
@@ -195,15 +185,15 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
         @Override
         public void onStop() {
             super.onStop();
-            if(mPlaybackManager != null)
-            mPlaybackManager.stop();
+            if (mPlaybackManager != null)
+                mPlaybackManager.stop();
         }
 
         @Override
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
-            if(mPlaybackManager != null)
-            mPlaybackManager.seekTo(pos);
+            if (mPlaybackManager != null)
+                mPlaybackManager.seekTo(pos);
         }
 
         @Override
@@ -225,7 +215,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
     @Override
     public void onDestroy() {
         super.onDestroy();
-        updateDefaultPlaylist();
+        Utils.updateDefaultPlaylist(MusicService.this);
         if (mMediaSession != null) {
             mMediaSession.release();
             mMediaSession = null;
@@ -239,6 +229,9 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
             mPlaybackManager.releasePlayer();
             mPlaybackManager = null;
         }
+        mNotificationHelper = null;
+        mNotification = null;
+        mIsServiceDestroyed = true;
         LoggerHelper.debug("Music Service Destroyed");
     }
 
@@ -253,20 +246,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
     };
 
     private void initCurrentPlaylist() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmResults<UserPlaylistModel> realmResults = realm.where(UserPlaylistModel.class).
-                        equalTo("mPlaylistId", 0).findAll();
-                if (realmResults.size() > 0) {
-                    ArrayList<SongDetailsModel> list = new ArrayList<>(realmResults.get(0).getPlaylist());
-                    int pos = SharedPreference.getInstance().getInt(MusicService.this,
-                            AppPreferenceKeys.CURRENT_POSITION);
-                    MusicHelper.getInstance().setCurrentPlaylist(list, pos);
-                }
-            }
-        });
+        Utils.initCurrentPlaylist(MusicService.this);
         MediaMetadataCompat metadata = MusicHelper.getInstance().getMetadata(this);
         if (metadata != null) {
             mMediaSession.setActive(true);
@@ -275,45 +255,18 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
         }
     }
 
-    private void updateDefaultPlaylist() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                List<SongDetailsModel> list = MusicHelper.getInstance().getCurrentPlaylist();
-                UserPlaylistModel userPlaylistModel = new UserPlaylistModel();
-                userPlaylistModel.setPlaylistName("Default");
-                userPlaylistModel.setPlaylistId(0);
-                userPlaylistModel.getPlaylist().addAll(list);
-                realm.copyToRealmOrUpdate(userPlaylistModel);
-                int pos = 0;
-                if (list != null && !list.isEmpty()) {
-                    pos = MusicHelper.getInstance().getCurrentPosition();
-                }
-                SharedPreference.getInstance().putInt(MusicService.this,
-                        AppPreferenceKeys.CURRENT_POSITION, pos);
-            }
-        });
-    }
-
     @Override
     public void onPlaybackStateChanged(PlaybackStateCompat state) {
         if (mMediaSession != null)
             mMediaSession.setPlaybackState(state);
         if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
-            mNotification = mNotificationHelper.createNotification(
-                    mPlaybackManager.getMediaMetaData(),
-                    getMediaSessionToken(),
-                    R.drawable.ic_action_pause, "Pause",
-                    AppMusicKeys.INTENT_ACTION_PAUSE);
+            mNotification = mNotificationHelper.createNotification(mPlaybackManager.getMediaMetaData(),
+                    getMediaSessionToken(), R.drawable.ic_action_pause, "Pause", AppMusicKeys.INTENT_ACTION_PAUSE);
             if (mNotification != null)
                 startForeground(NOTIFICATION_ID, mNotification);
         } else if (state.getState() == PlaybackStateCompat.STATE_PAUSED) {
-            mNotification = mNotificationHelper.createNotification(
-                    mPlaybackManager.getMediaMetaData(),
-                    getMediaSessionToken(),
-                    R.drawable.ic_action_play, "Play",
-                    AppMusicKeys.INTENT_ACTION_PLAY);
+            mNotification = mNotificationHelper.createNotification(mPlaybackManager.getMediaMetaData(),
+                    getMediaSessionToken(), R.drawable.ic_action_play, "Play", AppMusicKeys.INTENT_ACTION_PLAY);
             if (mNotification != null)
                 startForeground(NOTIFICATION_ID, mNotification);
         } else {

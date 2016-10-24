@@ -41,9 +41,7 @@ public class MusicPresenterImp implements IMusicPresenter, ServiceConnection {
             MediaMetadataCompat mCurrentMetadata = null;
             PlaybackStateCompat mCurrentState = null;
             try {
-                mMediaController = new MediaControllerCompat(mContext,
-                        ((MusicService.ServiceBinder) iBinder).getService().getMediaSessionToken());
-
+                mMediaController = new MediaControllerCompat(mContext, ((MusicService.ServiceBinder) iBinder).getService().getMediaSessionToken());
                 mMediaController.registerCallback(mMediaCallback);
                 mCurrentMetadata = mMediaController.getMetadata();
                 mCurrentState = mMediaController.getPlaybackState();

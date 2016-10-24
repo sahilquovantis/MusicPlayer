@@ -163,9 +163,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
     private boolean tryToGetAudioFocus() {
         if (mAudioManager == null)
             mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-
-        int result = mAudioManager.requestAudioFocus(
-                this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
@@ -176,8 +174,7 @@ public class PlayBackManager implements AudioManager.OnAudioFocusChangeListener,
             return;
         }
         mCurrentState = state;
-        PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder()
-                .setState(state, getCurrentStreamPosition(), 1.0f, SystemClock.elapsedRealtime());
+        PlaybackStateCompat.Builder playbackState = new PlaybackStateCompat.Builder().setState(state, getCurrentStreamPosition(), 1.0f, SystemClock.elapsedRealtime());
         mCallback.onPlaybackStateChanged(playbackState.build());
     }
 
