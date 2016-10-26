@@ -11,6 +11,7 @@ import com.quovantis.musicplayer.R;
 import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.controller.AppActionController;
 import com.quovantis.musicplayer.updated.helper.PermissionHelper;
+import com.quovantis.musicplayer.updated.services.MusicService;
 import com.quovantis.musicplayer.updated.ui.views.home.HomeActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -21,6 +22,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        MusicService.mIsServiceDestroyed = false;
     }
 
     @Override

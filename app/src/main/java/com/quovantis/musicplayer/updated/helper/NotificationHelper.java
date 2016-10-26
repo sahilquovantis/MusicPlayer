@@ -12,6 +12,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.quovantis.musicplayer.R;
+import com.quovantis.musicplayer.updated.constants.AppKeys;
 import com.quovantis.musicplayer.updated.constants.AppMusicKeys;
 import com.quovantis.musicplayer.updated.ui.views.home.HomeActivity;
 import com.quovantis.musicplayer.updated.services.MusicService;
@@ -23,6 +24,7 @@ import com.quovantis.musicplayer.updated.services.MusicService;
 public class NotificationHelper {
 
     private Context mContext;
+
     public NotificationHelper(Context context) {
         mContext = context;
     }
@@ -65,6 +67,12 @@ public class NotificationHelper {
             builder.addAction(createAction(R.drawable.ic_action_next, "Next", AppMusicKeys.INTENT_ACTION_NEXT));
             builder.addAction(createAction(R.drawable.ic_action_remove, "Close", AppMusicKeys.INTENT_ACTION_STOP));
             style.setShowActionsInCompactView(0, 1, 2);
+            if (action.equalsIgnoreCase(AppMusicKeys.INTENT_ACTION_PLAY)) {
+                Intent intent = new Intent(mContext, MusicService.class);
+                intent.setAction(AppMusicKeys.INTENT_ACTION_STOP);
+                PendingIntent pendingIntent = PendingIntent.getService(mContext, 1, intent, 0);
+                builder.setDeleteIntent(pendingIntent);
+            }
             return builder.build();
             /*mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(1, builder.build());*/

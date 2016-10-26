@@ -1,6 +1,7 @@
 package com.quovantis.musicplayer.updated.services;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,6 +40,7 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
     private PlayBackManager mPlaybackManager;
     private Notification mNotification;
     public static boolean mIsServiceDestroyed;
+    private NotificationManager mNotificationManager;
 
     @Override
     public void onCreate() {
@@ -221,6 +223,10 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
             mMediaSession = null;
         }
         mMediaController = null;
+        if (mNotificationManager != null) {
+            mNotificationManager.cancelAll();
+            mNotificationManager = null;
+        }
         if (mNotification != null)
             stopForeground(true);
         if (mNoisyReceiver != null)
@@ -265,12 +271,17 @@ public class MusicService extends Service implements PlayBackManager.ICallback,
             if (mNotification != null)
                 startForeground(NOTIFICATION_ID, mNotification);
         } else if (state.getState() == PlaybackStateCompat.STATE_PAUSED) {
+            stopForeground(true);
             mNotification = mNotificationHelper.createNotification(mPlaybackManager.getMediaMetaData(),
                     getMediaSessionToken(), R.drawable.ic_action_play, "Play", AppMusicKeys.INTENT_ACTION_PLAY);
-            if (mNotification != null)
-                startForeground(NOTIFICATION_ID, mNotification);
+            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(1, mNotification);
         } else {
             stopForeground(true);
+            if (mNotificationManager != null) {
+                mNotificationManager.cancelAll();
+                mNotificationManager = null;
+            }
             mNotification = null;
             if (state.getState() == PlaybackStateCompat.STATE_STOPPED) {
                 stopSelf();
